@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "721221564859",
+    "project_id": "ccdik-33",
+    "storage_bucket": "ccdik-33.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:721221564859:android:e241a22da40204ff30ec9e",
+        "android_client_info": {
+          "package_name": "com.example.group_33_project"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAMaf6cFYbmj3kPi8gxl-gTQmDRy_GFYJk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
