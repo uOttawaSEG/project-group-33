@@ -1,6 +1,9 @@
 package com.example.group_33_project;
 
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -9,7 +12,8 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 public class MainActivity extends AppCompatActivity {
-
+    private EditText titleEmail, titlePassword;
+    private Button signIn;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -20,5 +24,22 @@ public class MainActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+
+        titleEmail = findViewById(R.id.title_email); // to access the titleEmail
+        titlePassword = findViewById(R.id.title_password); // to access the titlePassword
+
+        signIn.setOnClickListener(new View.OnClickListener(){ // 'listening' for a button click for signIn button
+
+            public void onClick(View v){
+                Login(titleEmail.getText().toString(), titlePassword.getText().toString()); // call the Login method (email, password), RETURNS BOOL
+            }
+
+
+
     }
+
+
+    }
+
 }
