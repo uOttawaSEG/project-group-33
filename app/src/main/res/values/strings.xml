@@ -3,4 +3,5 @@
     <string name="title_t">OTAMS</string>
     <string name="title_e">email address</string>
     <string name="title_p">password</string>
+    <string name="title_r">register</string>
 </resources>
