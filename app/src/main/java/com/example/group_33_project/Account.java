@@ -1,7 +1,11 @@
+package com.example.group_33_project;
+
 public abstract class Account {
     private String firstName, lastName, email, password, phone = "", type; // instance variables
 
-    // default constructor when super() is called
+    Account(){} // empty constructor
+
+    // parametrized constructor
     Account(String firstName, String lastName, String email, String password,  String phone){
         this.firstName = firstName;
         this.lastName = lastName;

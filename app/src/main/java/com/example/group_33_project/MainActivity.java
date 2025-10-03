@@ -32,7 +32,21 @@ public class MainActivity extends AppCompatActivity {
         signIn.setOnClickListener(new View.OnClickListener(){ // 'listening' for a button click for signIn button
 
             public void onClick(View v){
-                Login(titleEmail.getText().toString(), titlePassword.getText().toString()); // call the Login method (email, password), RETURNS BOOL
+                try{
+                    // call the logIn method (email, password) from Account_Handling class, returns VOID or THROWS EXCEPTION
+                    // if we are still in the try block, MOVE TO NEXT PAGE (login SUCCESS, no exception!)
+                    Account_Handling.logIn(titleEmail.getText().toString(), titlePassword.getText().toString());
+                    // move to account page
+                    }
+
+                catch(IllegalArgumentException e){ // Email not found in database
+                    // ADD ERROR TEXT BOX WITH THIS TEXT for INCORRECT EMAIL:
+                    String error = e.getMessage(); // "An account could not be found with the associated email ....."
+                }
+                catch(AuthenticationException e){ // Incorrect password provided
+                    // ADD ERROR TEXT BOX WITH THIS TEXT for INCORRECT PASSWORD:
+                    String error = e.getMessage(); // "
+                }
             }
 
 

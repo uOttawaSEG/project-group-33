@@ -1,3 +1,5 @@
+package com.example.group_33_project;
+
 public class Student extends Account{
     private String program;
 
