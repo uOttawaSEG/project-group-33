@@ -20,51 +20,65 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.133" />
+        app:layout_constraintVertical_bias="0.034" />
 
-    <Button
+    <EditText
         android:id="@+id/title_email"
-        android:layout_width="242dp"
+        android:layout_width="280dp"
         android:layout_height="66dp"
-        android:layout_weight="1"
-        android:text="@string/title_e"
         android:backgroundTint="@color/gg"
-        app:iconTint="@color/black"
+        android:hint="@string/title_e"
+        android:inputType="textEmailAddress"
+        android:textColorHint="@color/black"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.597" />
+        app:layout_constraintVertical_bias="0.732" />
+
+    <EditText
+        android:id="@+id/title_password"
+        android:layout_width="280dp"
+        android:layout_height="66dp"
+        android:backgroundTint="@color/gg"
+        android:hint="@string/title_p"
+        android:inputType="textPassword"
+        android:textColorHint="@color/black"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.496"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.812" />
 
     <Button
-        android:id="@+id/title_password"
-        android:layout_width="242dp"
+        android:id="@+id/title_sign"
+        android:layout_width="300dp"
         android:layout_height="66dp"
         android:layout_weight="1"
-        android:text="@string/title_p"
         android:backgroundTint="@color/gg"
-        app:iconTint="@color/black"
+        android:text="@string/title_s"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.491"
+        app:layout_constraintHorizontal_bias="0.485"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.694" />
+        app:layout_constraintVertical_bias="0.901" />
 
     <Button
         android:id="@+id/title_register"
-        android:layout_width="242dp"
-        android:layout_height="66dp"
+        style="@style/Widget.MaterialComponents.Button.TextButton"
+        android:layout_width="115dp"
+        android:layout_height="40dp"
         android:layout_weight="1"
-        android:backgroundTint="@color/gg"
         android:text="@string/title_r"
-        app:iconTint="@color/black"
+        android:textColor="@color/gg"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.491"
+        app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.789" />
+        app:layout_constraintVertical_bias="0.95" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,7 +1,8 @@
 <resources>
     <string name="app_name">Group_33_Project</string>
     <string name="title_t">OTAMS</string>
-    <string name="title_e">email address</string>
-    <string name="title_p">password</string>
-    <string name="title_r">register</string>
+    <string name="title_s">Sign In</string>
+    <string name="title_r">Register</string>
+    <string name="title_e">Email Address</string>
+    <string name="title_p">Password</string>
 </resources>
