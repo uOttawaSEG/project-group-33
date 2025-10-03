@@ -27,6 +27,7 @@
         android:layout_width="280dp"
         android:layout_height="66dp"
         android:backgroundTint="@color/gg"
+        android:fontFamily="sans-serif-medium"
         android:hint="@string/title_e"
         android:inputType="textEmailAddress"
         android:textColorHint="@color/black"
@@ -42,6 +43,7 @@
         android:layout_width="280dp"
         android:layout_height="66dp"
         android:backgroundTint="@color/gg"
+        android:fontFamily="sans-serif-medium"
         android:hint="@string/title_p"
         android:inputType="textPassword"
         android:textColorHint="@color/black"
@@ -53,32 +55,33 @@
         app:layout_constraintVertical_bias="0.812" />
 
     <Button
-        android:id="@+id/title_sign"
+        android:id="@+id/title_signUp"
         android:layout_width="300dp"
         android:layout_height="66dp"
         android:layout_weight="1"
         android:backgroundTint="@color/gg"
+        android:fontFamily="sans-serif-medium"
         android:text="@string/title_s"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.485"
+        app:layout_constraintHorizontal_bias="0.495"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.901" />
+        app:layout_constraintVertical_bias="0.899" />
 
     <Button
         android:id="@+id/title_register"
         style="@style/Widget.MaterialComponents.Button.TextButton"
         android:layout_width="115dp"
-        android:layout_height="40dp"
+        android:layout_height="48dp"
         android:layout_weight="1"
+        android:fontFamily="sans-serif-medium"
         android:text="@string/title_r"
         android:textColor="@color/gg"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.95" />
+        app:layout_constraintVertical_bias="0.958" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
