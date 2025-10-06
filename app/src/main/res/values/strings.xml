@@ -5,6 +5,8 @@
     <string name="screen1_register">Register</string>
     <string name="screen1_email">Email Address</string>
     <string name="screen1_password">Password</string>
+    <string name="screen2_welcome">Welcome!</string>
+    <string name="screen2_body">You are logged in as</string>
     <string name="screen3_header">Register As:</string>
     <string name="screen3_student">Student</string>
     <string name="screen3_tutor">Tutor</string>
@@ -20,8 +22,6 @@
     <string name="second_fragment_label">Second Fragment</string>
     <string name="next">Next</string>
     <string name="previous">Previous</string>
-    <string name="logged_in">You have successfully logged in</string>
-    <string name="as">as</string>
     <string name="logT">TUTOR</string>
     <string name="logS">STUDENT</string>
     <string name="logA">ADMIN</string>
