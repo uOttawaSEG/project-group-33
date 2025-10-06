@@ -54,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
 
         });
 
-
+        // EVERYTHING FROM HERE AND BELOW WILL NEED TO BE ON SPECIFIC PAGES FOR SIGNUP AND SIGNIN!! This is ONLY THE LOGIC, please move it to a new file if you need! Make sure to link the fields (name/email/etc...) to the text boxes!
         // code for STUDENTS TO SIGN UP, implement with interface later:
         String firstName = "",  lastName = "",  email = "",  password = "",   phone = "",  program= ""; // link to text boxes!!
         AccountHandling accHandle = new AccountHandling(); // make an instance of account handling so that we can use sign up/in methods
