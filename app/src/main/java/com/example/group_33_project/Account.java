@@ -20,11 +20,10 @@ public abstract class Account {
     } public void setLastName(String s) {
         this.lastName = s;
     } public void setEmail(String s){
-        this.email = s;
+        this.email = s.toLowerCase();
     } public void setPassword(String s){
         this.password = s;
     }
-
     public void setPhone(String s){ // Sets the phone number, removing non-numeric characters
         phone = s.replaceAll("\\D", ""); // replace all digits ("\\D" is regex for NON digits) with ""
     }

@@ -1,14 +1,14 @@
 package com.example.group_33_project;
 
 public class Tutor extends Account{
-    FirebaseFirestore db = FirebaseFirestore.getInstance();
+
 
     // Attributes for TUTORS:
     private String education;
     private String[] courses;
 
     // Constructor
-    Tutor(String firstName, String lastName, String email, String password,  String phone){
+    Tutor(String firstName, String lastName, String email, String password,  String phone, String education, String[] courses){
         super(firstName, lastName, email, password, phone); // call super for com.example.group_33_project.Account constructor
     }
     // Setters

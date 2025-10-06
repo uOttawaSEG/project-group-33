@@ -11,7 +11,13 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+
+
 public class MainActivity extends AppCompatActivity {
+
+
+
+
     private EditText titleEmail, titlePassword;
     private Button signIn;
     @Override
@@ -26,34 +32,60 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
+
         titleEmail = findViewById(R.id.title_email); // to access the titleEmail
         titlePassword = findViewById(R.id.title_password); // to access the titlePassword
 
-        signIn.setOnClickListener(new View.OnClickListener(){ // 'listening' for a button click for signIn button
+        // 'listening' for a button click for signIn button
+        signIn.setOnClickListener(v -> {
 
-            public void onClick(View v){
-                try{
-                    // call the logIn method (email, password) from Account_Handling class, returns VOID or THROWS EXCEPTION
-                    // if we are still in the try block, MOVE TO NEXT PAGE (login SUCCESS, no exception!)
-                    Account_Handling.logIn(titleEmail.getText().toString(), titlePassword.getText().toString());
-                    // move to account page
-                    }
+            // call the logIn method (email, password) from Account_Handling class
+            AccountHandling accHandle = new AccountHandling();
+            accHandle.logIn(titleEmail.getText().toString(), titlePassword.getText().toString(), new AccountCallback() { // define the callback methods for this case
+                public void onSuccess(String msg) {
+                    // print message (msg = "Successfully logged in")
+                    // MOVE TO WELCOME PAGE
+                }
+                public void onFailure(String msg) {
+                    // print error message (msg = either "email not found" or "password doesn't match")
+                    // STAY ON SIGN IN PAGE (so user can retry/press sign up button)
+                }
+            });
 
-                catch(IllegalArgumentException e){ // Email not found in database
-                    // ADD ERROR TEXT BOX WITH THIS TEXT for INCORRECT EMAIL:
-                    String error = e.getMessage(); // "An account could not be found with the associated email ....."
-                }
-                catch(AuthenticationException e){ // Incorrect password provided
-                    // ADD ERROR TEXT BOX WITH THIS TEXT for INCORRECT PASSWORD:
-                    String error = e.getMessage(); // "
-                }
+        });
+
+
+        // code for STUDENTS TO SIGN UP, implement with interface later:
+        String firstName = "",  lastName = "",  email = "",  password = "",   phone = "",  program= ""; // link to text boxes!!
+        AccountHandling accHandle = new AccountHandling(); // make an instance of account handling so that we can use sign up/in methods
+        accHandle.studentSignUp(firstName, lastName, email, password,  phone, program, new AccountCallback(){ // call the signUp method, but also define the callbacks to display the results!
+            public void onSuccess(String msg){
+                // DISPLAY SUCCESS MESSAGE (msg) !!!
+                // MOVE TO SIGN IN PAGE (so user can SIGN IN)
             }
+            public void onFailure(String msg){
+                // DISPLAY FAILURE MESSAGE (msg)
+                // STAY ON sign up page
 
+            }
+        });
 
+        // code for TUTORS TO SIGN UP, implement with interface later:
+        // String firstName = "",  lastName = "",  email = "",  password = "",   phone = "",
+        String education = ""; // link to text boxes!!
+        String[] courses = new String[1];
+        //AccountHandling accHandle = new AccountHandling(); // make an instance of account handling so that we can use sign up/in methods
+        accHandle.tutorSignUp(firstName, lastName, email, password,  phone, education, courses, new AccountCallback(){ // call the signUp method, but also define the callbacks to display the results!
+            public void onSuccess(String msg){
+                // DISPLAY SUCCESS MESSAGE (msg) !!!
+                // MOVE TO SIGN IN PAGE (so user can SIGN IN)
+            }
+            public void onFailure(String msg){
+                // DISPLAY FAILURE MESSAGE (msg)
+                // STAY ON sign up page
+
+            }
+        });
 
     }
-
-
-    }
-
 }
