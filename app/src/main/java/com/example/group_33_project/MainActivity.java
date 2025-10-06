@@ -1,7 +1,6 @@
 package com.example.group_33_project;
 
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
@@ -24,7 +23,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.screen1_login);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
@@ -33,8 +32,8 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-        titleEmail = findViewById(R.id.title_email); // to access the titleEmail
-        titlePassword = findViewById(R.id.title_password); // to access the titlePassword
+        titleEmail = findViewById(R.id.screen1_email); // to access the titleEmail
+        titlePassword = findViewById(R.id.screen1_password); // to access the titlePassword
 
         // 'listening' for a button click for signIn button
         signIn.setOnClickListener(v -> {

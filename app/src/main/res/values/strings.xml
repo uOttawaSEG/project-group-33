@@ -1,13 +1,13 @@
 <resources>
     <string name="app_name">Group_33_Project</string>
-    <string name="title_t">OTAMS</string>
-    <string name="title_s">Sign In</string>
-    <string name="title_r">Register</string>
-    <string name="title_e">Email Address</string>
-    <string name="title_p">Password</string>
-    <string name="title_e">email address</string>
-    <string name="title_p">password</string>
-    <string name="title_r">register</string>
+    <string name="screen1_title">OTAMS</string>
+    <string name="screen1_sign">Sign In</string>
+    <string name="screen1_register">Register</string>
+    <string name="screen1_email">Email Address</string>
+    <string name="screen1_password">Password</string>
+    <string name="screen3_header">Register As:</string>
+    <string name="screen3_student">Student</string>
+    <string name="screen3_tutor">Tutor</string>
     <!-- Strings used for fragments for navigation -->
     <string name="first_fragment_label">First Fragment</string>
     <string name="second_fragment_label">Second Fragment</string>

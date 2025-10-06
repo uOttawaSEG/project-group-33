@@ -9,11 +9,11 @@
     tools:context=".MainActivity">
 
     <TextView
-        android:id="@+id/title_title"
+        android:id="@+id/screen1_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif-black"
-        android:text="@string/title_t"
+        android:text="@string/screen1_title"
         android:textColor="@color/black"
         android:textSize="96sp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -23,12 +23,12 @@
         app:layout_constraintVertical_bias="0.034" />
 
     <EditText
-        android:id="@+id/title_email"
+        android:id="@+id/screen1_email"
         android:layout_width="280dp"
         android:layout_height="66dp"
         android:backgroundTint="@color/gg"
         android:fontFamily="sans-serif-medium"
-        android:hint="@string/title_e"
+        android:hint="@string/screen1_email"
         android:inputType="textEmailAddress"
         android:textColorHint="@color/black"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -39,12 +39,12 @@
         app:layout_constraintVertical_bias="0.732" />
 
     <EditText
-        android:id="@+id/title_password"
+        android:id="@+id/screen1_password"
         android:layout_width="280dp"
         android:layout_height="66dp"
         android:backgroundTint="@color/gg"
         android:fontFamily="sans-serif-medium"
-        android:hint="@string/title_p"
+        android:hint="@string/screen1_password"
         android:inputType="textPassword"
         android:textColorHint="@color/black"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -55,13 +55,13 @@
         app:layout_constraintVertical_bias="0.812" />
 
     <Button
-        android:id="@+id/title_signUp"
+        android:id="@+id/screen1_signUp"
         android:layout_width="300dp"
         android:layout_height="66dp"
         android:layout_weight="1"
         android:backgroundTint="@color/gg"
         android:fontFamily="sans-serif-medium"
-        android:text="@string/title_s"
+        android:text="@string/screen1_sign"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.495"
@@ -70,13 +70,13 @@
         app:layout_constraintVertical_bias="0.899" />
 
     <Button
-        android:id="@+id/title_register"
+        android:id="@+id/screen1_register"
         style="@style/Widget.MaterialComponents.Button.TextButton"
         android:layout_width="115dp"
         android:layout_height="48dp"
         android:layout_weight="1"
         android:fontFamily="sans-serif-medium"
-        android:text="@string/title_r"
+        android:text="@string/screen1_register"
         android:textColor="@color/gg"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
