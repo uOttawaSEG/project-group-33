@@ -8,6 +8,13 @@
     <string name="screen3_header">Register As:</string>
     <string name="screen3_student">Student</string>
     <string name="screen3_tutor">Tutor</string>
+    <string name="screen4_fname">First Name</string>
+    <string name="screen4_lname">Last Name</string>
+    <string name="screen4_phone">Phone Number</string>
+    <string name="screen4_program">Program of Study</string>
+    <string name="screen5_degree">Highest Achieved Degree</string>
+    <string name="screen5_courses">Course Offerings</string>
+    <string name="screen5_courseformat">Enter \",\"  between entries if more than 1</string>
     <!-- Strings used for fragments for navigation -->
     <string name="first_fragment_label">First Fragment</string>
     <string name="second_fragment_label">Second Fragment</string>

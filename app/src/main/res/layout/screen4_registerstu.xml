@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bkg"
+    tools:layout_editor_absoluteX="0dp"
+    tools:layout_editor_absoluteY="-419dp">
+
+    <Button
+        android:id="@+id/screen4_register"
+        android:layout_width="300dp"
+        android:layout_height="66dp"
+        android:layout_weight="1"
+        android:backgroundTint="@color/gg"
+        android:fontFamily="sans-serif-medium"
+        android:text="@string/screen1_register"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.495"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.756" />
+
+    <EditText
+        android:id="@+id/screen4_lname"
+        android:layout_width="280dp"
+        android:layout_height="66dp"
+        android:backgroundTint="@color/gg"
+        android:fontFamily="sans-serif-medium"
+        android:hint="@string/screen4_lname"
+        android:inputType="text"
+        android:textColorHint="@color/black"
+        android:autofillHints="personNameFamily"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.496"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.338" />
+
+    <EditText
+        android:id="@+id/screen4_email"
+        android:layout_width="280dp"
+        android:layout_height="66dp"
+        android:backgroundTint="@color/gg"
+        android:fontFamily="sans-serif-medium"
+        android:hint="@string/screen1_email"
+        android:inputType="textEmailAddress"
+        android:textColorHint="@color/black"
+        android:autofillHints="emailAddress"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.496"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.418" />
+
+    <EditText
+        android:id="@+id/screen4_phone"
+        android:layout_width="280dp"
+        android:layout_height="66dp"
+        android:backgroundTint="@color/gg"
+        android:fontFamily="sans-serif-medium"
+        android:hint="@string/screen4_phone"
+        android:inputType="phone"
+        android:textColorHint="@color/black"
+        android:autofillHints="phoneNumber"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.496"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.578" />
+
+    <EditText
+        android:id="@+id/screen4_password"
+        android:layout_width="280dp"
+        android:layout_height="66dp"
+        android:backgroundTint="@color/gg"
+        android:fontFamily="sans-serif-medium"
+        android:hint="@string/screen1_password"
+        android:inputType="textPassword"
+        android:textColorHint="@color/black"
+        android:autofillHints="newPassword"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.496"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.498" />
+
+    <EditText
+        android:id="@+id/screen4_fname"
+        android:layout_width="280dp"
+        android:layout_height="66dp"
+        android:backgroundTint="@color/gg"
+        android:fontFamily="sans-serif-medium"
+        android:hint="@string/screen4_fname"
+        android:inputType="text"
+        android:textColorHint="@color/black"
+        android:autofillHints="personNameGiven"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.496"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.258" />
+
+    <EditText
+        android:id="@+id/screen4_program"
+        android:layout_width="280dp"
+        android:layout_height="66dp"
+        android:backgroundTint="@color/gg"
+        android:fontFamily="sans-serif-medium"
+        android:hint="@string/screen4_program"
+        android:inputType="text"
+        android:textColorHint="@color/black"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.496"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.658" />
+</androidx.constraintlayout.widget.ConstraintLayout>
