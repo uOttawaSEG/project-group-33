@@ -8,137 +8,39 @@
     tools:layout_editor_absoluteX="0dp"
     tools:layout_editor_absoluteY="-419dp">
 
-    <Button
-        android:id="@+id/screen5_register"
-        android:layout_width="300dp"
-        android:layout_height="66dp"
-        android:layout_weight="1"
-        android:backgroundTint="@color/gg"
-        android:fontFamily="sans-serif-medium"
-        android:text="@string/screen1_register"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.495"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.849" />
-
-    <TextView
-        android:id="@+id/screen5_courseformat"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:fontFamily="sans-serif-medium"
-        android:text="@string/screen5_courseformat"
-        android:textColor="@color/black"
-        android:textSize="12sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.762" />
-
-    <EditText
-        android:id="@+id/screen5_lname"
-        android:layout_width="280dp"
-        android:layout_height="66dp"
-        android:backgroundTint="@color/gg"
-        android:fontFamily="sans-serif-medium"
-        android:hint="@string/screen4_lname"
-        android:inputType="text"
-        android:textColorHint="@color/black"
-        android:autofillHints="personNameFamily"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.496"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.338" />
-
-    <EditText
-        android:id="@+id/screen5_email"
-        android:layout_width="280dp"
-        android:layout_height="66dp"
-        android:backgroundTint="@color/gg"
-        android:fontFamily="sans-serif-medium"
-        android:hint="@string/screen1_email"
-        android:inputType="textEmailAddress"
-        android:textColorHint="@color/black"
-        android:autofillHints="emailAddress"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.496"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.418" />
-
-    <EditText
-        android:id="@+id/screen5_phone"
-        android:layout_width="280dp"
-        android:layout_height="66dp"
-        android:backgroundTint="@color/gg"
-        android:fontFamily="sans-serif-medium"
-        android:hint="@string/screen4_phone"
-        android:inputType="phone"
-        android:textColorHint="@color/black"
-        android:autofillHints="phoneNumber"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.496"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.578" />
-
     <EditText
         android:id="@+id/screen5_password"
         android:layout_width="280dp"
         android:layout_height="66dp"
+        android:autofillHints="newPassword"
         android:backgroundTint="@color/gg"
         android:fontFamily="sans-serif-medium"
         android:hint="@string/screen1_password"
         android:inputType="textPassword"
         android:textColorHint="@color/black"
-        android:autofillHints="newPassword"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.498" />
+        app:layout_constraintVertical_bias="0.431" />
 
     <EditText
-        android:id="@+id/screen5_fname"
+        android:id="@+id/screen5_email"
         android:layout_width="280dp"
         android:layout_height="66dp"
+        android:autofillHints="emailAddress"
         android:backgroundTint="@color/gg"
         android:fontFamily="sans-serif-medium"
-        android:hint="@string/screen4_fname"
-        android:inputType="text"
-        android:textColorHint="@color/black"
-        android:autofillHints="personNameGiven"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.496"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.258" />
-
-    <EditText
-        android:id="@+id/screen5_degree"
-        android:layout_width="280dp"
-        android:layout_height="66dp"
-        android:backgroundTint="@color/gg"
-        android:fontFamily="sans-serif-medium"
-        android:hint="@string/screen5_degree"
-        android:inputType="text"
+        android:hint="@string/screen1_email"
+        android:inputType="textEmailAddress"
         android:textColorHint="@color/black"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.658"
-        tools:layout_editor_absoluteY="179dp" />
+        app:layout_constraintVertical_bias="0.351" />
 
     <EditText
         android:id="@+id/screen5_courses"
@@ -154,5 +56,103 @@
         app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.738" />
+        app:layout_constraintVertical_bias="0.671" />
+
+    <EditText
+        android:id="@+id/screen5_degree"
+        android:layout_width="280dp"
+        android:layout_height="66dp"
+        android:backgroundTint="@color/gg"
+        android:fontFamily="sans-serif-medium"
+        android:hint="@string/screen5_degree"
+        android:inputType="text"
+        android:textColorHint="@color/black"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.496"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.591" />
+
+    <TextView
+        android:id="@+id/screen5_courseformat"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif-medium"
+        android:text="@string/screen5_courseformat"
+        android:textColor="@color/black"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.699" />
+
+    <EditText
+        android:id="@+id/screen5_lname"
+        android:layout_width="280dp"
+        android:layout_height="66dp"
+        android:autofillHints="personNameFamily"
+        android:backgroundTint="@color/gg"
+        android:fontFamily="sans-serif-medium"
+        android:hint="@string/screen4_lname"
+        android:inputType="text"
+        android:textColorHint="@color/black"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.496"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.271" />
+
+    <EditText
+        android:id="@+id/screen5_fname"
+        android:layout_width="280dp"
+        android:layout_height="66dp"
+        android:autofillHints="personNameGiven"
+        android:backgroundTint="@color/gg"
+        android:fontFamily="sans-serif-medium"
+        android:hint="@string/screen4_fname"
+        android:inputType="text"
+        android:textColorHint="@color/black"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.496"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.191" />
+
+    <Button
+        android:id="@+id/screen5_register"
+        android:layout_width="300dp"
+        android:layout_height="66dp"
+        android:layout_weight="1"
+        android:backgroundTint="@color/gg"
+        android:fontFamily="sans-serif-medium"
+        android:text="@string/screen1_register"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.495"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.783" />
+
+    <EditText
+        android:id="@+id/screen5_phone"
+        android:layout_width="280dp"
+        android:layout_height="66dp"
+        android:autofillHints="phoneNumber"
+        android:backgroundTint="@color/gg"
+        android:fontFamily="sans-serif-medium"
+        android:hint="@string/screen4_phone"
+        android:inputType="phone"
+        android:textColorHint="@color/black"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.496"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.511" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

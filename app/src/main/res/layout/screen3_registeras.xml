@@ -5,23 +5,20 @@
     android:layout_height="match_parent"
     android:background="@color/bkg">
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/screen3_tutor"
-        android:layout_width="175dp"
-        android:layout_height="400dp"
-        android:layout_weight="1"
-        android:background="@drawable/button_background"
-        android:backgroundTint="@color/gg"
+    <TextView
+        android:id="@+id/screen3_header"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:fontFamily="sans-serif-medium"
-        android:text="@string/screen3_tutor"
-        android:textAllCaps="false"
-        android:textColor="@color/white"
+        android:text="@string/screen3_header"
+        android:textColor="@color/black"
+        android:textSize="25sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.932"
+        app:layout_constraintHorizontal_bias="0.505"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.576" />
+        app:layout_constraintVertical_bias="0.281" />
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/screen3_student"
@@ -41,19 +38,22 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.576" />
 
-    <TextView
-        android:id="@+id/screen3_header"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/screen3_tutor"
+        android:layout_width="175dp"
+        android:layout_height="400dp"
+        android:layout_weight="1"
+        android:background="@drawable/button_background"
+        android:backgroundTint="@color/gg"
         android:fontFamily="sans-serif-medium"
-        android:text="@string/screen3_header"
-        android:textColor="@color/black"
-        android:textSize="25sp"
+        android:text="@string/screen3_tutor"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.505"
+        app:layout_constraintHorizontal_bias="0.932"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.281" />
+        app:layout_constraintVertical_bias="0.576" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
