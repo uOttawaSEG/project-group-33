@@ -39,7 +39,9 @@ public abstract class Account {
         return password;
     } public String getPhone(){
         return phone;
-    } public String getType(){
+    }
+    //Gets type for the collection database to be added to ** WILL BE USED IN FUTURE IMPLEMENTATION
+    public String getType(){
         return type;
     }
 

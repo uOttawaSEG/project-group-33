@@ -15,6 +15,7 @@ import androidx.core.view.WindowInsetsCompat;
 
 public class RegisterAs extends AppCompatActivity {
     //Screen for registration before differentiating
+    //SCREEN3
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -27,23 +28,27 @@ public class RegisterAs extends AppCompatActivity {
             return insets;
         });
 
+        //FINDING THE ID OF BUTTONS
         Button Student = findViewById(R.id.screen3_student);
         Button Tutor = findViewById(R.id.screen3_tutor);
         Button Back = findViewById(R.id.screen3_back);
 
         // Different Buttons
+        //SWITCH TO REGISTER AS STUDENT SCREEN
         Student.setOnClickListener(v -> {
             Intent intent = new Intent(RegisterAs.this, RegisterStu.class);
             startActivity(intent);
             finish();
         });
 
+        //SWITCH TO REGISTER AS TUTOR SCREEN
         Tutor.setOnClickListener(v -> {
             Intent intent = new Intent(RegisterAs.this, RegisterTut.class);
             startActivity(intent);
             finish();
         });
 
+        //GOES BACK TO MAIN SCREEN
         Back.setOnClickListener(v -> {
             Intent intent = new Intent(RegisterAs.this, MainActivity.class);
             startActivity(intent);

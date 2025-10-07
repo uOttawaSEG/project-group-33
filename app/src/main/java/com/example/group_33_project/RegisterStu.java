@@ -28,7 +28,7 @@ public class RegisterStu extends AppCompatActivity {
             return insets;
         });
 
-        //Info for database
+        //Finds textboxes for the information of Student
         fname = findViewById(R.id.screen4_fname);
         lname = findViewById(R.id.screen4_lname);
         email = findViewById(R.id.screen4_email);
@@ -46,7 +46,8 @@ public class RegisterStu extends AppCompatActivity {
             finish();
         });
 
-        // register button → Save the student into firebase
+        // REGISTER button creates a student object and
+        // attempts to send it to the firebase database collection
         register.setOnClickListener(v -> {
             String f = fname.getText().toString().trim();
             String l = lname.getText().toString().trim();
@@ -66,6 +67,8 @@ public class RegisterStu extends AppCompatActivity {
             // save to Firestore via AccountHandling
             AccountHandling accHandle = new AccountHandling();
             accHandle.studentSignUp(student, new AccountCallback() {
+
+                //Displays if it was successful
                 @Override
                 public void onSuccess(String msg) {
                     Toast.makeText(RegisterStu.this, msg, Toast.LENGTH_SHORT).show();

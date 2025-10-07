@@ -33,7 +33,10 @@ public class MainActivity extends AppCompatActivity {
         Button signIn = findViewById(R.id.screen1_signIn);
         Button register = findViewById(R.id.screen1_register);
 
-        // Sign in button
+        //ADDED ROLES TO EACH OF THE TYPES OF USERS
+        //When SIGNIN button is clicked, grabs email and password
+        //Checks to see if the accoutn is vaild using querybyEmail
+        //Finally goes to the LOGGEDIN screen and displays a toast
         signIn.setOnClickListener(v -> {
             String email = loginEmail.getText().toString().trim();
             String password = loginPassword.getText().toString().trim();
@@ -53,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
 
                     Intent intent = new Intent(MainActivity.this, LoggedIn.class);
-                    intent.putExtra("role", role); // Pass Student/Tutor/Admin to LoggedIn screen
+                    intent.putExtra("role", role); //Passing the new type to the next screen
                     startActivity(intent);
                     finish();
                 }
@@ -65,7 +68,8 @@ public class MainActivity extends AppCompatActivity {
             });
         });
 
-        // Register button to the next page
+        // Register button to the next page (Moves to the next page)
+        // SWITCHING SCREENS
         register.setOnClickListener(v -> {
             Intent intent = new Intent(MainActivity.this, RegisterAs.class);
             startActivity(intent);

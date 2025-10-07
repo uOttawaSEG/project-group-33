@@ -12,6 +12,8 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 public class LoggedIn extends AppCompatActivity {
+    //LoggedIn Screen after either
+    //SCREEN2
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,12 +30,12 @@ public class LoggedIn extends AppCompatActivity {
         // Grab the role passed from MainActivity
         String role = getIntent().getStringExtra("role");
 
-        // Set text views
+        // Locates textboxes
         TextView welcomeText = findViewById(R.id.screen2_welcome);
         TextView bodyText = findViewById(R.id.screen2_body);
 
         welcomeText.setText("Welcome!");
-
+        //ROLES are used to show what role you are when logged in
         if ("Admin".equalsIgnoreCase(role)) {
             bodyText.setText("You are logged in as an Administrator");
         } else if ("Student".equalsIgnoreCase(role)) {
@@ -44,6 +46,7 @@ public class LoggedIn extends AppCompatActivity {
             bodyText.setText("Role information unavailable.");
         }
 
+        //Logout or Back button implementation
         Button logout = findViewById(R.id.screen2_logout);
 
         logout.setOnClickListener(v -> {

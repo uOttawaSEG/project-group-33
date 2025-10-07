@@ -31,7 +31,7 @@ public class RegisterTut extends AppCompatActivity {
             return insets;
         });
 
-        // Info for database
+        // Finds textboxes for the information of tutor
         fname = findViewById(R.id.screen5_fname);
         lname = findViewById(R.id.screen5_lname);
         email = findViewById(R.id.screen5_email);
@@ -50,7 +50,7 @@ public class RegisterTut extends AppCompatActivity {
             finish();
         });
 
-        // Register button
+        // REGISTER button finds all the
         register.setOnClickListener(v -> {
             String f = fname.getText().toString().trim();
             String l = lname.getText().toString().trim();
@@ -60,13 +60,14 @@ public class RegisterTut extends AppCompatActivity {
             String d = degree.getText().toString().trim();
             String c = courses.getText().toString().trim();
 
+            //Checks fields are empty (Fields cannot be empty)
             if (f.isEmpty() || l.isEmpty() || e.isEmpty() || p.isEmpty() || ph.isEmpty() || d.isEmpty() || c.isEmpty()) {
                 Toast.makeText(RegisterTut.this, "Please fill all fields", Toast.LENGTH_SHORT).show();
                 return;
             }
 
 
-            // Courses logic
+            // Courses logic since it could be list of size 1 or size n
             List<String> courseList;
 
             if (c.contains(",")) {
@@ -81,8 +82,11 @@ public class RegisterTut extends AppCompatActivity {
             Tutor tutor = new Tutor(f, l, e, p, ph, d, courseList);
 
             // Save with AccountHandling
+            //Attempts to add tutor account to the database collection
+            //Uses Accounthandling to add tutor
             AccountHandling accHandle = new AccountHandling();
             accHandle.tutorSignUp(tutor, new AccountCallback() {
+                //Displays the results if successful
                 @Override
                 public void onSuccess(String msg) {
                     Toast.makeText(RegisterTut.this, msg, Toast.LENGTH_SHORT).show();
