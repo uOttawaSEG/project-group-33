@@ -19,8 +19,5 @@ public class Student extends Account {
         return program;
     }
 
-
-
-
-
+    public String getType() {return this.type;}
 }

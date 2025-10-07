@@ -3,17 +3,25 @@ package com.example.group_33_project;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 public class RegisterTut extends AppCompatActivity {
+
+    private EditText fname, lname, email, password, phone, degree, courses;
+
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.screen5_registertut);
@@ -23,12 +31,71 @@ public class RegisterTut extends AppCompatActivity {
             return insets;
         });
 
-        Button back = findViewById(R.id.screen5_back);
+        // link XML → Java
+        fname = findViewById(R.id.screen5_fname);
+        lname = findViewById(R.id.screen5_lname);
+        email = findViewById(R.id.screen5_email);
+        password = findViewById(R.id.screen5_password);
+        phone = findViewById(R.id.screen5_phone);
+        degree = findViewById(R.id.screen5_degree);
+        courses = findViewById(R.id.screen5_courses);
 
-        back.setOnClickListener(v ->  {
+        Button back = findViewById(R.id.screen5_back);
+        Button register = findViewById(R.id.screen5_register);
+
+        // Back button
+        back.setOnClickListener(v -> {
             Intent intent = new Intent(RegisterTut.this, RegisterAs.class);
             startActivity(intent);
             finish();
+        });
+
+        // Register button
+        register.setOnClickListener(v -> {
+            String f = fname.getText().toString().trim();
+            String l = lname.getText().toString().trim();
+            String e = email.getText().toString().trim();
+            String p = password.getText().toString().trim();
+            String ph = phone.getText().toString().trim();
+            String d = degree.getText().toString().trim();
+            String c = courses.getText().toString().trim();
+
+            if (f.isEmpty() || l.isEmpty() || e.isEmpty() || p.isEmpty() || ph.isEmpty() || d.isEmpty() || c.isEmpty()) {
+                Toast.makeText(RegisterTut.this, "Please fill all fields", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            List<String> courseList;
+
+            if (c.contains(",")) {
+                // Split into multiple courses
+                courseList = Arrays.asList(c.split("\\s*,\\s*"));
+            } else {
+                // Single course
+                courseList = Collections.singletonList(c);
+            }
+
+            // Create Tutor object
+            Tutor tutor = new Tutor(f, l, e, p, ph, d, courseList);
+
+            // Save with AccountHandling
+            AccountHandling accHandle = new AccountHandling();
+            accHandle.tutorSignUp(tutor, new AccountCallback() {
+                @Override
+                public void onSuccess(String msg) {
+                    Toast.makeText(RegisterTut.this, msg, Toast.LENGTH_SHORT).show();
+                    // back to login screen
+                    Intent intent = new Intent(RegisterTut.this, LoggedIn.class);
+                    intent.putExtra("role", "Tutor");
+                    startActivity(intent);
+                    finish();
+                }
+
+                @Override
+                public void onFailure(String msg) {
+                    Toast.makeText(RegisterTut.this, msg, Toast.LENGTH_SHORT).show();
+                }
+            });
         });
     }
 }

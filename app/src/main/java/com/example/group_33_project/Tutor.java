@@ -1,14 +1,16 @@
 package com.example.group_33_project;
 
+import java.util.List;
+
 public class Tutor extends Account{
 
 
     // Attributes for TUTORS:
     private String education, type;
-    private String[] courses;
+    private List<String> courses;
 
     // Constructor
-    Tutor(String firstName, String lastName, String email, String password,  String phone, String education, String[] courses){
+    Tutor(String firstName, String lastName, String email, String password,  String phone, String education, List<String> courses){
         super(firstName, lastName, email, password, phone); // call super for com.example.group_33_project.Account constructor
         this.courses = courses;
         this.education = education;
@@ -18,7 +20,7 @@ public class Tutor extends Account{
     public void setEducation(String education) {
         this.education = education;
     }
-    public void setCourses(String[] courses){
+    public void setCourses(List<String> courses){
         this.courses = courses;
     }
 
@@ -26,7 +28,9 @@ public class Tutor extends Account{
     public String getEducation() {
         return education;
     }
-    public String[] getCourses(){
+    public List<String> getCourses(){
         return courses;
     }
+
+    public String getType() {return this.type;}
 }

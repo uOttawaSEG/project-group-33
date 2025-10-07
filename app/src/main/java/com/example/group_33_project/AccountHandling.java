@@ -42,4 +42,20 @@ public class AccountHandling {
                 })
                 .addOnFailureListener(e -> callback.onFailure("Error: " + e.getMessage()));
     }
+
+    public void studentSignUp(Student student, AccountCallback callback) {
+        db.collection("pendingAccounts")
+                .document(student.getEmail()) // email as ID
+                .set(student)
+                .addOnSuccessListener(aVoid -> callback.onSuccess("Student registered, pending approval"))
+                .addOnFailureListener(e -> callback.onFailure("Error: " + e.getMessage()));
+    }
+
+    public void tutorSignUp(Tutor tutor, AccountCallback callback) {
+        db.collection("pendingAccounts")
+                .document(tutor.getEmail())
+                .set(tutor)
+                .addOnSuccessListener(aVoid -> callback.onSuccess("Tutor registered, pending approval"))
+                .addOnFailureListener(e -> callback.onFailure("Error: " + e.getMessage()));
+    }
 }
