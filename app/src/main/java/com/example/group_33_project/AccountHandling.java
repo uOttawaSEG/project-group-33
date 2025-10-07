@@ -23,11 +23,12 @@ public class AccountHandling {
                             Account account = null;
                             if ("ADMIN".equalsIgnoreCase(type)) {
                                 account = doc.toObject(Admin.class);
-                            } else if ("STUDENT".equalsIgnoreCase(type)) {
-                                account = doc.toObject(Student.class);
-                            } else if ("TUTOR".equalsIgnoreCase(type)) {
-                                account = doc.toObject(Tutor.class);
                             }
+//                            } else if ("STUDENT".equalsIgnoreCase(type)) {
+//                                account = doc.toObject(Student.class);
+//                            } else if ("TUTOR".equalsIgnoreCase(type)) {
+//                                account = doc.toObject(Tutor.class);
+//                            }
 
                             if (account != null) {
                                 callback.onSuccess("Found account: " + type);

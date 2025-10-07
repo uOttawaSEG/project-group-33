@@ -4,9 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/registertutscreen"
     android:background="@color/bkg"
     tools:layout_editor_absoluteX="0dp"
-    tools:layout_editor_absoluteY="-419dp">
+    tools:layout_editor_absoluteY="-419dp"
+    tools:context=".RegisterTut">
 
     <EditText
         android:id="@+id/screen5_password"
@@ -154,5 +156,16 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.511" />
+
+    <Button
+        android:id="@+id/screen5_back"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:backgroundTint="@color/gg"
+        android:text="Back"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
