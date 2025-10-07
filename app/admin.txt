@@ -1,0 +1,3 @@
+Admin Login (Pre-registered)
+Email: admin33@seg.com
+Password: admin2105

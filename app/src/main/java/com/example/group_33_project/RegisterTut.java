@@ -31,7 +31,7 @@ public class RegisterTut extends AppCompatActivity {
             return insets;
         });
 
-        // link XML → Java
+        // Info for database
         fname = findViewById(R.id.screen5_fname);
         lname = findViewById(R.id.screen5_lname);
         email = findViewById(R.id.screen5_email);
@@ -65,6 +65,8 @@ public class RegisterTut extends AppCompatActivity {
                 return;
             }
 
+
+            // Courses logic
             List<String> courseList;
 
             if (c.contains(",")) {

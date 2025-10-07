@@ -28,7 +28,7 @@ public class RegisterStu extends AppCompatActivity {
             return insets;
         });
 
-        // link XML → Java
+        //Info for database
         fname = findViewById(R.id.screen4_fname);
         lname = findViewById(R.id.screen4_lname);
         email = findViewById(R.id.screen4_email);
@@ -46,7 +46,7 @@ public class RegisterStu extends AppCompatActivity {
             finish();
         });
 
-        // register button → save student
+        // register button → Save the student into firebase
         register.setOnClickListener(v -> {
             String f = fname.getText().toString().trim();
             String l = lname.getText().toString().trim();

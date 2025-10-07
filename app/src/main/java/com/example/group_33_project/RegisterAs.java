@@ -14,6 +14,8 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 public class RegisterAs extends AppCompatActivity {
+    //Screen for registration before differentiating
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,6 +31,7 @@ public class RegisterAs extends AppCompatActivity {
         Button Tutor = findViewById(R.id.screen3_tutor);
         Button Back = findViewById(R.id.screen3_back);
 
+        // Different Buttons
         Student.setOnClickListener(v -> {
             Intent intent = new Intent(RegisterAs.this, RegisterStu.class);
             startActivity(intent);

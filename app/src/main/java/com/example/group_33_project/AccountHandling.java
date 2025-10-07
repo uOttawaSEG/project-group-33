@@ -11,29 +11,20 @@ public class AccountHandling {
         db = FirebaseFirestore.getInstance();
     }
 
-    public void queryAccountByEmail(String email, AccountCallback callback) {
+    public void queryAccountByEmail(String email, String password, AccountCallback callback) {
         db.collection("approvedAccounts")
                 .whereEqualTo("email", email)
                 .get()
                 .addOnSuccessListener(querySnapshot -> {
                     if (!querySnapshot.isEmpty()) {
                         for (QueryDocumentSnapshot doc : querySnapshot) {
+                            String dbPassword = doc.getString("password");
                             String type = doc.getString("type");
 
-                            Account account = null;
-                            if ("ADMIN".equalsIgnoreCase(type)) {
-                                account = doc.toObject(Admin.class);
-                            }
-//                            } else if ("STUDENT".equalsIgnoreCase(type)) {
-//                                account = doc.toObject(Student.class);
-//                            } else if ("TUTOR".equalsIgnoreCase(type)) {
-//                                account = doc.toObject(Tutor.class);
-//                            }
-
-                            if (account != null) {
-                                callback.onSuccess("Found account: " + type);
+                            if (dbPassword != null && dbPassword.equals(password)) {
+                                callback.onSuccess("Login successful: " + type);
                             } else {
-                                callback.onFailure("Account type unknown");
+                                callback.onFailure("Invalid password");
                             }
                         }
                     } else {
@@ -43,6 +34,9 @@ public class AccountHandling {
                 .addOnFailureListener(e -> callback.onFailure("Error: " + e.getMessage()));
     }
 
+
+
+    //Adding the different types into the database
     public void studentSignUp(Student student, AccountCallback callback) {
         db.collection("pendingAccounts")
                 .document(student.getEmail()) // email as ID
