@@ -1,6 +1,7 @@
 package com.example.group_33_project;
 
 import android.os.Bundle;
+import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -20,5 +21,9 @@ public class screen2 extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        String role = getIntent().getStringExtra("role");
+        TextView roleText = findViewById(R.id.screen2_body);
+        roleText.setText("You are logged in as " + role);
     }
 }

@@ -1,8 +1,10 @@
 package com.example.group_33_project;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -10,81 +12,81 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class MainActivity extends AppCompatActivity {
 
-
-
-
     private EditText titleEmail, titlePassword;
-    private Button signIn;
+    private Button signUp;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.screen1_login);
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
 
+        titleEmail = findViewById(R.id.screen1_email);
+        titlePassword = findViewById(R.id.screen1_password);
+        signUp = findViewById(R.id.screen1_signUp);
 
+        signUp.setOnClickListener(v -> {
+            String email = titleEmail.getText().toString().trim();
+            String password = titlePassword.getText().toString().trim();
 
-        titleEmail = findViewById(R.id.screen1_email); // to access the titleEmail
-        titlePassword = findViewById(R.id.screen1_password); // to access the titlePassword
+            FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-        // 'listening' for a button click for signIn button
-        signIn.setOnClickListener(v -> {
+            db.collection("approvedAccounts")
+                    .whereEqualTo("email", email)   // ✅ query by email instead of ADMIN doc
+                    .get()
+                    .addOnSuccessListener(querySnapshot -> {
+                        if (!querySnapshot.isEmpty()) {
+                            // For simplicity, get first match
+                            var doc = querySnapshot.getDocuments().get(0);
+                            String dbEmail = doc.getString("email");
+                            String dbPassword = doc.getString("password");
+                            String type = doc.getString("type"); // ADMIN / STUDENT / TUTOR
 
-            // call the logIn method (email, password) from Account_Handling class
-            AccountHandling accHandle = new AccountHandling();
-            accHandle.logIn(titleEmail.getText().toString(), titlePassword.getText().toString(), new AccountCallback() { // define the callback methods for this case
-                public void onSuccess(String msg) {
-                    // print message (msg = "Successfully logged in")
-                    // MOVE TO WELCOME PAGE
-                }
-                public void onFailure(String msg) {
-                    // print error message (msg = either "email not found" or "password doesn't match")
-                    // STAY ON SIGN IN PAGE (so user can retry/press sign up button)
-                }
-            });
+                            if (dbEmail != null && dbPassword != null &&
+                                    dbEmail.equals(email) && dbPassword.equals(password)) {
 
+                                if ("ADMIN".equalsIgnoreCase(type)) {
+                                    // ✅ Go to Admin screen
+                                    Intent intent = new Intent(MainActivity.this, screen2.class);
+                                    intent.putExtra("role", "Administrator");
+                                    startActivity(intent);
+                                    finish();
+                                } else if ("STUDENT".equalsIgnoreCase(type)) {
+                                    // Example: Go to Student screen
+                                    Intent intent = new Intent(MainActivity.this, screen2.class);
+                                    intent.putExtra("role", "Student");
+                                    startActivity(intent);
+                                    finish();
+                                } else if ("TUTOR".equalsIgnoreCase(type)) {
+                                    // Example: Go to Tutor screen
+                                    Intent intent = new Intent(MainActivity.this, screen2.class);
+                                    intent.putExtra("role", "Tutor");
+                                    startActivity(intent);
+                                    finish();
+                                } else {
+                                    Toast.makeText(this, "Unknown account type", Toast.LENGTH_SHORT).show();
+                                }
+
+                            } else {
+                                Toast.makeText(this, "Invalid credentials", Toast.LENGTH_SHORT).show();
+                            }
+                        } else {
+                            Toast.makeText(this, "Account not found", Toast.LENGTH_SHORT).show();
+                        }
+                    })
+                    .addOnFailureListener(e ->
+                            Toast.makeText(MainActivity.this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show()
+                    );
         });
-
-        // EVERYTHING FROM HERE AND BELOW WILL NEED TO BE ON SPECIFIC PAGES FOR SIGNUP AND SIGNIN!! This is ONLY THE LOGIC, please move it to a new file if you need! Make sure to link the fields (name/email/etc...) to the text boxes!
-        // code for STUDENTS TO SIGN UP, implement with interface later:
-        String firstName = "",  lastName = "",  email = "",  password = "",   phone = "",  program= ""; // link to text boxes!!
-        AccountHandling accHandle = new AccountHandling(); // make an instance of account handling so that we can use sign up/in methods
-        accHandle.studentSignUp(firstName, lastName, email, password,  phone, program, new AccountCallback(){ // call the signUp method, but also define the callbacks to display the results!
-            public void onSuccess(String msg){
-                // DISPLAY SUCCESS MESSAGE (msg) !!!
-                // MOVE TO SIGN IN PAGE (so user can SIGN IN)
-            }
-            public void onFailure(String msg){
-                // DISPLAY FAILURE MESSAGE (msg)
-                // STAY ON sign up page
-
-            }
-        });
-
-        // code for TUTORS TO SIGN UP, implement with interface later:
-        // String firstName = "",  lastName = "",  email = "",  password = "",   phone = "",
-        String education = ""; // link to text boxes!!
-        String[] courses = new String[1];
-        //AccountHandling accHandle = new AccountHandling(); // make an instance of account handling so that we can use sign up/in methods
-        accHandle.tutorSignUp(firstName, lastName, email, password,  phone, education, courses, new AccountCallback(){ // call the signUp method, but also define the callbacks to display the results!
-            public void onSuccess(String msg){
-                // DISPLAY SUCCESS MESSAGE (msg) !!!
-                // MOVE TO SIGN IN PAGE (so user can SIGN IN)
-            }
-            public void onFailure(String msg){
-                // DISPLAY FAILURE MESSAGE (msg)
-                // STAY ON sign up page
-
-            }
-        });
-
     }
 }
