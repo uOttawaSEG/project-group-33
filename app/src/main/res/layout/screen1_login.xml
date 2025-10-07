@@ -66,6 +66,7 @@
         android:backgroundTint="@color/gg"
         android:fontFamily="sans-serif-medium"
         android:text="@string/screen1_sign"
+        android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.495"

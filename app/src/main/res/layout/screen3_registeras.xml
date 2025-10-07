@@ -31,6 +31,7 @@
         android:layout_marginTop="16dp"
         android:backgroundTint="@color/gg"
         android:text="Back"
+        android:textColor="@color/white"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
