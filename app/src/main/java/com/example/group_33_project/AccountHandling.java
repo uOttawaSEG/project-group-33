@@ -45,20 +45,20 @@ public class AccountHandling {
     //Adding either tutor or student into the pendingAccounts in Firebase
     //Opens Firebase collections -> sets documentID to student email -> attempts to add the student
     public void studentSignUp(Student student, AccountCallback callback) {
-        db.collection("pendingAccounts")
+        db.collection("approvedAccounts")
                 .document(student.getEmail()) // email as ID
                 .set(student)
-                .addOnSuccessListener(aVoid -> callback.onSuccess("Student registered, pending approval"))
+                .addOnSuccessListener(aVoid -> callback.onSuccess("Student registered"))
                 .addOnFailureListener(e -> callback.onFailure("Error: " + e.getMessage()));
     }
 
     //Opens Firebase collections -> sets documentID to tutor email -> attempts to add the tutor
 
     public void tutorSignUp(Tutor tutor, AccountCallback callback) {
-        db.collection("pendingAccounts")
+        db.collection("approvedAccounts")
                 .document(tutor.getEmail())
                 .set(tutor)
-                .addOnSuccessListener(aVoid -> callback.onSuccess("Tutor registered, pending approval"))
+                .addOnSuccessListener(aVoid -> callback.onSuccess("Tutor registered"))
                 .addOnFailureListener(e -> callback.onFailure("Error: " + e.getMessage()));
     }
 }
