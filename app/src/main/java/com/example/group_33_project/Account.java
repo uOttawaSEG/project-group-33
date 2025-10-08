@@ -1,17 +1,23 @@
 package com.example.group_33_project;
 
-public abstract class Account {
+import java.io.Serial;
+import java.io.Serializable;
+
+public abstract class Account implements Serializable { // implementing Serializable allows us to pass Account objects as intents between activities!
     private String firstName, lastName, email, password, phone = "", type; // instance variables
 
-    Account(){} // empty constructor
+    public Account(){ // empty constructor
+        this.type = this.getClass().getSimpleName(); // MUST include the type even with empty constructor (so that admin type is initialized!)
+    }
 
     // parametrized constructor
-    Account(String firstName, String lastName, String email, String password,  String phone){
+    public Account(String firstName, String lastName, String email, String password,  String phone){
         this.firstName = firstName;
         this.lastName = lastName;
         this.password = password;
         this.setEmail(email);
         this.setPhone(phone);
+        this.type = this.getClass().getSimpleName(); // getSimpleName gives us the simple name of the class, i.e. "Student" or "Tutor" (or admin)
     }
 
     //setters:
@@ -25,7 +31,10 @@ public abstract class Account {
         this.password = s;
     }
     public void setPhone(String s){ // Sets the phone number, removing non-numeric characters
-        phone = s.replaceAll("\\D", ""); // replace all digits ("\\D" is regex for NON digits) with ""
+        this.phone = s.replaceAll("\\D", ""); // replace all digits ("\\D" is regex for NON digits) with ""
+    }
+    public void setType(){
+        this.type = this.getClass().getSimpleName();
     }
 
     // getters
@@ -42,7 +51,7 @@ public abstract class Account {
     }
     //Gets type for the collection database to be added to ** WILL BE USED IN FUTURE IMPLEMENTATION
     public String getType(){
-        return type;
+        return this.type; //getSimpleName() returns the string of the classname, without the .class :)
     }
 
 }

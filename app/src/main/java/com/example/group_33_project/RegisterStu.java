@@ -66,15 +66,14 @@ public class RegisterStu extends AppCompatActivity {
 
             // save to Firestore via AccountHandling
             AccountHandling accHandle = new AccountHandling();
-            accHandle.studentSignUp(student, new AccountCallback() {
+            accHandle.signUp(student, new AccountCallback() {
 
                 //Displays if it was successful
                 @Override
                 public void onSuccess(String msg) {
                     Toast.makeText(RegisterStu.this, msg, Toast.LENGTH_SHORT).show();
-                    // go back to login
-                    Intent intent = new Intent(RegisterStu.this, LoggedIn.class);
-                    intent.putExtra("role", "Student");
+                    // go back to homepage to login
+                    Intent intent = new Intent(RegisterStu.this, MainActivity.class);
                     startActivity(intent);
                     finish();
                 }

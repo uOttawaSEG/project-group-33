@@ -47,16 +47,15 @@ public class MainActivity extends AppCompatActivity {
             }
             //Checks to see if the login is valid from the collection of approved users
             AccountHandling accHandle = new AccountHandling();
-            accHandle.queryAccountByEmail(email, password, new AccountCallback() {
+            accHandle.attemptLogIn(email, password, new QueryCallback() {
                 @Override
-                public void onSuccess(String msg) {
+                public void onSuccess(Account account) {
                     // Extract role from message
-                    String role = msg.replace("Login successful: ", "").trim();
 
-                    Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, "Successful login.", Toast.LENGTH_SHORT).show();
 
                     Intent intent = new Intent(MainActivity.this, LoggedIn.class);
-                    intent.putExtra("role", role); //Passing the new type to the next screen
+                    intent.putExtra("account", account); //Passing the account to the next screen/activity
                     startActivity(intent);
                     finish();
                 }

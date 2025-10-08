@@ -27,24 +27,25 @@ public class LoggedIn extends AppCompatActivity {
             return insets;
         });
 
-        // Grab the role passed from MainActivity
-        String role = getIntent().getStringExtra("role");
+        // Grab the account object passed from MainActivity! (possible since Account implements Serializable)
+        Account account = (Account) getIntent().getSerializableExtra("account"); // Cast the serializable intent back to Account type
 
         // Locates textboxes
         TextView welcomeText = findViewById(R.id.screen2_welcome);
         TextView bodyText = findViewById(R.id.screen2_body);
 
         welcomeText.setText("Welcome!");
+
         //ROLES are used to show what role you are when logged in
-        if ("Admin".equalsIgnoreCase(role)) {
-            bodyText.setText("You are logged in as an Administrator");
-        } else if ("Student".equalsIgnoreCase(role)) {
-            bodyText.setText("You are logged in as a Student");
-        } else if ("Tutor".equalsIgnoreCase(role)) {
-            bodyText.setText("You are logged in as a Tutor");
-        } else {
-            bodyText.setText("Role information unavailable.");
+        //Concatenate role string for proper formatting depending on grammar (a vs an)
+        String role = " ";
+        if (account.getClass() == Administrator.class){
+            role = "n ";
         }
+        role += account.getType();
+
+        bodyText.setText("You are logged in as a" + role); // final format: You are logged in as a"n Admin" or " Student/Tutor"
+
 
         //Logout or Back button implementation
         Button logout = findViewById(R.id.screen2_logout);

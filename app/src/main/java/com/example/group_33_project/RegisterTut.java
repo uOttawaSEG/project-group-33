@@ -85,14 +85,13 @@ public class RegisterTut extends AppCompatActivity {
             //Attempts to add tutor account to the database collection
             //Uses Accounthandling to add tutor
             AccountHandling accHandle = new AccountHandling();
-            accHandle.tutorSignUp(tutor, new AccountCallback() {
+            accHandle.signUp(tutor, new AccountCallback() {
                 //Displays the results if successful
                 @Override
                 public void onSuccess(String msg) {
                     Toast.makeText(RegisterTut.this, msg, Toast.LENGTH_SHORT).show();
                     // back to login screen
-                    Intent intent = new Intent(RegisterTut.this, LoggedIn.class);
-                    intent.putExtra("role", "Tutor");
+                    Intent intent = new Intent(RegisterTut.this, MainActivity.class);
                     startActivity(intent);
                     finish();
                 }
