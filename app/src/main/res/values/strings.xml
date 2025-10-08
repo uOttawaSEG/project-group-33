@@ -7,6 +7,7 @@
     <string name="screen1_password">Password</string>
     <string name="screen2_welcome">Welcome!</string>
     <string name="screen2_body">You are logged in as</string>
+    <string name="screen3_back">◀ Back</string>
     <string name="screen3_header">Register As:</string>
     <string name="screen3_student">Student</string>
     <string name="screen3_tutor">Tutor</string>
