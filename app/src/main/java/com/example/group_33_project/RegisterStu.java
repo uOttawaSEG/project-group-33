@@ -61,6 +61,20 @@ public class RegisterStu extends AppCompatActivity {
                 return;
             }
 
+            //email validation
+            if (!e.contains("@") || !e.contains(".")) {
+                Toast.makeText(RegisterStu.this, "Please enter a valid email", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            //phone validation
+            String formattedPhone = ph.replaceAll("[\\s\\-]", ""); //removes dashes and spaces
+            if (!formattedPhone.matches("\\d+")) { //if not all digits then toast message
+                Toast.makeText(RegisterStu.this, "Please enter a valid phone number", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+
             // create Student object
             Student student = new Student(f, l, e, p, ph, pr);
 
