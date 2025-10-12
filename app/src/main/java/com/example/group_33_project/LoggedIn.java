@@ -3,6 +3,7 @@ package com.example.group_33_project;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
@@ -36,11 +37,27 @@ public class LoggedIn extends AppCompatActivity {
 
         welcomeText.setText("Welcome!");
 
+        //get access to the image icon
+        ImageView catIcon = findViewById(R.id.imageViewRegistration);;
+
         //ROLES are used to show what role you are when logged in
         //Concatenate role string for proper formatting depending on grammar (a vs an)
         String role = " ";
         if (account.getClass() == Administrator.class){
             role = "n ";
+
+            //change the cat to admin cat
+            catIcon.setImageResource(R.drawable.admin_cat);
+        }
+
+        if (account.getClass() == Student.class){
+            //change the cat to student cat
+            catIcon.setImageResource(R.drawable.student_cat);
+        }
+
+        if (account.getClass() == Tutor.class){
+            //change the cat to teacher cat
+            catIcon.setImageResource(R.drawable.teacher_cat);
         }
         role += account.getType();
 

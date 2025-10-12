@@ -64,4 +64,5 @@
         libero vel nunc consequat, quis tincidunt nisl eleifend. Cras bibendum enim a justo luctus
         vestibulum. Fusce dictum libero quis erat maximus, vitae volutpat diam dignissim.
     </string>
+    <string name="image_that_will_change_depending_on_who_logs_in">image that will change depending on who logs in</string>
 </resources>
