@@ -71,6 +71,12 @@ public class RegisterTut extends AppCompatActivity {
                 Toast.makeText(RegisterTut.this, "Please enter a valid email", Toast.LENGTH_SHORT).show();
                 return;
             }
+            String[] parts = e.split("@"); //make sure there are characters before and after the @ symbol and the . symbol
+            if (parts.length != 2 || parts[0].isEmpty() || parts[1].isEmpty() || parts[1].lastIndexOf(".") == parts[1].length() -1 || parts[1].lastIndexOf(".") == 0){
+                Toast.makeText(RegisterTut.this, "Please enter a valid email", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
 
             //phone validation
             String formattedPhone = ph.replaceAll("[\\s\\-]", ""); //removes dashes and spaces
@@ -78,8 +84,6 @@ public class RegisterTut extends AppCompatActivity {
                 Toast.makeText(RegisterTut.this, "Please enter a valid phone number", Toast.LENGTH_SHORT).show();
                 return;
             }
-
-
 
             // Courses logic since it could be list of size 1 or size n
             List<String> courseList;
