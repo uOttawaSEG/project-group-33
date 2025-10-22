@@ -42,7 +42,7 @@ public class LoggedIn extends AppCompatActivity {
         welcomeText.setText("Welcome!");
 
         //get access to the image icon
-        ImageView catIcon = findViewById(R.id.imageViewRegistration);;
+        ImageView catIcon = findViewById(R.id.imageViewRegistration);
 
         //ROLES are used to show what role you are when logged in
         //Concatenate role string for proper formatting depending on grammar (a vs an)
@@ -54,13 +54,10 @@ public class LoggedIn extends AppCompatActivity {
             catIcon.setImageResource(R.drawable.admin_cat);
 
             //PROCEEDS TO ADMININ SCREEN AFTER WAITING 2 SECONDS
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    Intent intent = new Intent(LoggedIn.this, AdminIn.class);
-                    startActivity(intent);
-                    finish();
-                }
+            new Handler().postDelayed(() -> {
+                Intent intent = new Intent(LoggedIn.this, AdminIn.class);
+                startActivity(intent);
+                finish();
             },DELAY_MS);
         }
 
