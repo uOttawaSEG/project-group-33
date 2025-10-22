@@ -32,6 +32,21 @@
             android:theme="@style/Theme.Group_33_Project" />
 
         <activity
+            android:name=".AdminIn"
+            android:exported="false"
+            android:theme="@style/Theme.Group_33_Project" />
+
+        <activity
+            android:name=".AdminRequest"
+            android:exported="false"
+            android:theme="@style/Theme.Group_33_Project" />
+
+        <activity
+            android:name=".AdminRejected"
+            android:exported="false"
+            android:theme="@style/Theme.Group_33_Project" />
+
+        <activity
             android:name=".MainActivity"
             android:exported="true" >
             <intent-filter>

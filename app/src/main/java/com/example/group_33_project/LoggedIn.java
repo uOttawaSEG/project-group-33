@@ -2,6 +2,7 @@ package com.example.group_33_project;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -15,6 +16,9 @@ import androidx.core.view.WindowInsetsCompat;
 public class LoggedIn extends AppCompatActivity {
     //LoggedIn Screen after either
     //SCREEN2
+
+    //DELAYS PROGRESS TO NEXT SCREEN BY 2 SECONDS
+    private static final long DELAY_MS = 2000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +52,16 @@ public class LoggedIn extends AppCompatActivity {
 
             //change the cat to admin cat
             catIcon.setImageResource(R.drawable.admin_cat);
+
+            //PROCEEDS TO ADMININ SCREEN AFTER WAITING 2 SECONDS
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    Intent intent = new Intent(LoggedIn.this, AdminIn.class);
+                    startActivity(intent);
+                    finish();
+                }
+            },DELAY_MS);
         }
 
         if (account.getClass() == Student.class){
