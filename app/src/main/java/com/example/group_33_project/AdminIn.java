@@ -1,3 +1,4 @@
+// ADMIN UTILITIES PAGE: USED TO ACCESS SCREENS OF PENDING AND DENIED ACCOUNTS
 package com.example.group_33_project;
 
 import android.content.Intent;

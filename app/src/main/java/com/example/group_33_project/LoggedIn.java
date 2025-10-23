@@ -53,7 +53,7 @@ public class LoggedIn extends AppCompatActivity {
             //change the cat to admin cat
             catIcon.setImageResource(R.drawable.admin_cat);
 
-            //PROCEEDS TO ADMININ SCREEN AFTER WAITING 2 SECONDS
+            //PROCEEDS TO ADMININ SCREEN AFTER WAITING 2 SECONDS //TODO (maybe): MAKE THIS A SEPARATE BUTTON FOR THE ADMIN (i.e. admin utilities, upon clicking brings you to AdminIn)
             new Handler().postDelayed(() -> {
                 Intent intent = new Intent(LoggedIn.this, AdminIn.class);
                 startActivity(intent);

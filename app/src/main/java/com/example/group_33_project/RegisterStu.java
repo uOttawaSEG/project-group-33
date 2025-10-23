@@ -62,7 +62,7 @@ public class RegisterStu extends AppCompatActivity {
             }
 
             //email validation
-            if (!e.contains("@") || !e.contains(".")) {
+            if (!e.contains("@") && !e.contains(".")) {
                 Toast.makeText(RegisterStu.this, "Please enter a valid email", Toast.LENGTH_SHORT).show();
                 return;
             }
