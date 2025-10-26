@@ -1,10 +1,17 @@
 package com.example.group_33_project;
 
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import java.util.HashMap;
+import java.util.Map;
+
 
 public class AccountHandling {
 
@@ -17,7 +24,7 @@ public class AccountHandling {
 
     public void queryAccount(String email, QueryCallback callback) { // method to query the database for an account
         db.collection("accounts")// check in the accounts collection
-                .whereEqualTo("status", "approved") // FILTER BY APPROVED ACCOUNTS
+                // .whereEqualTo("status", "approved") // FILTER BY APPROVED ACCOUNTS  <-- REMOVED so we can see pending/denied too
                 .whereEqualTo("email", email) // querying by email
                 .get()
                 .addOnSuccessListener(querySnapshot -> {
@@ -28,6 +35,8 @@ public class AccountHandling {
                                 callback.onSuccess(doc.toObject(Student.class));
                             } else if ("Tutor".equals(type)) {
                                 callback.onSuccess(doc.toObject(Tutor.class)); // convert the document back to an account object to easily access attributes, and callback
+                            } else {
+                                callback.onFailure("Unknown account type for " + email);
                             }
                         }
                     } else {
@@ -63,10 +72,10 @@ public class AccountHandling {
 
 
     //Checks to find if the account is in the approved list on Firebase
-    // First check if the admin is signing in; if not:
-    // Opens up Firebase collections (into accounts) -> goes to and gets emails
-    // Checks to see if the document field of password is correct
-    // If so, then login successfully
+// First check if the admin is signing in; if not:
+// Opens up Firebase collections (into accounts) -> goes to and gets emails
+// Checks to see if the document field of password is correct
+// If so, then login successfully
     public void attemptLogIn(String email, String password, QueryCallback callback) {
         String emailLowerCase = email.toLowerCase(); // standard convention
         // FIRST check if the admin is logging in:
@@ -82,11 +91,48 @@ public class AccountHandling {
         // else, search through the database instead, querying by EMAIL (each email should be UNIQUE, but passwords for example may not be unique)
         queryAccount(emailLowerCase, new QueryCallback() { // must define the QueryCallback abstract methods
             public void onSuccess(Account account) { // if we successfully queried an account, we can attempt to log in:
-                if (password.equals(account.getPassword())) { // if the passwords match,
-                    callback.onSuccess(account); // successful callback -> i.e. login success
-                } else {
-                    callback.onFailure("Invalid password"); // else, invalid password
-                }
+
+                // --- NEW: read status/password directly from Firestore (no getStatus() needed) ---
+                db.collection("accounts")
+                        .whereEqualTo("email", emailLowerCase) // re-fetch the same doc to read raw fields
+                        .limit(1)
+                        .get()
+                        .addOnSuccessListener(snap -> {
+                            if (snap.isEmpty()) {
+                                callback.onFailure("No account found with the email " + email);
+                                return;
+                            }
+
+                            DocumentSnapshot doc = snap.getDocuments().get(0);
+                            String status = doc.getString("status"); // "pending", "approved", "denied"/"rejected"
+                            String storedPassword = doc.getString("password");
+
+                            // --- check password FIRST so wrong creds are reported even for pending users ---
+                            if (storedPassword == null || !storedPassword.equals(password)) {
+                                callback.onFailure("Invalid password"); // else, invalid password
+                                return;
+                            }
+
+                            // --- handle status messaging AFTER password is confirmed ---
+                            if ("pending".equalsIgnoreCase(status)) {
+                                // if the user's account is pending, tell them clearly
+                                callback.onFailure("Your account is awaiting approval. Please try again later.");
+                                return;
+                            } else if ("denied".equalsIgnoreCase(status) || "rejected".equalsIgnoreCase(status)) {
+                                // if rejected/denied, block login with a clear reason
+                                callback.onFailure("You cannot log in because your account was rejected.");
+                                return;
+                            } else if (!"approved".equalsIgnoreCase(status)) {
+                                // fallback if status is missing/unknown
+                                callback.onFailure("Your account is not approved yet.");
+                                return;
+                            }
+
+                            // if approved and password already matched above, proceed
+                            callback.onSuccess(account); // successful callback -> i.e. login success
+
+                        })
+                        .addOnFailureListener(e -> callback.onFailure("Error: " + e.getMessage()));
             }
 
             public void onFailure(String msg) { // if we could not query an account,
@@ -94,6 +140,7 @@ public class AccountHandling {
             }
         });
     }
+
 
 
     //Implementation of Signup moved from Main activity to Account handling for simplicity
@@ -134,6 +181,38 @@ public class AccountHandling {
         db.collection("accounts")
                 .document(acc.getEmail())
                 .update("status", "denied"); // UPDATE THE STATUS TO DENIED!
+    }
+
+    //The way that the email notifications work is when the
+    // status of the user account changes from approve or reject
+    //Via. (Firebase Trigger Email Extension through a SMTP Email server created by me (Daniel Nguyen)
+    private void sendModerationEmail(String toEmail, boolean approved) {
+        String subject = approved ? "Your account was approved"
+                : "Your account was rejected";
+
+        // Plain-text version
+        String text = approved
+                ? "Hi,\n\nYour account has been approved. You can now log in.\n\n— SEG33 Project Team"
+                : "Hi,\n\nUnfortunately your account was rejected. Please refer to +1 (734) 334-7687\n\n— SEG33 Project Team";
+
+        // HTML version
+        String html = approved
+                ? "<p>Hi,</p><p>Your account has been <b>approved</b>. You can now log in.</p><p>— SEG33 Project Team</p>"
+                : "<p>Hi,</p><p>Unfortunately your account was <b>rejected</b>.</p><p>— SEG33 Project Team</p>";
+
+        //NOTE: Plaintext and html must be sent so that the email doesn't get filtered into spam right away
+        Map<String, Object> message = new HashMap<>();
+        message.put("subject", subject);
+        message.put("text", text);
+        message.put("html", html);
+        message.put("replyTo", "seg33project@gmail.com"); // safe to set for Gmail
+
+        Map<String, Object> mailDoc = new HashMap<>();
+        mailDoc.put("to", toEmail);
+        mailDoc.put("from", "seg33project@gmail.com"); // MUST match Gmail sender
+        mailDoc.put("message", message);
+
+        db.collection("mail").add(mailDoc);
     }
 
 }
