@@ -4,6 +4,7 @@ package com.example.group_33_project;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -55,8 +56,30 @@ public class AdminRequest extends AppCompatActivity {
         // TO DENY AN ACCOUNT; method accHandle.deny(Account acc) is implemented, and will update the database! REMEMBER TO REMOVE THE DENIED ACCOUNT FROM THE PENDING LIST!
         // TO APPROVE AN ACCOUNT; method  accHandle.approve(Account acc) is implemented -> REMEMBER TO REMOVE THE APPROVED ACC!
 
+    }
 
-
+    //called from frontend when approved button is pressed
+    public void approveAccount(Account acc){
+        if (pendingAccounts.isEmpty()){
+            Toast.makeText(this, "no pending accounts to approve/deny", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        accHandle.approve(acc); // update the status in database to approved
+        pendingAccounts.remove(acc); // remove the account from the pending list
+        Toast.makeText(this, acc.getEmail() + " approved.", Toast.LENGTH_SHORT).show();
 
     }
+
+    //called from frontend when denied button is pressed
+    public void denyAccount(Account acc){
+        if (pendingAccounts.isEmpty()){
+            Toast.makeText(this, "no pending accounts to approve/deny", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        accHandle.deny(acc); // update the status in database to denied
+        pendingAccounts.remove(acc); // remove the account from the pending list
+        Toast.makeText(this, acc.getEmail() + " denied.", Toast.LENGTH_SHORT).show();
+
+    }
+
 }
