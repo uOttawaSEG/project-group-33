@@ -69,7 +69,7 @@ public class RequestAccountAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             tutorHolder.tvEmail.setText(t.getEmail());
             tutorHolder.tvPhone.setText(t.getPhone());
             tutorHolder.tvDegree.setText(t.getEducation());
-            tutorHolder.tvCourses.setText(t.getCourses().toString());
+            tutorHolder.tvCourses.setText(t.getCourses().toString().substring(1, t.getCourses().toString().length() - 1));
 
             tutorHolder.bAccept.setOnClickListener(v -> listener.onApprove(account));
             tutorHolder.bDeny.setOnClickListener(v -> listener.onDelete(account));

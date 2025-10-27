@@ -61,7 +61,7 @@ public class RejectedAccountAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             tutorHolder.tvEmail.setText(t.getEmail());
             tutorHolder.tvPhone.setText(t.getPhone());
             tutorHolder.tvDegree.setText(t.getEducation());
-            tutorHolder.tvCourses.setText(t.getCourses().toString());
+            tutorHolder.tvCourses.setText(t.getCourses().toString().substring(1, t.getCourses().toString().length() - 1));
 
             tutorHolder.bApprove.setOnClickListener(v -> listener.onApprove(account));
         }
