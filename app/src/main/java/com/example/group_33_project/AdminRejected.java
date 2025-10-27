@@ -39,9 +39,12 @@ public class AdminRejected extends AppCompatActivity implements RejectedAccountA
         //FINDING THE ID OF BUTTONS
         Button Back = findViewById(R.id.screen8_back);
 
+        //make the account adapter
+        //takes each account and transforms it into a UI element
         RecyclerView recyclerView = findViewById(R.id.rejectedAccountsRecyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
+        //add all the UI elements to the scroll list
+        //empty for now
         adapter = new RejectedAccountAdapter(deniedAccounts, this);
         recyclerView.setAdapter(adapter);
 
@@ -60,7 +63,8 @@ public class AdminRejected extends AppCompatActivity implements RejectedAccountA
             public void onSuccess(List<Account> accounts) {
                 deniedAccounts.clear(); // make sure it's empty first
                 deniedAccounts.addAll(accounts); // add ALL of the accounts into the list of pending accounts
-                // update UI if needed
+                // update UI
+                //add all the accounts now
                 adapter.notifyDataSetChanged();
             }
 
@@ -71,26 +75,25 @@ public class AdminRejected extends AppCompatActivity implements RejectedAccountA
             }
         });
         //Account[] denied = deniedAccounts.toArray(new Account[0]);
-        //TODO: DISPLAY A LIST OF ALL OF THE DENIED ACCOUNTS: all denied accounts are stored in list "denied"
-        // TODO: IMPLEMENT A BUTTON TO APPROVE THE ACCOUNTS (using method accHandle.approve(Account acc);)
 
     }
 
+    //approves the account
     @Override
     public void onApprove(Account acc) {
         if (deniedAccounts.isEmpty()) {
             Toast.makeText(this, "No accounts to approve", Toast.LENGTH_SHORT).show();
             return;
         }
-        accHandle.approve(acc);
-        removeFromDenied(acc);
-        adapter.notifyDataSetChanged();
+        accHandle.approve(acc); // update the status in database to approved
+        removeFromDenied(acc); // remove the account from the pending list
+        adapter.notifyDataSetChanged(); // remove the account from the scroll list UI
         Toast.makeText(this, acc.getEmail() + " approved.", Toast.LENGTH_SHORT).show();
     }
 
 
 
-    // Also OUTSIDE onCreate
+    //internal method for removal from the pending list
     private void removeFromDenied(Account acc) {
         for (Iterator<Account> it = deniedAccounts.iterator(); it.hasNext(); ) {
             Account a = it.next();

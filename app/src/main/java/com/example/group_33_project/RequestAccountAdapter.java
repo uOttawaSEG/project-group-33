@@ -12,25 +12,31 @@ import org.jspecify.annotations.NonNull;
 
 import java.util.List;
 
+// ADAPTER FOR THE PENDING ACCONTS TO BE APPROVED AGAIN
+// helper method for RecyclerView
+//takes each element from the account list and transforms it into scrollable UI object
+
 public class RequestAccountAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
     private OnAccountActionListener listener;
     private List<Account> accounts;
 
-    // Define interface for callbacks
+    // Define interface for callbacks (delete(or deny) and approve)
     public interface OnAccountActionListener {
         void onApprove(Account account);
         void onDelete(Account account);
     }
 
+    //constructor
     public RequestAccountAdapter(List<Account> accounts, OnAccountActionListener listener) {
         this.accounts = accounts;
         this.listener = listener;
     }
 
+    //create a sample view (unfilled yet)
     @Override
     public RecyclerView.@NonNull ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-
         View view;
+        //different view for student and tutor
         if (viewType == 1){
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.account_student_add_layout, parent, false);
             return new StudentViewHolder(view);
@@ -42,11 +48,13 @@ public class RequestAccountAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         }
 
         else {
+            //error if something else
             throw new IllegalArgumentException("Unknown view type " + viewType);
         }
 
     }
 
+    //fills the each view with appropriate account information
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         Account account = accounts.get(position);
@@ -76,13 +84,13 @@ public class RequestAccountAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         }
     }
 
+    //number of items to be scrolled through
     @Override
     public int getItemCount() {
         return accounts.size();
     }
 
-
-
+    //dummy of a student view (unfilled yet)
     public static class StudentViewHolder extends RecyclerView.ViewHolder {
         TextView tvName, tvEmail, tvPhone, tvProgram;
         Button bAccept, bDeny;
@@ -98,6 +106,7 @@ public class RequestAccountAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         }
     }
 
+    //dummy of a tutor view (unfilled yet)
     public static class TutorViewHolder extends RecyclerView.ViewHolder {
         TextView tvName, tvEmail, tvPhone, tvDegree, tvCourses;
         Button bAccept, bDeny;
@@ -114,6 +123,8 @@ public class RequestAccountAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         }
     }
 
+    //getter of a type for different views
+    //student and tutor have different UI elements
     @Override
     public int getItemViewType(int position) {
         Account account = accounts.get(position);

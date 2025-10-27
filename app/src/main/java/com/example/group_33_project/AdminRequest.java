@@ -38,10 +38,14 @@ public class AdminRequest extends AppCompatActivity implements RequestAccountAda
         //FINDING THE ID OF BUTTONS
         Button Back = findViewById(R.id.screen7_back);
 
+        //create the scrolling list
         RecyclerView recyclerView = findViewById(R.id.pendingAccountsRecyclerView);
-
+        //make the account adapter
+        //takes each account and transforms it into a UI element
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         adapter = new RequestAccountAdapter(pendingAccounts, (RequestAccountAdapter.OnAccountActionListener) this);
+        //add all the UI elements to the scroll list
+        //empty for now
         recyclerView.setAdapter(adapter);
 
         //GOES BACK TO ADMIN SCREEN
@@ -58,8 +62,10 @@ public class AdminRequest extends AppCompatActivity implements RequestAccountAda
             public void onSuccess(List<Account> accounts) {
                 pendingAccounts.clear(); // make sure it's empty first
                 pendingAccounts.addAll(accounts); // add ALL of the accounts into the list of pending accounts
-                // update UI if needed
+                // update UI
+                //add all the accounts now
                 adapter.notifyDataSetChanged();
+                //no need for an array
                 //Account[] pending = pendingAccounts.toArray(new Account[0]); // convert to an array
             }
 
@@ -70,16 +76,6 @@ public class AdminRequest extends AppCompatActivity implements RequestAccountAda
 
             }
         });// pendingAccounts is updated and can be accessed/used!
-
-        //TODO: DISPLAY EACH ACCOUNT, CREATE AN APPROVE AND DENY BUTTON TO IMPLEMENT FOLLOWING CODE
-        // note: it seems like RecyclerView is the easiest way to do this, it makes a scrolling list and allows you to make approve/deny buttons for each individual account
-        // which are automatically mapped to the specific account? do more research on this...
-
-        // ALL PENDING ACCOUNTS ARE STORED IN THE ARRAY 'pending'
-        // TO DENY AN ACCOUNT; method accHandle.deny(Account acc) is implemented, and will update the database! REMEMBER TO REMOVE THE DENIED ACCOUNT FROM THE PENDING LIST!
-        // TO APPROVE AN ACCOUNT; method  accHandle.approve(Account acc) is implemented -> REMEMBER TO REMOVE THE APPROVED ACC!
-
-
 
     }
 
@@ -92,7 +88,7 @@ public class AdminRequest extends AppCompatActivity implements RequestAccountAda
         }
         accHandle.approve(acc); // update the status in database to approved
         removeFromPending(acc); // remove the account from the pending list
-        adapter.notifyDataSetChanged();
+        adapter.notifyDataSetChanged(); // remove the account from the scroll list UI
         Toast.makeText(this, acc.getEmail() + " approved.", Toast.LENGTH_SHORT).show();
     }
 
@@ -105,10 +101,11 @@ public class AdminRequest extends AppCompatActivity implements RequestAccountAda
         }
         accHandle.deny(acc); // update the status in database to denied
         removeFromPending(acc); // remove the account from the pending list
-        adapter.notifyDataSetChanged();
+        adapter.notifyDataSetChanged(); // remove the account from the scroll list
         Toast.makeText(this, acc.getEmail() + " denied.", Toast.LENGTH_SHORT).show();
     }
 
+    //internal method that removes the account from pending
     private void removeFromPending(Account acc){
         for (Iterator<Account> it = pendingAccounts.iterator(); it.hasNext();) {
             Account a = it.next();
