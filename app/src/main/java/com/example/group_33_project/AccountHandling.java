@@ -175,12 +175,14 @@ public class AccountHandling {
         db.collection("accounts")
                 .document(acc.getEmail())
                 .update("status", "approved"); // UPDATE THE STATUS TO APPROVED!
+        sendModerationEmail(acc.getEmail(), true);
     }
 
     public void deny(Account acc){
         db.collection("accounts")
                 .document(acc.getEmail())
                 .update("status", "denied"); // UPDATE THE STATUS TO DENIED!
+        sendModerationEmail(acc.getEmail(), false);
     }
 
     //The way that the email notifications work is when the
