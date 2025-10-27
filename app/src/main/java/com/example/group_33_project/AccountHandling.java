@@ -12,15 +12,12 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import java.util.HashMap;
 import java.util.Map;
 
-
 public class AccountHandling {
-
     private FirebaseFirestore db;
 
     public AccountHandling() {
         db = FirebaseFirestore.getInstance();
     }
-
 
     public void queryAccount(String email, QueryCallback callback) { // method to query the database for an account
         db.collection("accounts")// check in the accounts collection
@@ -72,10 +69,10 @@ public class AccountHandling {
 
 
     //Checks to find if the account is in the approved list on Firebase
-// First check if the admin is signing in; if not:
-// Opens up Firebase collections (into accounts) -> goes to and gets emails
-// Checks to see if the document field of password is correct
-// If so, then login successfully
+    // First check if the admin is signing in; if not:
+    // Opens up Firebase collections (into accounts) -> goes to and gets emails
+    // Checks to see if the document field of password is correct
+    // If so, then login successfully
     public void attemptLogIn(String email, String password, QueryCallback callback) {
         String emailLowerCase = email.toLowerCase(); // standard convention
         // FIRST check if the admin is logging in:
@@ -120,7 +117,7 @@ public class AccountHandling {
                                 return;
                             } else if ("denied".equalsIgnoreCase(status) || "rejected".equalsIgnoreCase(status)) {
                                 // if rejected/denied, block login with a clear reason
-                                callback.onFailure("You cannot log in because your account was rejected.");
+                                callback.onFailure("Your account is rejected. Please contact the administrator at +1 (734) 334-7687");
                                 return;
                             } else if (!"approved".equalsIgnoreCase(status)) {
                                 // fallback if status is missing/unknown
@@ -140,8 +137,6 @@ public class AccountHandling {
             }
         });
     }
-
-
 
     //Implementation of Signup moved from Main activity to Account handling for simplicity
     //Adding either tutor or student into  accounts in Firebase
@@ -194,13 +189,13 @@ public class AccountHandling {
 
         // Plain-text version
         String text = approved
-                ? "Hi,\n\nYour account has been approved. You can now log in.\n\n— SEG33 Project Team"
-                : "Hi,\n\nUnfortunately your account was rejected. Please refer to +1 (734) 334-7687\n\n— SEG33 Project Team";
+                ? "Hi,\n\nYour account has been approved.\n\n— SEG33 Project Team"
+                : "Hi,\n\nUnfortunately your account was rejected.\n\n— SEG33 Project Team";
 
         // HTML version
         String html = approved
-                ? "<p>Hi,</p><p>Your account has been <b>approved</b>. You can now log in.</p><p>— SEG33 Project Team</p>"
-                : "<p>Hi,</p><p>Unfortunately your account was <b>rejected</b>.</p><p>— SEG33 Project Team</p>";
+                ? "<p>Hi,</p><p>Your account has been <b>approved</b>. <br>You can now log in.</p><p>Have a beautiful day — SEG33 Project Team</p>"
+                : "<p>Hi,</p><p>Unfortunately your account was <b>rejected</b>. <br>Please contact the administrator at <b>+1 (734) 334-7687</b> </p><p>Have a beautiful day — SEG33 Project Team</p>";
 
         //NOTE: Plaintext and html must be sent so that the email doesn't get filtered into spam right away
         Map<String, Object> message = new HashMap<>();
