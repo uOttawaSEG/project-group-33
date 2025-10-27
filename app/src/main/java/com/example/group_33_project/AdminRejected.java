@@ -4,17 +4,27 @@ package com.example.group_33_project;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
-public class AdminRejected extends AppCompatActivity {
+public class AdminRejected extends AppCompatActivity implements RejectedAccountAdapter.OnAccountActionListener{
+
+    AccountHandling accHandle = new AccountHandling();
+    List<Account> deniedAccounts = new ArrayList<>();
+
+    private RejectedAccountAdapter adapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,7 +39,13 @@ public class AdminRejected extends AppCompatActivity {
         //FINDING THE ID OF BUTTONS
         Button Back = findViewById(R.id.screen8_back);
 
-        //GOES BACK TO ADMININ SCREEN
+        RecyclerView recyclerView = findViewById(R.id.rejectedAccountsRecyclerView);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        adapter = new RejectedAccountAdapter(deniedAccounts, this);
+        recyclerView.setAdapter(adapter);
+
+        //GOES BACK TO ADMIN SCREEN
         Back.setOnClickListener(v -> {
             Intent intent = new Intent(AdminRejected.this, AdminIn.class);
             startActivity(intent);
@@ -38,14 +54,14 @@ public class AdminRejected extends AppCompatActivity {
 
 
         // RETRIEVING ALL DENIED ACCOUNTS
-        AccountHandling accHandle = new AccountHandling();
-        List<Account> deniedAccounts = new ArrayList<>(); // initialize array list to store pending accounts
+        // initialize array list to store pending accounts
         accHandle.getAccounts("denied", new PendingCallback() { // gets the pending accounts from account handling
             @Override
             public void onSuccess(List<Account> accounts) {
                 deniedAccounts.clear(); // make sure it's empty first
                 deniedAccounts.addAll(accounts); // add ALL of the accounts into the list of pending accounts
                 // update UI if needed
+                adapter.notifyDataSetChanged();
             }
 
             @Override
@@ -54,12 +70,34 @@ public class AdminRejected extends AppCompatActivity {
                 // show error
             }
         });
-        Account[] denied = deniedAccounts.toArray(new Account[0]);
+        //Account[] denied = deniedAccounts.toArray(new Account[0]);
         //TODO: DISPLAY A LIST OF ALL OF THE DENIED ACCOUNTS: all denied accounts are stored in list "denied"
         // TODO: IMPLEMENT A BUTTON TO APPROVE THE ACCOUNTS (using method accHandle.approve(Account acc);)
 
+    }
+
+    @Override
+    public void onApprove(Account acc) {
+        if (deniedAccounts.isEmpty()) {
+            Toast.makeText(this, "No accounts to approve", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        accHandle.approve(acc);
+        removeFromDenied(acc);
+        adapter.notifyDataSetChanged();
+        Toast.makeText(this, acc.getEmail() + " approved.", Toast.LENGTH_SHORT).show();
+    }
 
 
 
+    // Also OUTSIDE onCreate
+    private void removeFromDenied(Account acc) {
+        for (Iterator<Account> it = deniedAccounts.iterator(); it.hasNext(); ) {
+            Account a = it.next();
+            if (a.getEmail().equalsIgnoreCase(acc.getEmail())) {
+                it.remove();
+                break;
+            }
+        }
     }
 }

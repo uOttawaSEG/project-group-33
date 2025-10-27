@@ -11,15 +11,18 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class AdminRequest extends AppCompatActivity {
+public class AdminRequest extends AppCompatActivity implements RequestAccountAdapter.OnAccountActionListener {
 
     private AccountHandling accHandle;
     private final List<Account> pendingAccounts = new ArrayList<>();
+    private RequestAccountAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,7 +38,13 @@ public class AdminRequest extends AppCompatActivity {
         //FINDING THE ID OF BUTTONS
         Button Back = findViewById(R.id.screen7_back);
 
-        //GOES BACK TO ADMININ SCREEN
+        RecyclerView recyclerView = findViewById(R.id.pendingAccountsRecyclerView);
+
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        adapter = new RequestAccountAdapter(pendingAccounts, (RequestAccountAdapter.OnAccountActionListener) this);
+        recyclerView.setAdapter(adapter);
+
+        //GOES BACK TO ADMIN SCREEN
         Back.setOnClickListener(v -> {
             Intent intent = new Intent(AdminRequest.this, AdminIn.class);
             startActivity(intent);
@@ -50,13 +59,15 @@ public class AdminRequest extends AppCompatActivity {
                 pendingAccounts.clear(); // make sure it's empty first
                 pendingAccounts.addAll(accounts); // add ALL of the accounts into the list of pending accounts
                 // update UI if needed
-                Account[] pending = pendingAccounts.toArray(new Account[0]); // convert to an array
+                adapter.notifyDataSetChanged();
+                //Account[] pending = pendingAccounts.toArray(new Account[0]); // convert to an array
             }
 
             @Override
             public void onFailure(String msg){
                 // msg = "No pending accounts" -> let me (colin) know if you would rather an empty array to be passed instead!
                 // show error
+
             }
         });// pendingAccounts is updated and can be accessed/used!
 
@@ -67,27 +78,34 @@ public class AdminRequest extends AppCompatActivity {
         // ALL PENDING ACCOUNTS ARE STORED IN THE ARRAY 'pending'
         // TO DENY AN ACCOUNT; method accHandle.deny(Account acc) is implemented, and will update the database! REMEMBER TO REMOVE THE DENIED ACCOUNT FROM THE PENDING LIST!
         // TO APPROVE AN ACCOUNT; method  accHandle.approve(Account acc) is implemented -> REMEMBER TO REMOVE THE APPROVED ACC!
+
+
+
     }
 
     //called from frontend when approved button is pressed
-    public void approveAccount(Account acc){
+    @Override
+    public void onApprove(Account acc){
         if (pendingAccounts.isEmpty()){
             Toast.makeText(this, "no pending accounts to approve/deny", Toast.LENGTH_SHORT).show();
             return;
         }
         accHandle.approve(acc); // update the status in database to approved
         removeFromPending(acc); // remove the account from the pending list
+        adapter.notifyDataSetChanged();
         Toast.makeText(this, acc.getEmail() + " approved.", Toast.LENGTH_SHORT).show();
     }
 
     //called from frontend when denied button is pressed
-    public void denyAccount(Account acc){
+    @Override
+    public void onDelete(Account acc){
         if (pendingAccounts.isEmpty()){
             Toast.makeText(this, "no pending accounts to approve/deny", Toast.LENGTH_SHORT).show();
             return;
         }
         accHandle.deny(acc); // update the status in database to denied
         removeFromPending(acc); // remove the account from the pending list
+        adapter.notifyDataSetChanged();
         Toast.makeText(this, acc.getEmail() + " denied.", Toast.LENGTH_SHORT).show();
     }
 
