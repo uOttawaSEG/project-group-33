@@ -47,6 +47,31 @@
             android:theme="@style/Theme.Group_33_Project" />
 
         <activity
+            android:name=".TutorIn"
+            android:exported="false"
+            android:theme="@style/Theme.Group_33_Project" />
+
+        <activity
+            android:name=".TutorAvailability"
+            android:exported="false"
+            android:theme="@style/Theme.Group_33_Project" />
+
+        <activity
+            android:name=".TutorUpcoming"
+            android:exported="false"
+            android:theme="@style/Theme.Group_33_Project" />
+
+        <activity
+            android:name=".TutorPendingRequest"
+            android:exported="false"
+            android:theme="@style/Theme.Group_33_Project" />
+
+        <activity
+            android:name=".TutorPast"
+            android:exported="false"
+            android:theme="@style/Theme.Group_33_Project" />
+
+        <activity
             android:name=".MainActivity"
             android:exported="true" >
             <intent-filter>

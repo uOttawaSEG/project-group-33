@@ -48,7 +48,7 @@ public class AdminRejected extends AppCompatActivity implements RejectedAccountA
         adapter = new RejectedAccountAdapter(deniedAccounts, this);
         recyclerView.setAdapter(adapter);
 
-        //GOES BACK TO ADMIN SCREEN
+        //GOES BACK TO ADMININ SCREEN
         Back.setOnClickListener(v -> {
             Intent intent = new Intent(AdminRejected.this, AdminIn.class);
             startActivity(intent);

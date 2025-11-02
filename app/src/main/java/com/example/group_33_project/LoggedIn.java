@@ -69,6 +69,13 @@ public class LoggedIn extends AppCompatActivity {
         if (account.getClass() == Tutor.class){
             //change the cat to teacher cat
             catIcon.setImageResource(R.drawable.teacher_cat);
+
+            //PROCEEDS TO TUTORIN SCREEN AFTER WAITING 2 SECONDS
+            new Handler().postDelayed(() -> {
+                Intent intent = new Intent(LoggedIn.this, TutorIn.class);
+                startActivity(intent);
+                finish();
+            },DELAY_MS);
         }
         role += account.getType();
 

@@ -21,6 +21,11 @@
     <string name="screen5_courseformat">Enter \",\"  between entries if more than 1</string>
     <string name="screen6_rejected">Rejected Registration Requests</string>
     <string name="screen6_request">Incoming Registration Requests</string>
+    <string name="screen9_availability">Schedule Availability</string>
+    <string name="screen9_usessions">Upcoming Tutoring Sessions</string>
+    <string name="screen9_psessions">Past Tutoring Sessions</string>
+    <string name="screen9_autobook">Automatically Approve Session Bookings</string>
+    <string name="screen11_psessionsr">Pending Tutoring Session Requests</string>
     <!-- Strings used for fragments for navigation -->
     <string name="first_fragment_label">First Fragment</string>
     <string name="second_fragment_label">Second Fragment</string>
