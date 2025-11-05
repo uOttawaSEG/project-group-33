@@ -19,7 +19,8 @@ public class AccountHandling {
         db = FirebaseFirestore.getInstance();
     }
 
-    public void queryAccount(String email, QueryCallback callback) { // method to query the database for an account
+    public static void queryAccount(String email, QueryCallback callback) { // method to query the database for an account
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("accounts")// check in the accounts collection
                 // .whereEqualTo("status", "approved") // FILTER BY APPROVED ACCOUNTS  <-- REMOVED so we can see pending/denied too
                 .whereEqualTo("email", email) // querying by email

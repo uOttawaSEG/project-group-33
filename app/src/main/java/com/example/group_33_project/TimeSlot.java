@@ -5,10 +5,11 @@ import java.time.*;
 public class TimeSlot {
     ZonedDateTime startDate, endDate;
 
-    private final Tutor tutor; // the tutor who has created the slot
+    private Tutor tutor; // the tutor who has created the slot
     private Student student; // the student who has booked the slot, if applicable
-    private Boolean isBooked; // booked = T or F
+    private String status; // status = "booked", "open", "pending" (if requires approval), or "cancelled"
     private final Boolean requireApproval; // whether or not the booking must be approved by an admin
+    private String ID; // stores the FIRESTORE ID from the database
 
 
     // constructor for NEW TIMESLOTS
@@ -17,21 +18,22 @@ public class TimeSlot {
         this.requireApproval = requireApproval;
         this.startDate = start;
         this.endDate = end;
-        this.isBooked = false; // upon creation, the slot should not be booked
+        this.status = "open"; // upon creation, the slot should not be booked
     }
 
     // Parametrized constructor (for firestore)
-    TimeSlot(Tutor tutor, Boolean requireApproval, ZonedDateTime start, ZonedDateTime end, Student student, Boolean isBooked){ // constructor for NEW TIMESLOTS
+    TimeSlot(Tutor tutor, Boolean requireApproval, ZonedDateTime start, ZonedDateTime end, Student student, String status, String ID){ // constructor for NEW TIMESLOTS
         this.tutor = tutor;
         this.requireApproval = requireApproval;
         this.startDate = start;
         this.endDate = end;
         this.student = student;
-        this.isBooked = isBooked;
+        this.status = status;
+        this.ID = ID;
     }
 
     // Method to determine if a new timeslot overlaps with an existing slot
-    private static boolean isOverlap(TimeSlot newSlot, TimeSlot existingSlot){
+    public static boolean isOverlap(TimeSlot newSlot, TimeSlot existingSlot){
         return newSlot.startDate.isBefore(existingSlot.endDate) && newSlot.endDate.isAfter(existingSlot.startDate);
     }
 
@@ -66,11 +68,18 @@ public class TimeSlot {
         return student;
     }
 
-    public boolean isBooked(){
-        return isBooked;
+    public Tutor getTutor(){
+        return tutor;
     }
 
+    public String getStatus(){
+        return this.status;
+    }
+    public String getID() { return ID; }
+
     // Setters
+
+
     public void setStartDate(ZonedDateTime date){
         this.startDate = date;
     }
@@ -79,11 +88,18 @@ public class TimeSlot {
         this.endDate = date;
     }
 
-    public void setStudent(Student student){
-        this.student = student;
-        this.isBooked = true; // when we assign a student to the slot, the slot is BOOKED
+    public void setStatus(String status){
+        this.status = status;
     }
 
+    public void setStudent(Student student){
+        this.student = student;
+        this.status = "booked"; // when we assign a student to the slot, the slot is BOOKED
+    }
 
+    public void setID(String id) { this.ID = id; }
 
+    public void setTutor(Tutor tutor){
+        this.tutor = tutor;
+    }
 }
