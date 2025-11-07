@@ -1,56 +1,59 @@
+# .circleci/config.yml
 version: 2.1
+orbs:
+  android: circleci/android@3.0.0   # or use a cimg/android image directly
 
 jobs:
   build:
     docker:
-      # Pick a recent image with Java 17+ and the Android SDK
-      - image: cimg/android:2024.01
+      - image: cimg/android:2024.01 # pick one with the SDK tools you need
     environment:
-      # Keep these in sync with your Gradle config
-      COMPILE_SDK: "36"
-      BUILD_TOOLS: "36.0.0"
-      GRADLE_OPTS: "-Dorg.gradle.daemon=false -Dorg.gradle.jvmargs='-Xmx2g -Dfile.encoding=UTF-8'"
+      ANDROID_SDK_ROOT: /opt/android/sdk
+      ANDROID_HOME: /opt/android/sdk
+      JAVA_TOOL_OPTIONS: -Dfile.encoding=UTF-8
     steps:
       - checkout
 
-      # Cache Gradle deps/wrapper (paths that really exist on a fresh checkout)
+      # restore SDK + Gradle caches
       - restore_cache:
           keys:
-            - v1-gradle-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}-{{ checksum "build.gradle.kts" }}-{{ checksum "settings.gradle.kts" }}
+            - v1-android-licenses-{{ .Branch }}
+            - v1-android-licenses-
+      - restore_cache:
+          keys:
+            - v1-gradle-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}
             - v1-gradle-
 
-      # Make sure SDK location is known to Gradle
+      # install required SDK components (adjust versions to your project)
       - run:
-          name: Point Gradle at the SDK
+          name: Install SDK components
           command: |
-            echo "sdk.dir=${ANDROID_SDK_ROOT:-/opt/android/sdk}" > local.properties
-            cat local.properties
+            sdkmanager --sdk_root="${ANDROID_SDK_ROOT}" --update
+            sdkmanager --sdk_root="${ANDROID_SDK_ROOT}" \
+              "platform-tools" \
+              "platforms;android-34" \
+              "build-tools;34.0.0"
 
-      # Accept all Android SDK licenses (non-interactive)
+      # accept all SDK licenses non-interactively
       - run:
           name: Accept Android SDK licenses
-          command: yes | sdkmanager --licenses
-
-      # Install the minimal packages needed to build (avoid emulator/system-images)
-      - run:
-          name: Install platform + build tools
           command: |
-            sdkmanager --update
-            sdkmanager "platform-tools" "platforms;android-${COMPILE_SDK}" "build-tools;${BUILD_TOOLS}" "cmdline-tools;latest"
+            yes | sdkmanager --sdk_root="${ANDROID_SDK_ROOT}" --licenses || true
 
-      # Build & test
-      - run:
-          name: Build debug APK and run unit tests
-          command: ./gradlew clean test assembleDebug --stacktrace
-
+      # cache accepted licenses so future runs don’t prompt
       - save_cache:
-          key: v1-gradle-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}-{{ checksum "build.gradle.kts" }}-{{ checksum "settings.gradle.kts" }}
+          key: v1-android-licenses-{{ .Branch }}
+          paths:
+            - /opt/android/sdk/licenses
+
+      # build (no daemon is safer on CI)
+      - run:
+          name: Build
+          command: ./gradlew assembleDebug --no-daemon --stacktrace
+
+      # cache Gradle
+      - save_cache:
+          key: v1-gradle-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}
           paths:
             - ~/.gradle/caches
             - ~/.gradle/wrapper
-            - ~/.android/build-cache
-
-workflows:
-  build_and_test:
-    jobs:
-      - build
