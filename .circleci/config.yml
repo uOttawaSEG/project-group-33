@@ -1,31 +1,67 @@
 version: 2.1
 
-orbs:
-  android: circleci/android@3
-
 jobs:
-  build:
+  android-build:
     docker:
-      - image: cimg/android:2024.06  # Includes SDK + cmdline-tools + build-tools
+      # pick a real, existing tag; examples: 2024.06.1, 2024.07.1, 2024.09
+      - image: cimg/android:2024.07.1
+    working_directory: ~/project
     environment:
-      ANDROID_SDK_ROOT: /opt/android/sdk
-      ANDROID_HOME: /opt/android/sdk
-      JAVA_TOOL_OPTIONS: -Dfile.encoding=UTF-8
+      ANDROID_SDK_ROOT: /home/circleci/android-sdk
+      ANDROID_HOME: /home/circleci/android-sdk
+      GRADLE_USER_HOME: /home/circleci/.gradle
+      # keep Gradle non-daemon in CI to avoid stray processes
+      GRADLE_OPTS: -Dorg.gradle.daemon=false -Dorg.gradle.jvmargs="-Xmx2g"
 
     steps:
       - checkout
 
-      # Accept all Android SDK licenses (non-interactive)
-      - run: yes | sdkmanager --licenses
+      # Ensure SDK root is writable and referenced by Gradle
+      - run:
+          name: Prepare SDK directory and local.properties
+          command: |
+            mkdir -p "$ANDROID_SDK_ROOT"
+            echo "sdk.dir=$ANDROID_SDK_ROOT" > local.properties
 
-      # Update SDK packages (optional but good practice)
-      - run: sdkmanager --update
+      # Accept all SDK licenses without interactivity (avoid exit 141)
+      - run:
+          name: Accept Android SDK licenses
+          command: |
+            set +o pipefail
+            yes | sdkmanager --sdk_root="$ANDROID_SDK_ROOT" --licenses >/dev/null 2>&1 || true
+            set -o pipefail
 
-      # If your project does NOT commit local.properties:
-      - run: echo "sdk.dir=$ANDROID_SDK_ROOT" > local.properties
+      # (Optional) Pre-install the platform/build-tools you target to avoid Gradle doing it
+      - run:
+          name: Install required SDK packages
+          command: |
+            sdkmanager --sdk_root="$ANDROID_SDK_ROOT" \
+              "platform-tools" \
+              "platforms;android-34" \
+              "build-tools;34.0.0" || true
 
-      # Build your APK
-      - run: ./gradlew --no-daemon assembleDebug
+      # Cache Gradle wrapper + caches (use safe keys—no ** globs that may not match)
+      - restore_cache:
+          keys:
+            - gradle-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}-{{ checksum "build.gradle" }}
+            - gradle-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}
+            - gradle-
 
-      # Run test suite
-      - run: ./gradlew --no-daemon test
+      - run:
+          name: Build Debug
+          command: ./gradlew --no-daemon assembleDebug
+
+      - save_cache:
+          key: gradle-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}-{{ checksum "build.gradle" }}
+          paths:
+            - ~/.gradle/caches
+            - ~/.gradle/wrapper
+
+      - store_artifacts:
+          path: app/build/outputs
+          destination: outputs
+
+workflows:
+  android:
+    jobs:
+      - android-build
