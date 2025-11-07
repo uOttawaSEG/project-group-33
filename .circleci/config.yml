@@ -1,57 +1,72 @@
 version: 2.1
 
 jobs:
-  android-build:
+  build:
     docker:
-      # Use a VALID Android image. 2024.06 doesn't exist.
-      # 2024.01 is stable and includes the commandline tools + JDK.
+      # Use a real Android image so the SDK is preinstalled & writable
       - image: cimg/android:2024.01
+    working_directory: ~/project
+
     environment:
-      # The cimg/android image already sets these, but we set them explicitly
+      # Gradle behaves better in CI with these
+      GRADLE_OPTS: "-Dorg.gradle.daemon=false -Dorg.gradle.jvmargs='-Xmx2g -Dfile.encoding=UTF-8'"
+      # The Android images already set this, but we export to be explicit
       ANDROID_SDK_ROOT: /opt/android/sdk
       ANDROID_HOME: /opt/android/sdk
-      GRADLE_USER_HOME: ~/.gradle
+
     steps:
       - checkout
 
-      # ---- Restore Gradle caches (no fragile checksums of build.gradle) ----
+      # ---- Cache restore (handles both Groovy *.gradle and Kotlin *.gradle.kts) ----
       - restore_cache:
           keys:
-            - v1-gradle-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}-{{ .Branch }}-{{ .Revision }}
-            - v1-gradle-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}-{{ .Branch }}
+            # include the wrapper and any gradle[.kts] files anywhere in the repo
+            - v1-gradle-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}-{{ checksum "settings.gradle" }}-{{ checksum "settings.gradle.kts" }}-{{ checksum "build.gradle" }}-{{ checksum "build.gradle.kts" }}
             - v1-gradle-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}
             - v1-gradle-
 
-      # ---- Make sure required SDK components are present & accept licenses ----
+      # ---- Ensure SDK path is writable & create local.properties for AGP ----
       - run:
-          name: Install Android SDK components (non-interactive)
+          name: Ensure Android SDK is available and writable
           command: |
-            sdkmanager --sdk_root="$ANDROID_SDK_ROOT" --update
-            # Accept all licenses without prompting
-            yes | sdkmanager --sdk_root="$ANDROID_SDK_ROOT" --licenses > /dev/null
+            mkdir -p "$ANDROID_SDK_ROOT" || true
+            sudo chown -R circleci:circleci "$ANDROID_SDK_ROOT" || true
+            echo "sdk.dir=$ANDROID_SDK_ROOT" > local.properties
 
-            # Install exactly what the project needs. You said you compile with 35.
-            sdkmanager --sdk_root="$ANDROID_SDK_ROOT" \
+      # ---- Accept SDK licenses non-interactively ----
+      - run:
+          name: Accept Android SDK licenses
+          command: |
+            yes | sdkmanager --licenses || true
+
+      # ---- (Optional) install the exact APIs your project uses ----
+      # If your compileSdk is 35 (from your log), this guarantees tools are present.
+      - run:
+          name: Install Platform & Build-Tools matching compileSdk
+          command: |
+            sdkmanager --install \
               "platform-tools" \
               "platforms;android-35" \
-              "build-tools;35.0.0"
+              "build-tools;35.0.0" || true
 
       # ---- Build ----
       - run:
           name: Assemble Debug
-          command: |
-            chmod +x ./gradlew
-            ./gradlew --no-daemon assembleDebug
+          command: ./gradlew --no-daemon assembleDebug
 
-      # ---- Save caches ----
+      # ---- Cache save ----
       - save_cache:
-          key: v1-gradle-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}-{{ .Branch }}-{{ .Revision }}
+          key: v1-gradle-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}-{{ checksum "settings.gradle" }}-{{ checksum "settings.gradle.kts" }}-{{ checksum "build.gradle" }}-{{ checksum "build.gradle.kts" }}
           paths:
             - ~/.gradle/caches
             - ~/.gradle/wrapper
-            - ~/.android/build-cache
+
+      # ---- Artifacts (APK) ----
+      - store_artifacts:
+          path: app/build/outputs/apk/debug
+          destination: apk-debug
 
 workflows:
-  build:
+  build_and_test:
     jobs:
-      - android-build
+      - build
