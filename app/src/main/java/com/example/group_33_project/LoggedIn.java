@@ -73,6 +73,7 @@ public class LoggedIn extends AppCompatActivity {
             //PROCEEDS TO TUTORIN SCREEN AFTER WAITING 2 SECONDS
             new Handler().postDelayed(() -> {
                 Intent intent = new Intent(LoggedIn.this, TutorIn.class);
+                intent.putExtra("tutor", account ); //send tutor as an object to tutorIn
                 startActivity(intent);
                 finish();
             },DELAY_MS);

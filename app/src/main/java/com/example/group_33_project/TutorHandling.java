@@ -17,15 +17,6 @@ import java.util.Map;
 
 import java.time.*;
 
-/// tutor will have additional information added to database: availabilities and sessions
-
-/// availabilities: slotID {date, start, end, approve}
-///  if approve=true then student booked this time and this slot will be sent to booked.
-///  tutors can make multiple slots
-
-///sessions: sessionID {studentEmail, date, start, end, status}
-///  if status= pending/approved/denied/cancelled
-///  if tutor cancels session it get deleted. If tutor denies student then session goes back to availabilities so that another student can book it
 
 
 /// addOnSuccessListener is to do smt with data if success. addOnFailureListener handle firebase error
@@ -142,6 +133,7 @@ public class TutorHandling {
                             data.put("isBooked", false); // false by default (upon creation of new slot)
                             data.put("requireApproval", requiresApproval);
                             data.put("studentEmail", null); // not yet booked
+                            data.put("status", "open");
 
                             slotsRef.add(data)
 

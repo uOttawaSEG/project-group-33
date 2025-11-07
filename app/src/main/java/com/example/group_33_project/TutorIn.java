@@ -19,6 +19,9 @@ public class TutorIn extends AppCompatActivity {
     private static final String BUTTON_VISIBILITY = "ButtonVisibility";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        Tutor currentTutor = (Tutor) getIntent().getSerializableExtra("tutor"); //get tutor as an object
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.screen9_tutorin);
         EdgeToEdge.enable(this);
@@ -56,22 +59,24 @@ public class TutorIn extends AppCompatActivity {
         //SWITCH TO TUTOR AVAILABILITY SCREEN
         Availability.setOnClickListener(v -> {
             Intent intent = new Intent(TutorIn.this, TutorAvailability.class);
+            intent.putExtra("tutor", currentTutor);  //pass tutor object
             startActivity(intent);
-            finish();
+
         });
 
         //SWITCH TO UPCOMING SESSIONS SCREEN
         Usessions.setOnClickListener(v -> {
             Intent intent = new Intent(TutorIn.this, TutorUpcoming.class);
+            intent.putExtra("tutor", currentTutor);  //pass tutor object
             startActivity(intent);
-            finish();
+
         });
 
         //SWITCH TO PAST SESSIONS SCREEN
         Psessions.setOnClickListener(v -> {
             Intent intent = new Intent(TutorIn.this, TutorPast.class);
+            intent.putExtra("tutor", currentTutor);  //pass tutor object
             startActivity(intent);
-            finish();
         });
 
         //LOGOUT BUTTON

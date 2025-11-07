@@ -1,8 +1,8 @@
 package com.example.group_33_project;
-
+import java.io.Serializable;
 import java.util.List;
 
-public class Tutor extends Account{
+public class Tutor extends Account implements Serializable {
 
 
 
