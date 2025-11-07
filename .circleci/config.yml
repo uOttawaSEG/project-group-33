@@ -3,65 +3,55 @@ version: 2.1
 jobs:
   android-build:
     docker:
-      # pick a real, existing tag; examples: 2024.06.1, 2024.07.1, 2024.09
-      - image: cimg/android:2024.07.1
-    working_directory: ~/project
+      # Use a VALID Android image. 2024.06 doesn't exist.
+      # 2024.01 is stable and includes the commandline tools + JDK.
+      - image: cimg/android:2024.01
     environment:
-      ANDROID_SDK_ROOT: /home/circleci/android-sdk
-      ANDROID_HOME: /home/circleci/android-sdk
-      GRADLE_USER_HOME: /home/circleci/.gradle
-      # keep Gradle non-daemon in CI to avoid stray processes
-      GRADLE_OPTS: -Dorg.gradle.daemon=false -Dorg.gradle.jvmargs="-Xmx2g"
-
+      # The cimg/android image already sets these, but we set them explicitly
+      ANDROID_SDK_ROOT: /opt/android/sdk
+      ANDROID_HOME: /opt/android/sdk
+      GRADLE_USER_HOME: ~/.gradle
     steps:
       - checkout
 
-      # Ensure SDK root is writable and referenced by Gradle
-      - run:
-          name: Prepare SDK directory and local.properties
-          command: |
-            mkdir -p "$ANDROID_SDK_ROOT"
-            echo "sdk.dir=$ANDROID_SDK_ROOT" > local.properties
-
-      # Accept all SDK licenses without interactivity (avoid exit 141)
-      - run:
-          name: Accept Android SDK licenses
-          command: |
-            set +o pipefail
-            yes | sdkmanager --sdk_root="$ANDROID_SDK_ROOT" --licenses >/dev/null 2>&1 || true
-            set -o pipefail
-
-      # (Optional) Pre-install the platform/build-tools you target to avoid Gradle doing it
-      - run:
-          name: Install required SDK packages
-          command: |
-            sdkmanager --sdk_root="$ANDROID_SDK_ROOT" \
-              "platform-tools" \
-              "platforms;android-34" \
-              "build-tools;34.0.0" || true
-
-      # Cache Gradle wrapper + caches (use safe keys—no ** globs that may not match)
+      # ---- Restore Gradle caches (no fragile checksums of build.gradle) ----
       - restore_cache:
           keys:
-            - gradle-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}-{{ checksum "build.gradle" }}
-            - gradle-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}
-            - gradle-
+            - v1-gradle-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}-{{ .Branch }}-{{ .Revision }}
+            - v1-gradle-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}-{{ .Branch }}
+            - v1-gradle-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}
+            - v1-gradle-
 
+      # ---- Make sure required SDK components are present & accept licenses ----
       - run:
-          name: Build Debug
-          command: ./gradlew --no-daemon assembleDebug
+          name: Install Android SDK components (non-interactive)
+          command: |
+            sdkmanager --sdk_root="$ANDROID_SDK_ROOT" --update
+            # Accept all licenses without prompting
+            yes | sdkmanager --sdk_root="$ANDROID_SDK_ROOT" --licenses > /dev/null
 
+            # Install exactly what the project needs. You said you compile with 35.
+            sdkmanager --sdk_root="$ANDROID_SDK_ROOT" \
+              "platform-tools" \
+              "platforms;android-35" \
+              "build-tools;35.0.0"
+
+      # ---- Build ----
+      - run:
+          name: Assemble Debug
+          command: |
+            chmod +x ./gradlew
+            ./gradlew --no-daemon assembleDebug
+
+      # ---- Save caches ----
       - save_cache:
-          key: gradle-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}-{{ checksum "build.gradle" }}
+          key: v1-gradle-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}-{{ .Branch }}-{{ .Revision }}
           paths:
             - ~/.gradle/caches
             - ~/.gradle/wrapper
-
-      - store_artifacts:
-          path: app/build/outputs
-          destination: outputs
+            - ~/.android/build-cache
 
 workflows:
-  android:
+  build:
     jobs:
       - android-build
