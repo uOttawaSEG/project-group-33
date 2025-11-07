@@ -1,72 +1,74 @@
 version: 2.1
 
 jobs:
-  build:
+  build-android:
     docker:
-      # Use a real Android image so the SDK is preinstalled & writable
-      - image: cimg/android:2024.01
-    working_directory: ~/project
-
+      # Use a *real* cimg/android tag (no “manifest unknown”)
+      # If you used 2024.06 before, add the patch version.
+      - image: cimg/android:2024.06.1
     environment:
-      # Gradle behaves better in CI with these
-      GRADLE_OPTS: "-Dorg.gradle.daemon=false -Dorg.gradle.jvmargs='-Xmx2g -Dfile.encoding=UTF-8'"
-      # The Android images already set this, but we export to be explicit
       ANDROID_SDK_ROOT: /opt/android/sdk
       ANDROID_HOME: /opt/android/sdk
+      GRADLE_OPTS: "-Dorg.gradle.daemon=false -Dorg.gradle.jvmargs='-Xmx2g -Dfile.encoding=UTF-8'"
+      TERM: dumb
 
     steps:
       - checkout
 
-      # ---- Cache restore (handles both Groovy *.gradle and Kotlin *.gradle.kts) ----
+      # -------- Gradle cache (robust even if some files don’t exist) --------
       - restore_cache:
           keys:
-            # include the wrapper and any gradle[.kts] files anywhere in the repo
-            - v1-gradle-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}-{{ checksum "settings.gradle" }}-{{ checksum "settings.gradle.kts" }}-{{ checksum "build.gradle" }}-{{ checksum "build.gradle.kts" }}
-            - v1-gradle-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}
-            - v1-gradle-
-
-      # ---- Ensure SDK path is writable & create local.properties for AGP ----
+            - v1-gradle-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}-{{ arch }}
+            - v1-gradle-{{ arch }}
       - run:
-          name: Ensure Android SDK is available and writable
+          name: Print tree (helps if paths are off)
           command: |
-            mkdir -p "$ANDROID_SDK_ROOT" || true
-            sudo chown -R circleci:circleci "$ANDROID_SDK_ROOT" || true
+            pwd
+            ls -la
+            echo "Using JDK:"
+            java -version
+
+      # -------- Make sure SDK is usable & licenses are accepted -------------
+      - run:
+          name: Prepare Android SDK & accept licenses
+          command: |
+            # Ensure the SDK dir exists and is writable (fixes “Failed to create SDK root dir”)
+            sudo mkdir -p "$ANDROID_SDK_ROOT" || true
+            sudo chown -R circleci:circleci "$ANDROID_SDK_ROOT"
+
+            # Make local.properties so Gradle stops complaining about SDK location
             echo "sdk.dir=$ANDROID_SDK_ROOT" > local.properties
+            cat local.properties
 
-      # ---- Accept SDK licenses non-interactively ----
-      - run:
-          name: Accept Android SDK licenses
-          command: |
-            yes | sdkmanager --licenses || true
+            # Accept all licenses non-interactively
+            yes | sdkmanager --licenses
 
-      # ---- (Optional) install the exact APIs your project uses ----
-      # If your compileSdk is 35 (from your log), this guarantees tools are present.
-      - run:
-          name: Install Platform & Build-Tools matching compileSdk
-          command: |
+            # Install the platform & tools your project needs (compiled against 35 per your logs)
             sdkmanager --install \
-              "platform-tools" \
               "platforms;android-35" \
-              "build-tools;35.0.0" || true
+              "build-tools;35.0.0" \
+              "platform-tools" \
+              "cmdline-tools;latest"
 
-      # ---- Build ----
+      # -------------------------- Build -------------------------------------
       - run:
           name: Assemble Debug
           command: ./gradlew --no-daemon assembleDebug
 
-      # ---- Cache save ----
+      # ------------------------- Artifacts -----------------------------------
+      - store_artifacts:
+          path: app/build/outputs/apk/debug
+          destination: apk
+
       - save_cache:
-          key: v1-gradle-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}-{{ checksum "settings.gradle" }}-{{ checksum "settings.gradle.kts" }}-{{ checksum "build.gradle" }}-{{ checksum "build.gradle.kts" }}
+          key: v1-gradle-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}-{{ arch }}
           paths:
             - ~/.gradle/caches
             - ~/.gradle/wrapper
-
-      # ---- Artifacts (APK) ----
-      - store_artifacts:
-          path: app/build/outputs/apk/debug
-          destination: apk-debug
+            - ~/.android
+            - ~/.cache
 
 workflows:
-  build_and_test:
+  build:
     jobs:
-      - build
+      - build-android
