@@ -3,59 +3,76 @@ version: 2.1
 jobs:
   build-android:
     docker:
-      # Use a *real* cimg/android tag (no “manifest unknown”)
-      # If you used 2024.06 before, add the patch version.
+      # Pin a real image tag that exists
       - image: cimg/android:2024.06.1
     environment:
       ANDROID_SDK_ROOT: /opt/android/sdk
       ANDROID_HOME: /opt/android/sdk
-      GRADLE_OPTS: "-Dorg.gradle.daemon=false -Dorg.gradle.jvmargs='-Xmx2g -Dfile.encoding=UTF-8'"
+      # Force Gradle to use JDK 17 (required by recent AGP)
+      ORG_GRADLE_PROJECT_orgGradleJavaHome: /usr/lib/jvm/java-17-openjdk-amd64
+      GRADLE_OPTS: "-Dorg.gradle.daemon=false -Dorg.gradle.jvmargs='-Xmx3g -Dfile.encoding=UTF-8'"
       TERM: dumb
 
     steps:
       - checkout
 
-      # -------- Gradle cache (robust even if some files don’t exist) --------
+      # Make sure Gradle wrapper is executable (very common CI failure)
+      - run:
+          name: Ensure gradlew is executable
+          command: chmod +x ./gradlew
+
+      # Cache Gradle (robust keys)
       - restore_cache:
           keys:
             - v1-gradle-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}-{{ arch }}
             - v1-gradle-{{ arch }}
+
       - run:
-          name: Print tree (helps if paths are off)
+          name: Print env for debugging
           command: |
             pwd
             ls -la
-            echo "Using JDK:"
+            echo "Java:"
             java -version
+            echo "Gradle wrapper:"
+            ./gradlew -v
 
-      # -------- Make sure SDK is usable & licenses are accepted -------------
+      # If you have google-services.json in a secret env var (BASE64_GOOG_SERVICES_JSON),
+      # write it here. If you already commit the file, delete this block.
+      - run:
+          name: (Optional) Restore google-services.json from env
+          command: |
+            if [ -n "$BASE64_GOOG_SERVICES_JSON" ]; then
+              echo "$BASE64_GOOG_SERVICES_JSON" | base64 -d > app/google-services.json
+              echo "Restored app/google-services.json"
+            fi
+
+      # Make sure SDK is writable, licenses accepted, and right tools installed
       - run:
           name: Prepare Android SDK & accept licenses
           command: |
-            # Ensure the SDK dir exists and is writable (fixes “Failed to create SDK root dir”)
             sudo mkdir -p "$ANDROID_SDK_ROOT" || true
             sudo chown -R circleci:circleci "$ANDROID_SDK_ROOT"
-
-            # Make local.properties so Gradle stops complaining about SDK location
             echo "sdk.dir=$ANDROID_SDK_ROOT" > local.properties
-            cat local.properties
-
-            # Accept all licenses non-interactively
             yes | sdkmanager --licenses
-
-            # Install the platform & tools your project needs (compiled against 35 per your logs)
+            # Install platform/tools you compile against
             sdkmanager --install \
               "platforms;android-35" \
-              "build-tools;35.0.0" \
+              "build-tools;35.0.2" \
               "platform-tools" \
               "cmdline-tools;latest"
 
-      # -------------------------- Build -------------------------------------
+      # Build
       - run:
           name: Assemble Debug
           command: ./gradlew --no-daemon assembleDebug
 
-      # ------------------------- Artifacts -----------------------------------
+      # Test (optional but recommended)
+      - run:
+          name: Unit tests
+          command: ./gradlew --no-daemon testDebugUnitTest
+
+      # Artifacts
       - store_artifacts:
           path: app/build/outputs/apk/debug
           destination: apk

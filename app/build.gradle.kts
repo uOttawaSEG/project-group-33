@@ -13,7 +13,6 @@ android {
         targetSdk = 35
         versionCode = 1
         versionName = "1.0"
-
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -26,27 +25,37 @@ android {
             )
         }
     }
+
+    // Source/target are language levels; the build actually runs on JDK 17 via orgGradleJavaHome
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
+
     buildFeatures {
         viewBinding = true
     }
 }
 
 dependencies {
+    // Use the Firebase BOM to keep libs in sync; remove hard-pinned duplicates
+    implementation(platform("com.google.firebase:firebase-bom:33.5.1"))
 
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.activity)
     implementation(libs.constraintlayout)
+
     implementation(libs.firebase.database)
+    implementation(libs.google.firebase.firestore) // will be versioned by the BOM
+
     implementation(libs.navigation.fragment)
     implementation(libs.navigation.ui)
-    implementation(libs.google.firebase.firestore)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
-    implementation("com.google.firebase:firebase-firestore:26.0.1")
+
+    // REMOVE this manual pin to avoid conflicting versions (BOM handles it)
+    // implementation("com.google.firebase:firebase-firestore:26.0.1")
 }
