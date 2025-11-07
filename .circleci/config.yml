@@ -1,59 +1,31 @@
-# .circleci/config.yml
 version: 2.1
+
 orbs:
-  android: circleci/android@3.0.0   # or use a cimg/android image directly
+  android: circleci/android@3
 
 jobs:
   build:
     docker:
-      - image: cimg/android:2024.01 # pick one with the SDK tools you need
+      - image: cimg/android:2024.06  # Includes SDK + cmdline-tools + build-tools
     environment:
       ANDROID_SDK_ROOT: /opt/android/sdk
       ANDROID_HOME: /opt/android/sdk
       JAVA_TOOL_OPTIONS: -Dfile.encoding=UTF-8
+
     steps:
       - checkout
 
-      # restore SDK + Gradle caches
-      - restore_cache:
-          keys:
-            - v1-android-licenses-{{ .Branch }}
-            - v1-android-licenses-
-      - restore_cache:
-          keys:
-            - v1-gradle-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}
-            - v1-gradle-
+      # Accept all Android SDK licenses (non-interactive)
+      - run: yes | sdkmanager --licenses
 
-      # install required SDK components (adjust versions to your project)
-      - run:
-          name: Install SDK components
-          command: |
-            sdkmanager --sdk_root="${ANDROID_SDK_ROOT}" --update
-            sdkmanager --sdk_root="${ANDROID_SDK_ROOT}" \
-              "platform-tools" \
-              "platforms;android-34" \
-              "build-tools;34.0.0"
+      # Update SDK packages (optional but good practice)
+      - run: sdkmanager --update
 
-      # accept all SDK licenses non-interactively
-      - run:
-          name: Accept Android SDK licenses
-          command: |
-            yes | sdkmanager --sdk_root="${ANDROID_SDK_ROOT}" --licenses || true
+      # If your project does NOT commit local.properties:
+      - run: echo "sdk.dir=$ANDROID_SDK_ROOT" > local.properties
 
-      # cache accepted licenses so future runs don’t prompt
-      - save_cache:
-          key: v1-android-licenses-{{ .Branch }}
-          paths:
-            - /opt/android/sdk/licenses
+      # Build your APK
+      - run: ./gradlew --no-daemon assembleDebug
 
-      # build (no daemon is safer on CI)
-      - run:
-          name: Build
-          command: ./gradlew assembleDebug --no-daemon --stacktrace
-
-      # cache Gradle
-      - save_cache:
-          key: v1-gradle-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}
-          paths:
-            - ~/.gradle/caches
-            - ~/.gradle/wrapper
+      # Run test suite
+      - run: ./gradlew --no-daemon test
