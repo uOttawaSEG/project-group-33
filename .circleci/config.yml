@@ -1,53 +1,47 @@
 version: 2.1
 
+orbs:
+  android: circleci/android@3.1.0   # gives sdkmanager helpers
+
 jobs:
   build:
     docker:
-      # Pick a recent Android convenience image with JDK preinstalled
-      - image: cimg/android:2024.09
+      - image: cimg/android:2024.09    # JDK 17 + Android SDK preinstalled
     environment:
-      ANDROID_HOME: /opt/android/sdk
-      ANDROID_SDK_ROOT: /opt/android/sdk
-      GRADLE_OPTS: -Dorg.gradle.daemon=false -Dorg.gradle.jvmargs="-Xmx2048m -XX:MaxMetaspaceSize=1024m"
-      TERM: dumb
+      GRADLE_OPTS: "-Dorg.gradle.daemon=false -Dorg.gradle.jvmargs='-Xmx2048m'"
     steps:
       - checkout
 
-      # Cache Gradle & Android deps
+      # ---- Gradle cache (include .gradle.kts!) ----
       - restore_cache:
           keys:
-            - v1-gradle-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}-{{ checksum "**/*.gradle*" }}
-            - v1-gradle-
+            - gradle-v1-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}-{{ checksum "build.gradle.kts" }}-{{ checksum "settings.gradle.kts" }}
+            - gradle-v1-
 
-      # Ensure required SDK components exist (adjust build-tools if needed)
-      - run:
-          name: Install Android SDK packages
-          command: |
-            sdkmanager --version
-            yes | sdkmanager --licenses || true
-            sdkmanager --install \
-              "platform-tools" \
-              "build-tools;36.0.0" \
-              "platforms;android-36"
+      # ---- Make Android SDK visible to Gradle ----
+      # cimg/android sets ANDROID_SDK_ROOT. Wire it into local.properties for Gradle.
+      - run: echo "sdk.dir=${ANDROID_SDK_ROOT}" > local.properties
 
-      # (Optional) update tools metadata
-      - run:
-          name: Update SDK package metadata
-          command: sdkmanager --update || true
+      # ---- Accept licenses non-interactively & install required packages ----
+      - run: yes | sdkmanager --licenses
+      # Adjust versions to match your project; for compileSdk=36 you need these:
+      - run: sdkmanager "platform-tools" "platforms;android-36" "build-tools;36.0.0" || \
+          (echo "Android 36 not found; installing 35 instead" && \
+          sdkmanager "platforms;android-35" "build-tools;35.0.0")
 
-      # Build & unit tests (no emulator needed)
-      - run:
-          name: Assemble Debug
-          command: ./gradlew assembleDebug --stacktrace
-      - run:
-          name: Unit tests
-          command: ./gradlew testDebugUnitTest --stacktrace
+      # ---- Build & test ----
+      - run: ./gradlew clean test :app:assembleDebug --stacktrace
 
       - save_cache:
-          key: v1-gradle-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}-{{ checksum "**/*.gradle*" }}
+          key: gradle-v1-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}-{{ checksum "build.gradle.kts" }}-{{ checksum "settings.gradle.kts" }}
           paths:
             - ~/.gradle/caches
             - ~/.gradle/wrapper
+
+      # Artifacts (optional)
+      - store_artifacts:
+          path: app/build/outputs/apk
+          destination: apk
 
 workflows:
   build_and_test:
