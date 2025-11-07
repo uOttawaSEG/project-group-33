@@ -4,14 +4,30 @@ executors:
   android:
     docker:
       - image: cimg/android:2024.01
+    environment:
+      TERM: dumb
 
 jobs:
   build_and_test:
     executor: android
     steps:
       - checkout
+
+      # Ensure sdkmanager works
+      - run: yes | sdkmanager --licenses
+
+      # Install the Android SDK for compileSdk = 36
+      - run: sdkmanager "platforms;android-36" "platform-tools" "build-tools;34.0.0"
+
+      # Build the project
       - run: ./gradlew --no-daemon clean assembleDebug
+
+      # Run unit tests (not UI tests)
       - run: ./gradlew --no-daemon testDebugUnitTest
+
+      # Save APK output
+      - store_artifacts:
+          path: app/build/outputs/apk/debug
 
 workflows:
   build:
