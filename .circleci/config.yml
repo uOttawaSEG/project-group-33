@@ -10,24 +10,18 @@ jobs:
     steps:
       - checkout
 
-      # Remove local.properties so CI does not use your local SDK path
-      - run:
-          name: Remove local.properties if present
-          command: |
-            if [ -f local.properties ]; then
-              rm local.properties
-            fi
-
       - run:
           name: Accept Android SDK licenses
-          command: yes | sdkmanager --licenses
+          command: |
+            set +o pipefail
+            yes | sdkmanager --licenses
 
       - run:
           name: Install Android build tools + platform
           command: |
             sdkmanager "platform-tools" \
-                       "platforms;android-36" \
-                       "build-tools;36.0.0" || true
+                       "platforms;android-35" \
+                       "build-tools;35.0.0" || true
 
       - restore_cache:
           keys:
@@ -48,7 +42,6 @@ jobs:
             - ~/.gradle/caches
             - ~/.gradle/wrapper
 
-      # Upload the Debug APK so it appears in CircleCI Artifacts
       - store_artifacts:
           path: app/build/outputs/apk/debug
           destination: apk
