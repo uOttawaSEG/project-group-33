@@ -10,14 +10,6 @@ jobs:
     steps:
       - checkout
 
-      # Remove local.properties so CI does not use your local SDK path
-      - run:
-          name: Remove local.properties if present
-          command: |
-            if [ -f local.properties ]; then
-              rm local.properties
-            fi
-
       - run:
           name: Accept Android SDK licenses
           command: yes | sdkmanager --licenses
