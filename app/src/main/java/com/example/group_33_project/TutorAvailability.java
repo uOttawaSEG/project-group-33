@@ -164,29 +164,6 @@ public class TutorAvailability extends AppCompatActivity {
             }
         });
 
-        tutorH.getAllSlotsByStatus("pending", new SlotListCallback() {
-            @Override
-            public void onSuccess(List<TimeSlot> allTimeSlots) {
-                updateSlotsWithTimeSlots(allTimeSlots, weekStart, weekEnd);
-            }
-
-            @Override
-            public void onFailure(String error) {
-                Log.e("TutorAvailability", "Failed to load booked slots: " + error);
-            }
-        });
-
-        tutorH.getAllSlotsByStatus("cancelled", new SlotListCallback() {
-            @Override
-            public void onSuccess(List<TimeSlot> allTimeSlots) {
-                updateSlotsWithTimeSlots(allTimeSlots, weekStart, weekEnd);
-            }
-
-            @Override
-            public void onFailure(String error) {
-                Log.e("TutorAvailability", "Failed to load booked slots: " + error);
-            }
-        });
     }
 
     //HELPER METHOD TO PERSONALIZE THE SLOTS

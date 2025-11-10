@@ -11,15 +11,20 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.recyclerview.widget.RecyclerView;
 
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class TutorPendingRequest extends AppCompatActivity{
-    private List<TimeSlot> pendingRequests = new ArrayList<>(); //storing all the pending timeslots
-    private TutorHandling tutorHandling = new TutorHandling();
+    private List<TimeSlot> pendingRequests; //storing all the pending timeslots
+    private TutorHandling tutorHandling;
     private Tutor currentTutor;
+
+    private RecyclerView rvSlots;
+
+    Button btnBack;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,18 +44,20 @@ public class TutorPendingRequest extends AppCompatActivity{
             return;
         }
 
-        //FINDING THE ID OF BUTTONS
-        Button Back = findViewById(R.id.screen12_back);
+        //rvSlots = findViewById(R.id.rv12);
 
-        Back.setOnClickListener(v -> finish());
+        //FINDING THE ID OF BUTTON TO GO BACK
+        btnBack = findViewById(R.id.screen12_back);
 
-        //GOES BACK TO TUTORUPCOMING SCREEN
-//        Back.setOnClickListener(v -> {
-//            Intent intent = new Intent(TutorPendingRequest.this, TutorUpcoming.class);
-//            startActivity(intent);
-//            finish();
-//        });
-        Back.setOnClickListener(v -> finish()); //<----use this to go back instead
+         btnBack.setOnClickListener(v -> {
+               Intent intent = new Intent(TutorPendingRequest.this, TutorUpcoming.class);
+               intent.putExtra("tutor", currentTutor);
+               startActivity(intent);
+               finish();
+         });
+
+         pendingRequests = new ArrayList<>();
+        tutorHandling = new TutorHandling();
 
         loadPendingRequests();
 
