@@ -10,11 +10,11 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+//THIS CLASS IS NOT USED CURRENTLY
+public class SlotDeleteTutorAdapter extends RecyclerView.Adapter<SlotDeleteTutorAdapter.SlotViewHolder> {
 
-public class SlotCreateTutorAdapter extends RecyclerView.Adapter<SlotCreateTutorAdapter.SlotViewHolder> {
     private List<SimpleTutorSlot> slots;  // All slots in the grid
     private List<SimpleTutorSlot> selectedSlots = new ArrayList<>(); // Multi-selection
     private OnSlotClickListener listener;
@@ -23,21 +23,21 @@ public class SlotCreateTutorAdapter extends RecyclerView.Adapter<SlotCreateTutor
         void onSlotsSelected(List<SimpleTutorSlot> selectedSlots);
     }
 
-    public SlotCreateTutorAdapter(List<SimpleTutorSlot> slots, OnSlotClickListener listener) {
+    public SlotDeleteTutorAdapter(List<SimpleTutorSlot> slots, SlotDeleteTutorAdapter.OnSlotClickListener listener) {
         this.slots = slots;
         this.listener = listener;
     }
 
     @NonNull
     @Override
-    public SlotViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public SlotDeleteTutorAdapter.SlotViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.simpleslot_tutorslot, parent, false);
-        return new SlotViewHolder(view);
+        return new SlotDeleteTutorAdapter.SlotViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull SlotViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull SlotDeleteTutorAdapter.SlotViewHolder holder, int position) {
         SimpleTutorSlot slot = slots.get(position);
 
         // Determine if past
@@ -60,16 +60,13 @@ public class SlotCreateTutorAdapter extends RecyclerView.Adapter<SlotCreateTutor
         } else {
             switch (slot.status) {
                 case "booked":
-                    holder.tvSlot.setBackgroundColor(Color.BLUE);
+                    holder.tvSlot.setBackgroundColor(Color.RED);
                     break;
                 case "pending":
-                    holder.tvSlot.setBackgroundColor(Color.BLUE);
+                    holder.tvSlot.setBackgroundColor(Color.YELLOW);
                     break;
                 case "open":
                     holder.tvSlot.setBackgroundColor(Color.BLUE);
-                    break;
-                case "cancelled":
-                    holder.tvSlot.setBackgroundColor(Color.RED);
                     break;
                 default:
                     holder.tvSlot.setBackgroundColor(Color.LTGRAY); // unselected future slot
@@ -78,7 +75,7 @@ public class SlotCreateTutorAdapter extends RecyclerView.Adapter<SlotCreateTutor
         }
 
 // Enable only clickable future open slots
-        holder.tvSlot.setEnabled(!isPast && "empty".equals(slot.status));
+        holder.tvSlot.setEnabled(!isPast && "open".equals(slot.status)||!isPast && "booked".equals(slot.status)||!isPast && "cancelled".equals(slot.status));
 
         holder.tvSlot.setOnClickListener(v -> {
             if (!holder.tvSlot.isEnabled()) return;
@@ -116,5 +113,4 @@ public class SlotCreateTutorAdapter extends RecyclerView.Adapter<SlotCreateTutor
             super(itemView);
             tvSlot = itemView.findViewById(R.id.tvSlot);
         }
-    }
-}
+    }}
