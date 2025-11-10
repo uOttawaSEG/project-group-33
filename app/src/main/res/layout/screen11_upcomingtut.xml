@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/bkg"
@@ -18,10 +19,180 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <LinearLayout
+        android:id="@+id/weekNavigation11"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="92dp"
+        android:gravity="center"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <Button
+            android:id="@+id/btnPrevWeek11"
+            android:backgroundTint="@color/gg"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Previous" />
+
+        <TextView
+            android:id="@+id/tvWeekLabel11"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="16dp"
+            android:text="Week"
+            android:textSize="18sp" />
+
+        <Button
+            android:id="@+id/btnNextWeek11"
+            android:backgroundTint="@color/gg"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Next" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearWeekdays11"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@id/weekNavigation11"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <!-- Each TextView represents a weekday -->
+        <TextView
+            android:id="@+id/textView111"
+            android:layout_width="16dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="Sun" />
+
+        <TextView android:text="Mon" android:layout_weight="1" android:gravity="center" android:layout_height="wrap_content" android:layout_width="wrap_content"/>
+        <TextView android:text="Tue" android:layout_weight="1" android:gravity="center" android:layout_height="wrap_content" android:layout_width="wrap_content"/>
+        <TextView android:text="Wed" android:layout_weight="1" android:gravity="center" android:layout_height="wrap_content" android:layout_width="wrap_content"/>
+        <TextView android:text="Thu" android:layout_weight="1" android:gravity="center" android:layout_height="wrap_content" android:layout_width="wrap_content"/>
+        <TextView android:text="Fri" android:layout_weight="1" android:gravity="center" android:layout_height="wrap_content" android:layout_width="wrap_content"/>
+        <TextView android:text="Sat" android:layout_weight="1" android:gravity="center" android:layout_height="wrap_content" android:layout_width="wrap_content"/>
+    </LinearLayout>
+
+    <!-- RecyclerView for the time slots grid -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvSlots11"
+        android:layout_width="365dp"
+        android:layout_height="684dp"
+        android:paddingTop="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/linearWeekdays11"
+        app:layout_constraintVertical_bias="0.9" />
+
+    <LinearLayout
+        android:layout_width="41dp"
+        android:layout_height="690dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0">
+
+        <TextView
+            android:id="@+id/textView112"
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:text="9AM" />
+
+        <TextView
+            android:id="@+id/textView113"
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:text="10AM" />
+
+        <TextView
+            android:id="@+id/textView114"
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:text="11AM" />
+
+        <TextView
+            android:id="@+id/textView115"
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:text="12PM" />
+
+        <TextView
+            android:id="@+id/textView116"
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:text="1PM" />
+
+        <TextView
+            android:id="@+id/textView117"
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:text="2PM" />
+
+        <TextView
+            android:id="@+id/textView118"
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:text="3PM" />
+
+        <TextView
+            android:id="@+id/textView119"
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:text="4PM" />
+
+        <TextView
+            android:id="@+id/textView1110"
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:text="5PM" />
+
+        <TextView
+            android:id="@+id/textView1111"
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:text="6PM" />
+
+        <TextView
+            android:id="@+id/textView1112"
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:text="7PM" />
+
+        <TextView
+            android:id="@+id/textView1113"
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:text="8PM" />
+
+        <TextView
+            android:id="@+id/textView1114"
+            android:layout_width="match_parent"
+            android:layout_height="51dp"
+            android:text="9PM" />
+    </LinearLayout>
+
     <com.google.android.material.button.MaterialButton
         android:id="@+id/screen11_psessionsr"
-        android:layout_width="375dp"
-        android:layout_height="75dp"
+        android:layout_width="243dp"
+        android:layout_height="69dp"
         android:layout_weight="1"
         android:background="@drawable/button_background"
         android:backgroundTint="@color/gg"
@@ -35,8 +206,9 @@
         app:iconTint="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.904"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.975" />
+        app:layout_constraintVertical_bias="0.024" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
