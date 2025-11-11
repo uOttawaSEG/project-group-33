@@ -313,6 +313,7 @@ public class TutorHandling {
                                 }
                                 else{
                                     updates.put("status", "open");
+                                    updates.put("studentEmail", null);
                                 }
 
                                 slotRef.update(updates) // update change
