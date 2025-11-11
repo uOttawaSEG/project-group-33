@@ -1,6 +1,5 @@
 package com.example.group_33_project;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.Toast;
@@ -10,14 +9,19 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class TutorPast extends AppCompatActivity{
+public class TutorPast extends AppCompatActivity {
 
     private TutorHandling tutorHandling;
     private Tutor tutor;
+
+    private final List<TimeSlot> pastSlots = new ArrayList<>();
+    private PastTimeSlotAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,12 +29,12 @@ public class TutorPast extends AppCompatActivity{
         setContentView(R.layout.screen13_pasttut);
         EdgeToEdge.enable(this);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.tutorpast), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            Insets sys = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(sys.left, sys.top, sys.right, sys.bottom);
             return insets;
         });
 
-        tutor = (Tutor) getIntent().getSerializableExtra("tutor"); //get tutor object
+        tutor = (Tutor) getIntent().getSerializableExtra("tutor");
         tutorHandling = new TutorHandling();
 
         if (tutor == null) {
@@ -39,32 +43,37 @@ public class TutorPast extends AppCompatActivity{
             return;
         }
 
-        //FINDING THE ID OF BUTTONS
-        Button Back = findViewById(R.id.screen13_back);
+        Button back = findViewById(R.id.screen13_back);
+        back.setOnClickListener(v -> finish());
 
-        //GOES BACK TO TUTORIN SCREEN
-        Back.setOnClickListener(v -> finish());
+        // RecyclerView setup
+        RecyclerView rv = findViewById(R.id.rvPastSlots);
+        rv.setLayoutManager(new LinearLayoutManager(this));
+        adapter = new PastTimeSlotAdapter(tutor);
+        rv.setAdapter(adapter);
 
         loadPastSessions(tutor);
     }
 
-    //LOAD THE PAST SESSIONS
-    private void loadPastSessions(Tutor tutor){
-        //LOAD THE PAST SESSIONS
-        tutorHandling.getAllSlotsByStatus("completed", new SlotListCallback(){
+    private void loadPastSessions(Tutor tutor) {
+        tutorHandling.getAllSlotsByStatus("completed", new SlotListCallback() {
             @Override
             public void onSuccess(List<TimeSlot> slotList) {
-                List<TimeSlot> pastSlots = new ArrayList<>(); //ARRAY OF COMPLETED TIME SLOTS OF TUTOR
+                pastSlots.clear();
                 for (TimeSlot slot : slotList) {
-                    if (slot.getTutor() != null && slot.getTutor().getEmail().equals(tutor.getEmail())) {
+                    if (slot.getTutor() != null
+                            && slot.getTutor().getEmail() != null
+                            && slot.getTutor().getEmail().equalsIgnoreCase(tutor.getEmail())) {
                         pastSlots.add(slot);
                     }
                 }
+
+                adapter.setData(pastSlots); // updates the list and refreshes UI
+
                 if (pastSlots.isEmpty()) {
                     Toast.makeText(TutorPast.this, "No past sessions", Toast.LENGTH_LONG).show();
                 } else {
-                    //DISPLAY THE PAST SESSIONS
-                    Toast.makeText(TutorPast.this, "Past sessions" + pastSlots.size(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(TutorPast.this, "Past sessions: " + pastSlots.size(), Toast.LENGTH_LONG).show();
                 }
             }
 

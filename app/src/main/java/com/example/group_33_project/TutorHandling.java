@@ -17,10 +17,6 @@ import java.util.Map;
 
 import java.time.*;
 
-
-
-/// addOnSuccessListener is to do smt with data if success. addOnFailureListener handle firebase error
-/// override callback so that it just prints message or when data is ready
 public class TutorHandling {
     private final FirebaseFirestore db;
 
@@ -278,6 +274,50 @@ public class TutorHandling {
                             });
                 });
     }
+    // method to approve or deny a pending request
+    public void approveDenyPendingRequest(TimeSlot slot, String choice, TutorCallback callback) { // choice = "approve" or "deny"
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        // find tutor's doc by email
+        db.collection("accounts")
+                .whereEqualTo("email", slot.getTutor().getEmail())
+                .limit(1)
+                .get()
+                .addOnFailureListener(e -> callback.onFailure("Lookup failed: " + e.getMessage()))
+                .addOnSuccessListener(q -> {
+                    if (q.isEmpty()) {
+                        callback.onFailure("Tutor not found");
+                        return;
+                    }
+
+                    DocumentSnapshot tutorDoc = q.getDocuments().get(0); // get the tutor's doc
+                    DocumentReference slotRef = tutorDoc.getReference()
+                            .collection("timeSlots")
+                            .document(slot.getID()); // find the slot using the ID
+
+
+                    slotRef.get()
+                            .addOnFailureListener(e -> callback.onFailure("Failed to load slot: " + e.getMessage()))
+                            .addOnSuccessListener(foundSlot -> {
+                                if (!foundSlot.exists()) {
+                                    callback.onFailure("Time slot not found");
+                                    return;
+                                }
+                                // store updates in a new hashmap
+                                Map<String, Object> updates = new HashMap<>();
+                                if (choice.equals("approve")){
+                                    updates.put("status", "booked");
+                                }
+                                else{
+                                    updates.put("status", "open");
+                                    updates.put("studentEmail", null);
+                                }
+
+                                slotRef.update(updates) // update change
+                                        .addOnSuccessListener(v -> callback.onSuccess("Status updated successfully."))
+                                        .addOnFailureListener(e -> callback.onFailure("Error: " + e.getMessage()));
+                            });
+                });
+    }
 
     // Method to get a list of ALL timeslots from ALL tutors, with the status specified (open, booked, pending, cancelled, null -> ALL slots with ALL status)
     public void getAllSlotsByStatus(String status, SlotListCallback callback) { // for ALL slots, call getAllSlotsByStatus(null, callback);
@@ -392,6 +432,68 @@ public class TutorHandling {
         });
     }
 
+    // Fast: fetch ONLY this tutor’s slots from /accounts/{tutorDoc}/timeSlots
+    public void queryTutorSlots(Tutor tutor, SlotListCallback callback) {
+
+
+        db.collection("accounts")
+                .whereEqualTo("email", tutor.getEmail())
+                .limit(1)
+                .get()
+                .addOnFailureListener(e -> callback.onFailure("Lookup failed: " + e.getMessage()))
+                .addOnSuccessListener(q -> {
+                    if (q.isEmpty()) { callback.onSuccess(new ArrayList<>()); return; } // if theres noting in the query snapshot for any reason, just callback a list of no slots
+
+                    DocumentSnapshot tutorDoc = q.getDocuments().get(0);
+                    tutorDoc.getReference()
+                            .collection("timeSlots")
+                            .orderBy("startInstant") // earliest first
+                            .get()
+                            .addOnFailureListener(e -> callback.onFailure("Slots load failed: " + e.getMessage()))
+                            .addOnSuccessListener(qs -> {
+                                List<TimeSlot> slots = new ArrayList<>();
+                                for (DocumentSnapshot doc : qs.getDocuments()) {
+                                    // convert back to ZonedDateTime
+                                    Timestamp sTs = doc.getTimestamp("startInstant");
+                                    Timestamp eTs = doc.getTimestamp("endInstant");
+                                    String zoneId = doc.getString("zoneId");
+                                    Boolean requireApproval = doc.getBoolean("requireApproval");
+                                    String status = doc.getString("status");
+                                    String studentEmail = doc.getString("studentEmail");
+
+                                    if (sTs == null || eTs == null || zoneId == null) continue;
+
+                                    ZonedDateTime start = ZonedDateTime.ofInstant(sTs.toDate().toInstant(), ZoneId.of(zoneId));
+                                    ZonedDateTime end   = ZonedDateTime.ofInstant(eTs.toDate().toInstant(), ZoneId.of(zoneId));
+
+                                    final Student[] student = {null};
+                                    AccountHandling.queryAccount(studentEmail, new QueryCallback() {
+                                        @Override
+                                        public void onSuccess(Account account) {
+                                            student[0] = (Student) account;
+                                        }
+
+                                        @Override
+                                        public void onFailure(String errorMessage) {
+                                             // student is already initialized as null so it doesn't matter what we do here
+                                        }
+                                    });
+                                    slots.add(new TimeSlot(
+                                            tutor,                  // reuse the Tutor we already have
+                                            requireApproval,
+                                            start,
+                                            end,
+                                            student[0],                   // student can be fetched lazily if needed
+                                            status,
+                                            doc.getId()
+                                    ));
+                                }
+                                slots.sort(Comparator.comparing(TimeSlot::getStartDate)); // sort everything by start date
+                                callback.onSuccess(slots);
+                            });
+                });
+    }
+
 
     // helper method to check if a given date is in the future
     public boolean isFutureDate(ZonedDateTime start){
@@ -400,9 +502,5 @@ public class TutorHandling {
         return start.isAfter(today); // it's a future date if the start date is AFTER today's date (also compares hour/min/sec)
 
     }
-
-
-
-
 
 }

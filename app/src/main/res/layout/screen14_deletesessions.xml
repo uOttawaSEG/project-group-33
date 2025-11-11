@@ -5,10 +5,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/bkg"
-    android:id="@+id/tutorupcoming">
+    android:id="@+id/tutordelete">
 
     <Button
-        android:id="@+id/screen11_back"
+        android:id="@+id/screen14_back"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -19,8 +19,34 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/RecyclerView14"
+        android:layout_width="397dp"
+        android:layout_height="606dp"
+        android:padding="8dp"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/screen14_back" />
+
+    <!-- IF STILL WANT CALENDAR VIEW -->
+    <!--
+
+    <Button
+        android:id="@+id/screen14_back"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="28dp"
+        android:backgroundTint="@color/gg"
+        android:text="@string/screen3_back"
+        android:textColor="@color/white"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <LinearLayout
-        android:id="@+id/weekNavigation11"
+        android:id="@+id/weekNavigation14"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="92dp"
@@ -32,14 +58,14 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <Button
-            android:id="@+id/btnPrevWeek11"
+            android:id="@+id/btnPrevWeek14"
             android:backgroundTint="@color/gg"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Previous" />
 
         <TextView
-            android:id="@+id/tvWeekLabel11"
+            android:id="@+id/tvWeekLabel14"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="16dp"
@@ -47,7 +73,7 @@
             android:textSize="18sp" />
 
         <Button
-            android:id="@+id/btnNextWeek11"
+            android:id="@+id/btnNextWeek14"
             android:backgroundTint="@color/gg"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -55,17 +81,17 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/linearWeekdays11"
+        android:id="@+id/linearWeekdays14"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintTop_toBottomOf="@id/weekNavigation11"
+        app:layout_constraintTop_toBottomOf="@id/weekNavigation14"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
-        <!-- Each TextView represents a weekday -->
+
         <TextView
-            android:id="@+id/textView111"
+            android:id="@+id/textView"
             android:layout_width="16dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -86,9 +112,9 @@
         <TextView android:text="Sat" android:layout_weight="1" android:gravity="center" android:layout_height="wrap_content" android:layout_width="wrap_content"/>
     </LinearLayout>
 
-    <!-- RecyclerView for the time slots grid -->
+
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvSlots11"
+        android:id="@+id/rvSlots14"
         android:layout_width="365dp"
         android:layout_height="684dp"
         android:paddingTop="8dp"
@@ -96,8 +122,36 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/linearWeekdays11"
+        app:layout_constraintTop_toBottomOf="@id/linearWeekdays14"
         app:layout_constraintVertical_bias="0.9" />
+
+    <Button
+        android:id="@+id/btnDelete14"
+        android:layout_width="99dp"
+        android:layout_height="52dp"
+        android:layout_margin="8dp"
+        android:backgroundTint="@color/gg"
+        android:text="Delete"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.943"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.024" />
+
+    <Button
+        android:id="@+id/btnCancel14"
+        android:layout_width="99dp"
+        android:layout_height="52dp"
+        android:layout_margin="8dp"
+        android:backgroundTint="@color/gg"
+        android:text="Cancel"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.58"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.023" />
 
     <LinearLayout
         android:layout_width="41dp"
@@ -111,104 +165,82 @@
         app:layout_constraintVertical_bias="1.0">
 
         <TextView
-            android:id="@+id/textView112"
+            android:id="@+id/textView2"
             android:layout_width="match_parent"
             android:layout_height="55dp"
             android:text="9AM" />
 
         <TextView
-            android:id="@+id/textView113"
+            android:id="@+id/textView3"
             android:layout_width="match_parent"
             android:layout_height="55dp"
             android:text="10AM" />
 
         <TextView
-            android:id="@+id/textView114"
+            android:id="@+id/textView4"
             android:layout_width="match_parent"
             android:layout_height="55dp"
             android:text="11AM" />
 
         <TextView
-            android:id="@+id/textView115"
+            android:id="@+id/textView5"
             android:layout_width="match_parent"
             android:layout_height="55dp"
             android:text="12PM" />
 
         <TextView
-            android:id="@+id/textView116"
+            android:id="@+id/textView6"
             android:layout_width="match_parent"
             android:layout_height="55dp"
             android:text="1PM" />
 
         <TextView
-            android:id="@+id/textView117"
+            android:id="@+id/textView7"
             android:layout_width="match_parent"
             android:layout_height="55dp"
             android:text="2PM" />
 
         <TextView
-            android:id="@+id/textView118"
+            android:id="@+id/textView8"
             android:layout_width="match_parent"
             android:layout_height="55dp"
             android:text="3PM" />
 
         <TextView
-            android:id="@+id/textView119"
+            android:id="@+id/textView9"
             android:layout_width="match_parent"
             android:layout_height="55dp"
             android:text="4PM" />
 
         <TextView
-            android:id="@+id/textView1110"
+            android:id="@+id/textView10"
             android:layout_width="match_parent"
             android:layout_height="55dp"
             android:text="5PM" />
 
         <TextView
-            android:id="@+id/textView1111"
+            android:id="@+id/textView11"
             android:layout_width="match_parent"
             android:layout_height="55dp"
             android:text="6PM" />
 
         <TextView
-            android:id="@+id/textView1112"
+            android:id="@+id/textView12"
             android:layout_width="match_parent"
             android:layout_height="55dp"
             android:text="7PM" />
 
         <TextView
-            android:id="@+id/textView1113"
+            android:id="@+id/textView13"
             android:layout_width="match_parent"
             android:layout_height="55dp"
             android:text="8PM" />
 
         <TextView
-            android:id="@+id/textView1114"
+            android:id="@+id/textView14"
             android:layout_width="match_parent"
             android:layout_height="51dp"
             android:text="9PM" />
     </LinearLayout>
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/screen11_psessionsr"
-        android:layout_width="243dp"
-        android:layout_height="69dp"
-        android:layout_weight="1"
-        android:background="@drawable/button_background"
-        android:backgroundTint="@color/gg"
-        android:fontFamily="sans-serif-medium"
-        android:text="@string/screen11_psessionsr"
-        android:textAllCaps="false"
-        android:textColor="@color/white"
-        app:backgroundTint="@null"
-        app:icon="@drawable/approve_bookings"
-        app:iconSize="38dp"
-        app:iconTint="@color/white"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.904"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.024" />
-
+    -->
 </androidx.constraintlayout.widget.ConstraintLayout>

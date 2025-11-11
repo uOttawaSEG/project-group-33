@@ -33,6 +33,4 @@ public class Student extends Account {
     public String getStatus(){
         return status;
     }
-
-
 }
