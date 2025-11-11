@@ -67,6 +67,11 @@
             android:theme="@style/Theme.Group_33_Project" />
 
         <activity
+            android:name=".TutorDeleteAvailability"
+            android:exported="false"
+            android:theme="@style/Theme.Group_33_Project" />
+
+        <activity
             android:name=".TutorPast"
             android:exported="false"
             android:theme="@style/Theme.Group_33_Project" />
