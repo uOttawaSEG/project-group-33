@@ -279,7 +279,7 @@ public class TutorHandling {
                 });
     }
     // method to approve or deny a pending request
-    public void approveDenyBookingRequest(TimeSlot slot, String choice, TutorCallback callback) { // choice = "approve" or "deny"
+    public void approveDenyPendingRequest(TimeSlot slot, String choice, TutorCallback callback) { // choice = "approve" or "deny"
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         // find tutor's doc by email
         db.collection("accounts")

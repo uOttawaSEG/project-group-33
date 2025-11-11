@@ -112,7 +112,7 @@ public class TutorUpcoming extends AppCompatActivity {
         });
     }
 
-    /** Loads upcoming sessions from TutorHandling **/
+    //LOAD UPCOMING SESSIONS
     private void loadUpcomingSession(Tutor tutor) {
         tutorHandling.getAllSlotsByStatus("booked", new SlotListCallback() {
             @Override
@@ -144,7 +144,7 @@ public class TutorUpcoming extends AppCompatActivity {
         });
     }
 
-    /** Adds test data to visualize upcoming sessions **/
+    //TEST METHOD
     private void addTestSlots() {
         ZoneId zone = ZoneId.of("America/New_York");
         ZonedDateTime zdt1 = ZonedDateTime.of(2025, 11, 12, 11, 30, 0, 0, zone);
@@ -159,7 +159,7 @@ public class TutorUpcoming extends AppCompatActivity {
         mySlots.add(new TimeSlot(currentTutor, false, zdt3, zdt4, s2, "booked", "12345"));
     }
 
-    /** Initializes week navigation **/
+    //SETUP WEEK
     private void setupWeekNavigation() {
         btnNextWeek.setOnClickListener(v -> {
             currentWeekStart = currentWeekStart.plusWeeks(1);
@@ -174,7 +174,7 @@ public class TutorUpcoming extends AppCompatActivity {
         updateWeekLabel();
     }
 
-    /** Updates the week label text **/
+    //UPDATE WEEK
     private void updateWeekLabel() {
         DateTimeFormatter fmt = DateTimeFormatter.ofPattern("MMM d");
         ZonedDateTime weekEnd = currentWeekStart.plusDays(6);
@@ -183,7 +183,7 @@ public class TutorUpcoming extends AppCompatActivity {
         }
     }
 
-    /** Generates visual slots for the week grid **/
+    //GENERATE WEEK SLOTS
     private void generateSlotsForWeek(ZonedDateTime weekStart) {
         allSlots.clear();
 
@@ -230,7 +230,7 @@ public class TutorUpcoming extends AppCompatActivity {
         updateWeekLabel();
     }
 
-    /** Initializes the RecyclerView adapter **/
+    //SETUP ADAPTER
     private void setupAdapter() {
         adapter = new TutorUpcomingAdapter(allSlots);
         rvSlots.setLayoutManager(new GridLayoutManager(this, 7, RecyclerView.VERTICAL, false));
