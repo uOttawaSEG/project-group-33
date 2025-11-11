@@ -392,6 +392,68 @@ public class TutorHandling {
         });
     }
 
+    // Fast: fetch ONLY this tutor’s slots from /accounts/{tutorDoc}/timeSlots
+    public void queryTutorSlots(Tutor tutor, SlotListCallback callback) {
+
+
+        db.collection("accounts")
+                .whereEqualTo("email", tutor.getEmail())
+                .limit(1)
+                .get()
+                .addOnFailureListener(e -> callback.onFailure("Lookup failed: " + e.getMessage()))
+                .addOnSuccessListener(q -> {
+                    if (q.isEmpty()) { callback.onSuccess(new ArrayList<>()); return; } // if theres noting in the query snapshot for any reason, just callback a list of no slots
+
+                    DocumentSnapshot tutorDoc = q.getDocuments().get(0);
+                    tutorDoc.getReference()
+                            .collection("timeSlots")
+                            .orderBy("startInstant") // earliest first
+                            .get()
+                            .addOnFailureListener(e -> callback.onFailure("Slots load failed: " + e.getMessage()))
+                            .addOnSuccessListener(qs -> {
+                                List<TimeSlot> slots = new ArrayList<>();
+                                for (DocumentSnapshot doc : qs.getDocuments()) {
+                                    // convert back to ZonedDateTime
+                                    Timestamp sTs = doc.getTimestamp("startInstant");
+                                    Timestamp eTs = doc.getTimestamp("endInstant");
+                                    String zoneId = doc.getString("zoneId");
+                                    Boolean requireApproval = doc.getBoolean("requireApproval");
+                                    String status = doc.getString("status");
+                                    String studentEmail = doc.getString("studentEmail");
+
+                                    if (sTs == null || eTs == null || zoneId == null) continue;
+
+                                    ZonedDateTime start = ZonedDateTime.ofInstant(sTs.toDate().toInstant(), ZoneId.of(zoneId));
+                                    ZonedDateTime end   = ZonedDateTime.ofInstant(eTs.toDate().toInstant(), ZoneId.of(zoneId));
+
+                                    final Student[] student = {null};
+                                    AccountHandling.queryAccount(studentEmail, new QueryCallback() {
+                                        @Override
+                                        public void onSuccess(Account account) {
+                                            student[0] = (Student) account;
+                                        }
+
+                                        @Override
+                                        public void onFailure(String errorMessage) {
+                                             // student is already initialized as null so it doesn't matter what we do here
+                                        }
+                                    });
+                                    slots.add(new TimeSlot(
+                                            tutor,                  // reuse the Tutor we already have
+                                            requireApproval,
+                                            start,
+                                            end,
+                                            student[0],                   // student can be fetched lazily if needed
+                                            status,
+                                            doc.getId()
+                                    ));
+                                }
+                                slots.sort(Comparator.comparing(TimeSlot::getStartDate)); // sort everything by start date
+                                callback.onSuccess(slots);
+                            });
+                });
+    }
+
 
     // helper method to check if a given date is in the future
     public boolean isFutureDate(ZonedDateTime start){

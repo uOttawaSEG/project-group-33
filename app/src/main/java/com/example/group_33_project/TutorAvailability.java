@@ -22,6 +22,7 @@ import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -64,18 +65,19 @@ public class TutorAvailability extends AppCompatActivity {
         //FIND THIS SPECIFIC TUTOR FOR FUTURE FILTERING
         currentTutor = (Tutor) getIntent().getSerializableExtra("tutor");
 
+
         if (currentTutor == null) {
             Toast.makeText(this, "Error: Tutor not found!", Toast.LENGTH_LONG).show();
             finish();
             return;
         }
 
-        SharedPreferences prefs = getSharedPreferences("SCREEN_SETTINGS", Context.MODE_PRIVATE);
-        needsApproval = prefs.getBoolean("BUTTON_VISIBILITY", false);
+        SharedPreferences prefs = getSharedPreferences("ScreenSettings", Context.MODE_PRIVATE);
+        needsApproval = !prefs.getBoolean("ButtonVisibility", false); // logic was mistakenly created backwards, so just take !
 
         //SETUP CURRENT WEEKS SLOTS
-        currentWeekStart = ZonedDateTime.now()
-                .with(DayOfWeek.SUNDAY)
+        currentWeekStart = ZonedDateTime.now(ZoneId.of("America/Toronto"))
+                .with(TemporalAdjusters.previousOrSame(DayOfWeek.SUNDAY)) // fix to ensure we start on the correct week
                 .truncatedTo(ChronoUnit.DAYS);
 
         setupWeekNavigation();
@@ -120,6 +122,7 @@ public class TutorAvailability extends AppCompatActivity {
     private void generateSlotsForWeek(ZonedDateTime weekStart) {
         allSlots.clear();
         count = 1;
+        ZonedDateTime weekEndExclusive = weekStart.plusDays(7); // next Sunday 00:00
 
         //dummy slots
         for (int hour = 9; hour < 21; hour++) {
@@ -140,19 +143,18 @@ public class TutorAvailability extends AppCompatActivity {
         ZonedDateTime weekEnd = weekStart.plusDays(6);
 
         //personalize slots
-        tutorH.getAllSlotsByStatus("open", new SlotListCallback() {
+        tutorH.queryTutorSlots(currentTutor,  new SlotListCallback() {
             @Override
             public void onSuccess(List<TimeSlot> allTimeSlots) {
-                updateSlotsWithTimeSlots(allTimeSlots, weekStart, weekEnd);
+                updateSlotsWithTimeSlots(allTimeSlots, weekStart, weekEndExclusive);
             }
-
             @Override
             public void onFailure(String error) {
-                Log.e("TutorAvailability", "Failed to load open slots: " + error);
+                Log.e("TutorAvailability", "Failed to load slots: " + error);
             }
         });
 
-        tutorH.getAllSlotsByStatus("booked", new SlotListCallback() {
+        /*tutorH.getAllSlotsByStatus("booked", new SlotListCallback() {
             @Override
             public void onSuccess(List<TimeSlot> allTimeSlots) {
                 updateSlotsWithTimeSlots(allTimeSlots, weekStart, weekEnd);
@@ -163,45 +165,44 @@ public class TutorAvailability extends AppCompatActivity {
                 Log.e("TutorAvailability", "Failed to load booked slots: " + error);
             }
         });
-
+*/
     }
 
     //HELPER METHOD TO PERSONALIZE THE SLOTS
-    private void updateSlotsWithTimeSlots(List<TimeSlot> allTimeSlots, ZonedDateTime weekStart, ZonedDateTime weekEnd) {
-        int sessionCounter = 1; // Start numbering sessions from 1
+    private void updateSlotsWithTimeSlots(List<TimeSlot> allTimeSlots, ZonedDateTime weekStart, ZonedDateTime weekEndExclusive) {
+        int sessionCounter = 1; // start numbering from 1
 
         for (TimeSlot ts : allTimeSlots) {
             if (ts.getTutor() == null || ts.getTutor().getEmail() == null) continue;
             if (!ts.getTutor().getEmail().equals(currentTutor.getEmail())) continue;
 
             ZonedDateTime tStart = ts.getStartDate().truncatedTo(ChronoUnit.MINUTES);
-            ZonedDateTime tEnd = ts.getEndDate().truncatedTo(ChronoUnit.MINUTES);
+            ZonedDateTime tEnd   = ts.getEndDate().truncatedTo(ChronoUnit.MINUTES);
 
-            if (tEnd.isBefore(weekStart) || tStart.isAfter(weekEnd)) continue;
+            // EXCLUDE if the interval [tStart, tEnd) lies completely outside [weekStart, weekEndExclusive)
+            if (tEnd.isBefore(weekStart) || !tStart.isBefore(weekEndExclusive)) continue;
 
             // Mark all overlapping SimpleTutorSlots with the SAME session number
-            if("cancelled".equals(ts.getStatus())){
+            if ("cancelled".equals(ts.getStatus())) {
                 for (SimpleTutorSlot s : allSlots) {
                     if (s.start.isBefore(tEnd) && s.end.isAfter(tStart)) {
-                        s.status = ts.getStatus();
-                        s.name = "cancelled" ;
+                        s.status = "cancelled";
+                        s.name = "cancelled";
                     }
                 }
-            }else{
+            } else {
                 for (SimpleTutorSlot s : allSlots) {
                     if (s.start.isBefore(tEnd) && s.end.isAfter(tStart)) {
                         s.status = ts.getStatus();
                         s.name = "session " + sessionCounter; // same number for all slots in this session
                     }
                 }
-
                 sessionCounter++;
             }
         }
 
         runOnUiThread(() -> adapter.notifyDataSetChanged());
     }
-
 
     //INITIALIZE ADANTER
     private void setupAdapter() {

@@ -70,12 +70,23 @@ public class TutorDeleteAvailability extends AppCompatActivity {
 
             @Override
             public void onCancel(TimeSlot slot) {
-                slot.setStatus("cancelled");
-                runOnUiThread(() -> {
-                    int idx = slotList.indexOf(slot);
-                    if (idx >= 0) adapter.notifyItemChanged(idx);
-                    Toast.makeText(TutorDeleteAvailability.this, "Marked cancelled.", Toast.LENGTH_SHORT).show();
+                tutorH.cancelTimeSlot(slot, new TutorCallback() { // fixing onCancel()
+                    @Override
+                    public void onSuccess(String msg) {
+                        slot.setStatus("cancelled"); // for local update
+                        runOnUiThread(() -> {
+                            int idx = slotList.indexOf(slot);
+                            if (idx >= 0) adapter.notifyItemChanged(idx);
+                            Toast.makeText(TutorDeleteAvailability.this, "Marked cancelled.", Toast.LENGTH_SHORT).show();
+                        });
+                    }
+
+                    @Override
+                    public void onFailure(String msg) {
+                        Toast.makeText(TutorDeleteAvailability.this, "ERROR: Could not mark as cancelled.", Toast.LENGTH_SHORT).show();
+                    }
                 });
+
             }
         });
         recyclerView.setAdapter(adapter);

@@ -65,7 +65,7 @@ public class DeleteAvailabilityAdapter extends RecyclerView.Adapter<DeleteAvaila
         h.tvTime.setText(datePart + "  |  " + startPart + " - " + endPart);
 
         // Student name (fallback to "—" instead of literal "null")
-        String studentName = "—";
+        String studentName = "No student";
         if (ts.getStudent() != null) {
             String fn = ts.getStudent().getFirstName();
             String ln = ts.getStudent().getLastName();
