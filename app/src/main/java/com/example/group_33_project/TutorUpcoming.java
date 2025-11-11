@@ -79,9 +79,10 @@ public class TutorUpcoming extends AppCompatActivity {
         loadUpcomingSession(currentTutor);
 
         //TEST
+        /*
         if (mySlots.isEmpty()) {
             addTestSlots();
-        }
+        }*/
 
         //INITIALIZE WEEK
         currentWeekStart = ZonedDateTime.now(ZoneId.of("America/Toronto"))
