@@ -187,11 +187,20 @@ public class TutorAvailability extends AppCompatActivity {
                     }
                 }
             }
-            else if("booked".equals(ts.getStatus())){
+            else if ("booked".equals(ts.getStatus())) {
                 for (SimpleTutorSlot s : allSlots) {
                     if (s.start.isBefore(tEnd) && s.end.isAfter(tStart)) {
                         s.status = "booked";
-                        s.name = ts.getStudent().getFirstName() + " " + ts.getStudent().getLastName().substring(0,1);
+                        String label = "booked";
+                        Student st = ts.getStudent();
+                        if (st != null) {
+                            String first = st.getFirstName() == null ? "" : st.getFirstName().trim();
+                            String last  = st.getLastName()  == null ? "" : st.getLastName().trim();
+                            String lastInitial = last.isEmpty() ? "" : (" " + last.charAt(0));
+                            String candidate = (first + lastInitial).trim();
+                            if (!candidate.isEmpty()) label = candidate;
+                        }
+                        s.name = label;
                     }
                 }
             }else{
