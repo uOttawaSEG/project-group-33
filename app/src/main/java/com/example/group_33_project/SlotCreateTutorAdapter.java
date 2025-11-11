@@ -45,7 +45,7 @@ public class SlotCreateTutorAdapter extends RecyclerView.Adapter<SlotCreateTutor
         boolean isPast = slot.start.isBefore(now);
 
         // Label: only booked/open slots show "Slot X", empty/past slots show nothing
-        if ("booked".equals(slot.status)||"open".equals(slot.status)) {
+        if ("booked".equals(slot.status)||"open".equals(slot.status)||"pending".equals(slot.status)) {
             holder.tvSlot.setText(slot.name);
             //holder.tvSlot.setText("Slot " + slot.daySlotNumber); // daySlotNumber = 1,2,3 per day
         } else {
@@ -60,10 +60,10 @@ public class SlotCreateTutorAdapter extends RecyclerView.Adapter<SlotCreateTutor
         } else {
             switch (slot.status) {
                 case "booked":
-                    holder.tvSlot.setBackgroundColor(Color.BLUE);
+                    holder.tvSlot.setBackgroundColor(Color.CYAN);
                     break;
                 case "pending":
-                    holder.tvSlot.setBackgroundColor(Color.BLUE);
+                    holder.tvSlot.setBackgroundColor(Color.YELLOW);
                     break;
                 case "open":
                     holder.tvSlot.setBackgroundColor(Color.BLUE);

@@ -154,18 +154,6 @@ public class TutorAvailability extends AppCompatActivity {
             }
         });
 
-        /*tutorH.getAllSlotsByStatus("booked", new SlotListCallback() {
-            @Override
-            public void onSuccess(List<TimeSlot> allTimeSlots) {
-                updateSlotsWithTimeSlots(allTimeSlots, weekStart, weekEnd);
-            }
-
-            @Override
-            public void onFailure(String error) {
-                Log.e("TutorAvailability", "Failed to load booked slots: " + error);
-            }
-        });
-*/
     }
 
     //HELPER METHOD TO PERSONALIZE THE SLOTS
@@ -190,7 +178,23 @@ public class TutorAvailability extends AppCompatActivity {
                         s.name = "cancelled";
                     }
                 }
-            } else {
+            }
+            else if("pending".equals(ts.getStatus())){
+                for (SimpleTutorSlot s : allSlots) {
+                    if (s.start.isBefore(tEnd) && s.end.isAfter(tStart)) {
+                        s.status = "pending";
+                        s.name = "pending";
+                    }
+                }
+            }
+            else if("booked".equals(ts.getStatus())){
+                for (SimpleTutorSlot s : allSlots) {
+                    if (s.start.isBefore(tEnd) && s.end.isAfter(tStart)) {
+                        s.status = "booked";
+                        s.name = ts.getStudent().getFirstName() + " " + ts.getStudent().getLastName().substring(0,1);
+                    }
+                }
+            }else{
                 for (SimpleTutorSlot s : allSlots) {
                     if (s.start.isBefore(tEnd) && s.end.isAfter(tStart)) {
                         s.status = ts.getStatus();
