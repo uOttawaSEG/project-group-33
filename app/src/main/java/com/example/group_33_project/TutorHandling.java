@@ -278,6 +278,49 @@ public class TutorHandling {
                             });
                 });
     }
+    // method to approve or deny a pending request
+    public void approveDenyBookingRequest(TimeSlot slot, String choice, TutorCallback callback) { // choice = "approve" or "deny"
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        // find tutor's doc by email
+        db.collection("accounts")
+                .whereEqualTo("email", slot.getTutor().getEmail())
+                .limit(1)
+                .get()
+                .addOnFailureListener(e -> callback.onFailure("Lookup failed: " + e.getMessage()))
+                .addOnSuccessListener(q -> {
+                    if (q.isEmpty()) {
+                        callback.onFailure("Tutor not found");
+                        return;
+                    }
+
+                    DocumentSnapshot tutorDoc = q.getDocuments().get(0); // get the tutor's doc
+                    DocumentReference slotRef = tutorDoc.getReference()
+                            .collection("timeSlots")
+                            .document(slot.getID()); // find the slot using the ID
+
+
+                    slotRef.get()
+                            .addOnFailureListener(e -> callback.onFailure("Failed to load slot: " + e.getMessage()))
+                            .addOnSuccessListener(foundSlot -> {
+                                if (!foundSlot.exists()) {
+                                    callback.onFailure("Time slot not found");
+                                    return;
+                                }
+                                // store updates in a new hashmap
+                                Map<String, Object> updates = new HashMap<>();
+                                if (choice.equals("approve")){
+                                    updates.put("status", "booked");
+                                }
+                                else{
+                                    updates.put("status", "open");
+                                }
+
+                                slotRef.update(updates) // update change
+                                        .addOnSuccessListener(v -> callback.onSuccess("Status updated successfully."))
+                                        .addOnFailureListener(e -> callback.onFailure("Error: " + e.getMessage()));
+                            });
+                });
+    }
 
     // Method to get a list of ALL timeslots from ALL tutors, with the status specified (open, booked, pending, cancelled, null -> ALL slots with ALL status)
     public void getAllSlotsByStatus(String status, SlotListCallback callback) { // for ALL slots, call getAllSlotsByStatus(null, callback);
