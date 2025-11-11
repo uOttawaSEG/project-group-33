@@ -17,10 +17,6 @@ import java.util.Map;
 
 import java.time.*;
 
-
-
-/// addOnSuccessListener is to do smt with data if success. addOnFailureListener handle firebase error
-/// override callback so that it just prints message or when data is ready
 public class TutorHandling {
     private final FirebaseFirestore db;
 

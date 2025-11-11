@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-/** Screen that lists the current tutor's slots and allows delete/cancel */
 public class TutorDeleteAvailability extends AppCompatActivity {
 
     private RecyclerView recyclerView;

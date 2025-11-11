@@ -23,6 +23,7 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,11 +46,12 @@ public class TutorUpcoming extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        //BASICS
         super.onCreate(savedInstanceState);
         setContentView(R.layout.screen11_upcomingtut);
         EdgeToEdge.enable(this);
 
-        // Initialize views (important!)
+        //INITIALIZE VIEWS
         rvSlots = findViewById(R.id.rvSlots11);
         tvWeekLabel = findViewById(R.id.tvWeekLabel11);
         btnNextWeek = findViewById(R.id.btnNextWeek11);
@@ -57,7 +59,7 @@ public class TutorUpcoming extends AppCompatActivity {
         btnBack = findViewById(R.id.screen11_back);
         hiddenButton = findViewById(R.id.screen11_psessionsr);
 
-        // Retrieve current tutor
+       //GET THE TUTOR
         currentTutor = (Tutor) getIntent().getSerializableExtra("tutor");
         if (currentTutor == null) {
             Toast.makeText(this, "Error: No tutor logged in", Toast.LENGTH_LONG).show();
@@ -65,40 +67,38 @@ public class TutorUpcoming extends AppCompatActivity {
             return;
         }
 
-        // Handle button visibility from preferences
         SharedPreferences prefs = getSharedPreferences(SCREEN_SETTINGS, Context.MODE_PRIVATE);
         boolean shouldShowButton = prefs.getBoolean(BUTTON_VISIBILITY, false);
         hiddenButton.setVisibility(shouldShowButton ? View.GONE : View.VISIBLE);
 
-        // Initialize data lists
+        //INITIALIZE VARIABLES
         mySlots = new ArrayList<>();
         allSlots = new ArrayList<>();
 
         tutorHandling = new TutorHandling();
         loadUpcomingSession(currentTutor);
 
-        // Test data if no upcoming sessions
+        //TEST
         if (mySlots.isEmpty()) {
             addTestSlots();
         }
 
-        // Initialize the week view
-        currentWeekStart = ZonedDateTime.now()
-                .with(DayOfWeek.SUNDAY)
+        //INITIALIZE WEEK
+        currentWeekStart = ZonedDateTime.now(ZoneId.of("America/Toronto"))
+                .with(TemporalAdjusters.previousOrSame(DayOfWeek.SUNDAY)) // fix to ensure we start on the correct week
                 .truncatedTo(ChronoUnit.DAYS);
 
         setupWeekNavigation();
         setupAdapter();
         generateSlotsForWeek(currentWeekStart);
 
-        // Handle edge-to-edge insets
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.tutorupcoming), (v, insets) -> {
             Insets bars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(bars.left, bars.top, bars.right, bars.bottom);
             return insets;
         });
 
-        // Back button action
+        //BACK BUTTON
         btnBack.setOnClickListener(v -> {
             Intent intent = new Intent(TutorUpcoming.this, TutorIn.class);
             intent.putExtra("tutor", currentTutor);
@@ -187,6 +187,8 @@ public class TutorUpcoming extends AppCompatActivity {
     private void generateSlotsForWeek(ZonedDateTime weekStart) {
         allSlots.clear();
 
+        ZonedDateTime weekEndExclusive = weekStart.plusDays(7); // next Sunday 00:00
+
         for (int hour = 9; hour < 21; hour++) {
             for (int min = 0; min < 60; min += 30) {
                 for (int dayOffset = 0; dayOffset < 7; dayOffset++) {
@@ -200,13 +202,11 @@ public class TutorUpcoming extends AppCompatActivity {
             }
         }
 
-        ZonedDateTime weekEnd = weekStart.plusDays(6);
-
         for (TimeSlot ts : mySlots) {
             ZonedDateTime tStart = ts.getStartDate().truncatedTo(ChronoUnit.MINUTES);
             ZonedDateTime tEnd = ts.getEndDate().truncatedTo(ChronoUnit.MINUTES);
 
-            if (tEnd.isBefore(weekStart) || tStart.isAfter(weekEnd)) continue;
+            if (tEnd.isBefore(weekStart) || tStart.isAfter(weekEndExclusive)) continue;
 
             for (SimpleTutorSlot s : allSlots) {
                 if (s.start.isBefore(tEnd) && s.end.isAfter(tStart)) {

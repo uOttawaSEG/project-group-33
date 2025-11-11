@@ -13,10 +13,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
-/** Adapter for the simple delete/cancel list */
 public class DeleteAvailabilityAdapter extends RecyclerView.Adapter<DeleteAvailabilityAdapter.TSViewHolder> {
 
-    /** Listener lives INSIDE the adapter to avoid duplicate top-level type names */
     public interface ActionListener {
         void onDelete(TimeSlot slot);
         void onCancel(TimeSlot slot);
@@ -32,7 +30,6 @@ public class DeleteAvailabilityAdapter extends RecyclerView.Adapter<DeleteAvaila
         setHasStableIds(false);
     }
 
-    /** Replace data wholesale (no DiffUtil) */
     public void setData(List<TimeSlot> newData) {
         slots.clear();
         if (newData != null) slots.addAll(newData);
@@ -88,7 +85,6 @@ public class DeleteAvailabilityAdapter extends RecyclerView.Adapter<DeleteAvaila
         return slots.size();
     }
 
-    /** Optional utility — call this after successful delete */
     public void removeItem(TimeSlot slot) {
         int idx = slots.indexOf(slot);
         if (idx >= 0) {
