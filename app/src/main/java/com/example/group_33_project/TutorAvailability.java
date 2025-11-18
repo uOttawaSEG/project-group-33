@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
-import android.util.Pair;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -16,9 +15,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.time.DayOfWeek;
-import java.time.LocalDate;
 import java.time.ZoneId;
-import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
@@ -287,7 +284,7 @@ public class TutorAvailability extends AppCompatActivity {
         }
 
         ZonedDateTime[] session = sessions.remove(0);
-        tutorH.createNewAvailability(currentTutor, session[0], session[1], needsApproval, new TutorCallback() {
+        tutorH.createNewAvailability(currentTutor, session[0], session[1], needsApproval, new AccountCallback() {
             @Override
             public void onSuccess(String msg) {
                 updateLocalSlots(session[0], session[1]);

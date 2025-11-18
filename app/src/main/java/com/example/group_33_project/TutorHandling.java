@@ -4,6 +4,7 @@ import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 
@@ -18,6 +19,7 @@ import java.util.Map;
 import java.time.*;
 
 public class TutorHandling {
+
     private final FirebaseFirestore db;
 
     public TutorHandling() {
@@ -25,7 +27,7 @@ public class TutorHandling {
     }
 
     // method to check whether a tutor already has a timeslot that overlaps with a requested new timeslot
-    public void checkTutorOverlap(TimeSlot newTS, TutorCallback callback) {
+    public void checkTutorOverlap(TimeSlot newTS, AccountCallback callback) {
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
@@ -53,7 +55,7 @@ public class TutorHandling {
                                     Timestamp eTs = doc.getTimestamp("endInstant");
                                     String zoneId = doc.getString("zoneId");
 
-                                    if (sTs == null || eTs == null || zoneId == null) continue; // triggers onFailure
+                                    if (sTs == null || eTs == null || zoneId == null) continue; // skip the document
 
                                     ZonedDateTime s = ZonedDateTime.ofInstant(sTs.toDate().toInstant(), ZoneId.of(zoneId)); // use methods to convert back to a ZonedDateTime object
                                     ZonedDateTime e = ZonedDateTime.ofInstant(eTs.toDate().toInstant(), ZoneId.of(zoneId));
@@ -77,7 +79,7 @@ public class TutorHandling {
     }
 
     // method to be called upon attempting to create NEW availability
-    public void createNewAvailability(Tutor tutor, ZonedDateTime start, ZonedDateTime end, boolean requiresApproval, TutorCallback callback) {
+    public void createNewAvailability(Tutor tutor, ZonedDateTime start, ZonedDateTime end, boolean requiresApproval, AccountCallback callback) {
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
@@ -98,7 +100,7 @@ public class TutorHandling {
         // valid parameters, create a timeslot and see if the tutor has any overlapping slots
         TimeSlot newSlot = new TimeSlot(tutor, requiresApproval, start, end);
 
-        checkTutorOverlap(newSlot, new TutorCallback() {
+        checkTutorOverlap(newSlot, new AccountCallback() {
             @Override
             public void onSuccess(String msg) { // onSuccess is called IF THERE ARE NO OVERLAPS! good!
                 // proceed to store the timeslot in the db
@@ -152,7 +154,7 @@ public class TutorHandling {
     }
 
     // method for a tutor to delete an availability they created
-    public void deleteAvailability(TimeSlot slot, TutorCallback callback) {
+    public void deleteAvailability(TimeSlot slot, AccountCallback callback) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
         // Validate all the fields first
@@ -163,6 +165,11 @@ public class TutorHandling {
         if (slot.getID() == null || slot.getID().isEmpty()) {
             callback.onFailure("Slot ID missing in TimeSlot object");
             return;
+        }
+
+        if (!slot.getStatus().equals("open")){
+            callback.onFailure("This timeslot has already been requested by a student.");
+            return; // STOP if we try to delete a booked/pending session
         }
 
         // query tutor document by email
@@ -189,56 +196,13 @@ public class TutorHandling {
                 });
     }
 
-    // method for a student to BOOK a session
-    public void bookSession(TimeSlot slot, Student student, TutorCallback callback) {
+
+    public static void cancelTimeSlot(TimeSlot slot, AccountCallback callback) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-
-        // Find tutor's doc by email
-        db.collection("accounts")
-                .whereEqualTo("email", slot.getTutor().getEmail())
-                .limit(1)
-                .get()
-                .addOnFailureListener(e -> callback.onFailure("Lookup failed: " + e.getMessage()))
-                .addOnSuccessListener(q -> {
-                    if (q.isEmpty()) {
-                        callback.onFailure("Tutor not found");
-                        return;
-                    }
-
-                    DocumentSnapshot tutorDoc = q.getDocuments().get(0); // get the tutor's doc
-                    DocumentReference slotRef = tutorDoc.getReference()
-                            .collection("timeSlots")
-                            .document(slot.getID()); // find the slot using the ID
-
-                    // Read current status, then update if open
-                    slotRef.get()
-                            .addOnFailureListener(e -> callback.onFailure("Failed to find slot: " + e.getMessage()))
-                            .addOnSuccessListener(foundSlot -> {
-                                if (!foundSlot.exists()) {
-                                    callback.onFailure("Time slot not found");
-                                    return;
-                                }
-
-                                String status = foundSlot.getString("status"); // get the status of the slot (open, booked, cancelled)
-
-                                if (!"open".equals(status)) {
-                                    callback.onFailure("Time slot is already booked, or pending.");
-                                    return;
-                                }
-
-                                Map<String, Object> updates = new HashMap<>(); // make a hashmap that has all the changes
-                                updates.put("status", "booked");
-                                updates.put("studentEmail", student.getEmail());
-
-                                slotRef.update(updates) // update the info that we changed :)
-                                        .addOnSuccessListener(v -> callback.onSuccess("Slot booked"))
-                                        .addOnFailureListener(e -> callback.onFailure("Booking failed: " + e.getMessage()));
-                            });
-                });
-    }
-
-    public void cancelTimeSlot(TimeSlot slot, TutorCallback callback) {
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        if (slot.getStatus().equals("cancelled")){
+            callback.onFailure("The timeslot has already been cancelled.");
+            return; // STOP if we try to cancel a previously cancelled timeslot
+        }
         // find tutor's doc by email
         db.collection("accounts")
                 .whereEqualTo("email", slot.getTutor().getEmail())
@@ -274,8 +238,11 @@ public class TutorHandling {
                             });
                 });
     }
+
+
+
     // method to approve or deny a pending request
-    public void approveDenyPendingRequest(TimeSlot slot, String choice, TutorCallback callback) { // choice = "approve" or "deny"
+    public void approveDenyPendingRequest(TimeSlot slot, String choice, AccountCallback callback) { // choice = "approve" or "deny"
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         // find tutor's doc by email
         db.collection("accounts")
@@ -298,16 +265,29 @@ public class TutorHandling {
                     slotRef.get()
                             .addOnFailureListener(e -> callback.onFailure("Failed to load slot: " + e.getMessage()))
                             .addOnSuccessListener(foundSlot -> {
+
                                 if (!foundSlot.exists()) {
                                     callback.onFailure("Time slot not found");
                                     return;
                                 }
+                                // an extra check to make sure the status wasn't changed while querying! (
+                                String currentStatus = foundSlot.getString("status");
+                                if (!"pending".equals(currentStatus)) {
+                                    callback.onFailure("Slot is no longer pending.");
+                                    return;
+                                }
+
                                 // store updates in a new hashmap
                                 Map<String, Object> updates = new HashMap<>();
                                 if (choice.equals("approve")){
                                     updates.put("status", "booked");
                                 }
-                                else{
+                                else { // choice = deny
+                                    String studentEmail = foundSlot.getString("studentEmail");
+                                    if (studentEmail != null) {
+                                        updateDeniedSession(studentEmail, foundSlot.getId()); // call helper method
+                                    }
+
                                     updates.put("status", "open");
                                     updates.put("studentEmail", null);
                                 }
@@ -319,16 +299,51 @@ public class TutorHandling {
                 });
     }
 
+    // method to move a rejected/denied session into the student's rejected session token list
+    public void updateDeniedSession(String studentEmail, String docRef){
+        if (studentEmail == null) return;
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        AccountHandling.queryAccount(studentEmail, new QueryCallback() {
+            @Override
+            public void onSuccess(Account account) {
+                Student student = (Student) account;
+
+
+                student.addRejectedSessionToken(docRef);
+                student.removeSessionToken(docRef);
+
+               // update on FIRESTORE:
+                DocumentReference studentRef = db.collection("accounts").document(student.getEmail()); // find ref to the student
+
+                Map<String, Object> updates = new HashMap<>();
+                updates.put("rejectedSessionTokens", FieldValue.arrayUnion(docRef)); // add the ID to the REJECTED list
+                updates.put("sessionTokens", FieldValue.arrayRemove(docRef)); // remove the ID from the REGULAR list
+
+                studentRef.update(updates); // update
+            }
+
+            @Override
+            public void onFailure(String errorMessage) {
+
+            }
+        });
+    }
+
     // Method to get a list of ALL timeslots from ALL tutors, with the status specified (open, booked, pending, cancelled, null -> ALL slots with ALL status)
-    public void getAllSlotsByStatus(String status, SlotListCallback callback) { // for ALL slots, call getAllSlotsByStatus(null, callback);
+    public static void getAllSlotsByStatus(String status, SlotListCallback callback) { // for ALL slots, call getAllSlotsByStatus(null, callback);
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
         Query query = db.collectionGroup("timeSlots"); // firebase helper class to query by a collection group
 
         // if we want to get the slots by a specific status, set the query filter!!
-        if (status != null && !status.isEmpty()) {
-            query = query.whereEqualTo("status", status);
-        } // otherwise, we will just get ALL of the slots, regardless of status
+        if (status != null && !status.isBlank()) {
+            String[] statuses = status.split(" "); // SPLIT so we can use MULTIPLE query filters!
+            query = query.whereIn("status", Arrays.asList(statuses));
+        }
+
+         // otherwise, we will just get ALL of the slots, regardless of status (query is just filtering through timeslots)
 
         query.orderBy("startInstant") // using orderBy(startInstant) gives us the earliest bookings FIRST in the list :)
                 .get()
@@ -392,7 +407,7 @@ public class TutorHandling {
                         });
     }
     // helper method for getAllSlotsByStatus() for retrieving the tutor and student's accounts by emails
-    public void getAccounts(String tutorEmail, String studentEmail, AccountListCallback callback) {
+    public static void getAccounts(String tutorEmail, String studentEmail, AccountListCallback callback) {
         Account[] accounts = new Account[2]; // initialize an array to store the student and tutor's accounts
 
         // Fetch the tutor first
@@ -432,9 +447,8 @@ public class TutorHandling {
         });
     }
 
-    // Fast: fetch ONLY this tutor’s slots from /accounts/{tutorDoc}/timeSlots
+    // Fast: fetch ONLY this tutor’s slots from /accounts/{tutorDoc}/timeSlots -> to resolve bug with querying taking too long
     public void queryTutorSlots(Tutor tutor, SlotListCallback callback) {
-
 
         db.collection("accounts")
                 .whereEqualTo("email", tutor.getEmail())
@@ -442,57 +456,90 @@ public class TutorHandling {
                 .get()
                 .addOnFailureListener(e -> callback.onFailure("Lookup failed: " + e.getMessage()))
                 .addOnSuccessListener(q -> {
-                    if (q.isEmpty()) { callback.onSuccess(new ArrayList<>()); return; } // if theres noting in the query snapshot for any reason, just callback a list of no slots
+                    if (q.isEmpty()) {
+                        callback.onSuccess(new ArrayList<>());
+                        return;
+                    }
 
                     DocumentSnapshot tutorDoc = q.getDocuments().get(0);
                     tutorDoc.getReference()
                             .collection("timeSlots")
-                            .orderBy("startInstant") // earliest first
+                            .orderBy("startInstant") // order by earliest first!
                             .get()
                             .addOnFailureListener(e -> callback.onFailure("Slots load failed: " + e.getMessage()))
                             .addOnSuccessListener(qs -> {
+                                List<DocumentSnapshot> docs = qs.getDocuments();
+                                if (docs.isEmpty()) {
+                                    callback.onSuccess(new ArrayList<>());
+                                    return;
+                                }
+
                                 List<TimeSlot> slots = new ArrayList<>();
-                                for (DocumentSnapshot doc : qs.getDocuments()) {
-                                    // convert back to ZonedDateTime
+                                final int[] remaining = { docs.size() };
+                                // reused
+                                for (DocumentSnapshot doc : docs) {
                                     Timestamp sTs = doc.getTimestamp("startInstant");
                                     Timestamp eTs = doc.getTimestamp("endInstant");
                                     String zoneId = doc.getString("zoneId");
                                     Boolean requireApproval = doc.getBoolean("requireApproval");
                                     String status = doc.getString("status");
                                     String studentEmail = doc.getString("studentEmail");
+                                    String slotId = doc.getId();
 
-                                    if (sTs == null || eTs == null || zoneId == null) continue;
+                                    // handle bad data safely
+                                    if (sTs == null || eTs == null || zoneId == null) {
+                                        if (--remaining[0] == 0) {
+                                            slots.sort(Comparator.comparing(TimeSlot::getStartDate));
+                                            callback.onSuccess(slots);
+                                        }
+                                        continue;
+                                    }
 
                                     ZonedDateTime start = ZonedDateTime.ofInstant(sTs.toDate().toInstant(), ZoneId.of(zoneId));
-                                    ZonedDateTime end   = ZonedDateTime.ofInstant(eTs.toDate().toInstant(), ZoneId.of(zoneId));
+                                    ZonedDateTime end = ZonedDateTime.ofInstant(eTs.toDate().toInstant(), ZoneId.of(zoneId));
 
-                                    final Student[] student = {null};
-                                    AccountHandling.queryAccount(studentEmail, new QueryCallback() {
-                                        @Override
-                                        public void onSuccess(Account account) {
-                                            student[0] = (Student) account;
-                                        }
+                                    // if the student email is null, the slot isnt booked so we don't need to find a student!
+                                    if (studentEmail == null) {
+                                        slots.add(new TimeSlot(tutor, requireApproval, start, end, null, status, slotId));
 
-                                        @Override
-                                        public void onFailure(String errorMessage) {
-                                             // student is already initialized as null so it doesn't matter what we do here
+                                        if (--remaining[0] == 0) {
+                                            slots.sort(Comparator.comparing(TimeSlot::getStartDate));
+                                            callback.onSuccess(slots);
                                         }
-                                    });
-                                    slots.add(new TimeSlot(
-                                            tutor,                  // reuse the Tutor we already have
-                                            requireApproval,
-                                            start,
-                                            end,
-                                            student[0],                   // student can be fetched lazily if needed
-                                            status,
-                                            doc.getId()
-                                    ));
+                                    } else {
+                                        // need to fetch the student asynchronously, since the timeslot is linked to a student object
+                                        AccountHandling.queryAccount(studentEmail, new QueryCallback() { // query the account
+                                            @Override
+                                            public void onSuccess(Account account) {
+                                                Student student = null;
+                                                if (account instanceof Student) {
+                                                    student = (Student) account;
+                                                }
+
+                                                slots.add(new TimeSlot(tutor, requireApproval, start, end, student, status, slotId)); // then add it
+
+                                                if (--remaining[0] == 0) {
+                                                    slots.sort(Comparator.comparing(TimeSlot::getStartDate));
+                                                    callback.onSuccess(slots);
+                                                }
+                                            }
+
+                                            @Override
+                                            public void onFailure(String errorMessage) {
+                                                // if student lookup fails, still add slot with null student
+                                                slots.add(new TimeSlot(tutor, requireApproval, start, end, null, status, slotId));
+
+                                                if (--remaining[0] == 0) {
+                                                    slots.sort(Comparator.comparing(TimeSlot::getStartDate));
+                                                    callback.onSuccess(slots);
+                                                }
+                                            }
+                                        });
+                                    }
                                 }
-                                slots.sort(Comparator.comparing(TimeSlot::getStartDate)); // sort everything by start date
-                                callback.onSuccess(slots);
                             });
                 });
-    }
+    } // wow that's a lot of });'s
 
 
     // helper method to check if a given date is in the future

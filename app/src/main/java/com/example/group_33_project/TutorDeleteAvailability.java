@@ -50,7 +50,7 @@ public class TutorDeleteAvailability extends AppCompatActivity {
         adapter = new DeleteAvailabilityAdapter(slotList, new DeleteAvailabilityAdapter.ActionListener() {
             @Override
             public void onDelete(TimeSlot slot) {
-                tutorH.deleteAvailability(slot, new TutorCallback() {
+                tutorH.deleteAvailability(slot, new AccountCallback() {
                     @Override
                     public void onSuccess(String msg) {
                         runOnUiThread(() -> {
@@ -69,7 +69,7 @@ public class TutorDeleteAvailability extends AppCompatActivity {
 
             @Override
             public void onCancel(TimeSlot slot) {
-                tutorH.cancelTimeSlot(slot, new TutorCallback() { // fixing onCancel()
+                tutorH.cancelTimeSlot(slot, new AccountCallback() { // fixing onCancel()
                     @Override
                     public void onSuccess(String msg) {
                         slot.setStatus("cancelled"); // for local update

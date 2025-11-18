@@ -3,7 +3,6 @@ package com.example.group_33_project;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -124,7 +123,7 @@ public class TutorPendingRequest extends AppCompatActivity{
     //APPROVE / DENY REQUESTS
     private void handleApprove(TimeSlot slot) {
 
-        tutorHandling.approveDenyPendingRequest(slot, "approve", new TutorCallback() {
+        tutorHandling.approveDenyPendingRequest(slot, "approve", new AccountCallback() {
             @Override
             public void onSuccess(String msg) {
 
@@ -143,7 +142,7 @@ public class TutorPendingRequest extends AppCompatActivity{
 
     private void handleDeny(TimeSlot slot) {
 
-        tutorHandling.approveDenyPendingRequest(slot, "deny", new TutorCallback() {
+        tutorHandling.approveDenyPendingRequest(slot, "deny", new AccountCallback() {
             @Override
             public void onSuccess(String msg) {
 
