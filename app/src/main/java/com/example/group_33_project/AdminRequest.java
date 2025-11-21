@@ -36,7 +36,7 @@ public class AdminRequest extends AppCompatActivity implements RequestAccountAda
         });
 
         //FINDING THE ID OF BUTTONS
-        Button Back = findViewById(R.id.screen7_back);
+        Button Back = findViewById(R.id.button_back);
 
         //create the scrolling list
         RecyclerView recyclerView = findViewById(R.id.pendingAccountsRecyclerView);

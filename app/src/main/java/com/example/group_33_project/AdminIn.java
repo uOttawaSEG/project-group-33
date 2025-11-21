@@ -12,7 +12,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-public class AdminIn extends AppCompatActivity {
+public class AdminIn extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,7 +26,6 @@ public class AdminIn extends AppCompatActivity {
         });
 
         //FINDING THE ID OF BUTTONS
-        Button logout = findViewById(R.id.screen6_logout);
         Button request = findViewById(R.id.screen6_requests);
         Button reject = findViewById(R.id.screen6_rejected);
 
@@ -45,11 +44,7 @@ public class AdminIn extends AppCompatActivity {
             finish();
         });
 
-        //LOGOUT BUTTON
-        logout.setOnClickListener(v -> {
-            Intent intent = new Intent(AdminIn.this, MainActivity.class);
-            startActivity(intent);
-            finish();
-        });
+        //sets up the logout button
+        setupLogoutButton();
     }
 }

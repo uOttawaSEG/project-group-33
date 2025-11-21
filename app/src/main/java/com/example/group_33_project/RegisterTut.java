@@ -40,7 +40,7 @@ public class RegisterTut extends AppCompatActivity {
         degree = findViewById(R.id.screen5_degree);
         courses = findViewById(R.id.screen5_courses);
 
-        Button back = findViewById(R.id.screen5_back);
+        Button back = findViewById(R.id.button_back);
         Button register = findViewById(R.id.screen5_register);
 
         // Back button

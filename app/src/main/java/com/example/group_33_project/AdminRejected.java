@@ -37,7 +37,7 @@ public class AdminRejected extends AppCompatActivity implements RejectedAccountA
         });
 
         //FINDING THE ID OF BUTTONS
-        Button Back = findViewById(R.id.screen8_back);
+        Button Back = findViewById(R.id.button_back);
 
         //make the account adapter
         //takes each account and transforms it into a UI element

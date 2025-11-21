@@ -13,7 +13,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-public class LoggedIn extends AppCompatActivity {
+public class LoggedIn extends BaseActivity {
     //LoggedIn Screen after either
     //SCREEN2
 
@@ -64,6 +64,14 @@ public class LoggedIn extends AppCompatActivity {
         if (account.getClass() == Student.class){
             //change the cat to student cat
             catIcon.setImageResource(R.drawable.student_cat);
+
+            //PROCEEDS TO STUDENTIN SCREEN AFTER WAITING 2 SECONDS
+            new Handler().postDelayed(() -> {
+                Intent intent = new Intent(LoggedIn.this, StudentIn.class);
+                intent.putExtra("student", account ); //send student as an object to tutorIn
+                startActivity(intent);
+                finish();
+            },DELAY_MS);
         }
 
         if (account.getClass() == Tutor.class){
@@ -82,14 +90,5 @@ public class LoggedIn extends AppCompatActivity {
 
         bodyText.setText("You are logged in as a" + role); // final format: You are logged in as a"n Admin" or " Student/Tutor"
 
-
-        //Logout or Back button implementation
-        Button logout = findViewById(R.id.screen2_logout);
-
-        logout.setOnClickListener(v -> {
-            Intent intent = new Intent(LoggedIn.this, MainActivity.class);
-            startActivity(intent);
-            finish();
-        });
     }
 }

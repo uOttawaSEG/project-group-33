@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/bkg"
-    android:id="@+id/admininscreen">
+    android:id="@+id/studentinscreen">
 
     <include layout="@layout/reusable_logout"
         android:id="@+id/included_logout_container"
@@ -14,14 +14,60 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/screen6_requests"
+        android:id="@+id/screen15_searchavailsessions"
         android:layout_width="375dp"
         android:layout_height="75dp"
         android:layout_weight="1"
         android:background="@drawable/button_background"
         android:backgroundTint="@color/gg"
         android:fontFamily="sans-serif-medium"
-        android:text="@string/screen6_request"
+        android:text="@string/screen15_searchavailsessions"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        app:backgroundTint="@null"
+        app:icon="@drawable/search_icon"
+        app:iconSize="38dp"
+        app:iconTint="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.555"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.625" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/screen15_bsessions"
+        android:layout_width="375dp"
+        android:layout_height="75dp"
+        android:layout_weight="1"
+        android:background="@drawable/button_background"
+        android:backgroundTint="@color/gg"
+        android:fontFamily="sans-serif-medium"
+        android:text="@string/screen15_bsessions"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        app:backgroundTint="@null"
+        app:icon="@drawable/calendar_availability"
+        app:iconSize="38dp"
+        app:iconTint="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.555"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.782" />
+
+
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/screen15_rsessions"
+        android:layout_width="375dp"
+        android:layout_height="75dp"
+        android:layout_weight="1"
+        android:background="@drawable/button_background"
+        android:backgroundTint="@color/gg"
+        android:fontFamily="sans-serif-medium"
+        android:text="@string/screen15_rsessions"
         android:textAllCaps="false"
         android:textColor="@color/white"
         app:backgroundTint="@null"
@@ -33,28 +79,6 @@
         app:layout_constraintHorizontal_bias="0.555"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.678" />
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/screen6_rejected"
-        android:layout_width="375dp"
-        android:layout_height="75dp"
-        android:layout_weight="1"
-        android:background="@drawable/button_background"
-        android:backgroundTint="@color/gg"
-        android:fontFamily="sans-serif-medium"
-        android:text="@string/screen6_rejected"
-        android:textAllCaps="false"
-        android:textColor="@color/white"
-        app:backgroundTint="@null"
-        app:icon="@drawable/circle_x"
-        app:iconSize="38dp"
-        app:iconTint="@color/white"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.555"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.821" />
+        app:layout_constraintVertical_bias="0.932" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

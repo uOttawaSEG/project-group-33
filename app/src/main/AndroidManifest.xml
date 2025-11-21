@@ -77,6 +77,26 @@
             android:theme="@style/Theme.Group_33_Project" />
 
         <activity
+            android:name=".StudentIn"
+            android:exported="false"
+            android:theme="@style/Theme.Group_33_Project" />
+
+        <activity
+            android:name=".StudentSearchAvailable"
+            android:exported="false"
+            android:theme="@style/Theme.Group_33_Project" />
+
+        <activity
+            android:name=".StudentBookedSession"
+            android:exported="false"
+            android:theme="@style/Theme.Group_33_Project" />
+
+        <activity
+            android:name=".StudentRequestedSession"
+            android:exported="false"
+            android:theme="@style/Theme.Group_33_Project" />
+
+        <activity
             android:name=".MainActivity"
             android:exported="true" >
             <intent-filter>

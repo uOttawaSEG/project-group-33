@@ -36,7 +36,7 @@ public class RegisterStu extends AppCompatActivity {
         phone = findViewById(R.id.screen4_phone);
         program = findViewById(R.id.screen4_program);
 
-        Button back = findViewById(R.id.screen4_back);
+        Button back = findViewById(R.id.button_back);
         Button register = findViewById(R.id.screen4_register);
 
         // back button → return to RegisterAs

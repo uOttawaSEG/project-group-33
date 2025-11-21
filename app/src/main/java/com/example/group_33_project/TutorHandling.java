@@ -553,58 +553,58 @@ public class TutorHandling {
 
 
     //tutor will have additional field to get all average ratings where status of timeslot is completed
-    public void tutorAverageRating(Tutor tutor, TutorRatingCallback callback){
-        if (tutor == null || tutor.getEmail() == null) {
-            callback.onFailure("Invalid tutor");
-            return;
-        }
+//    public void tutorAverageRating(Tutor tutor, TutorRatingCallback callback){
+//        if (tutor == null || tutor.getEmail() == null) {
+//            callback.onFailure("Invalid tutor");
+//            return;
+//        }
 
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
+//        FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-        db.collection("accounts")
-                .document(tutor.getEmail())
-                .collection("timeSlots") //each completed session will have a given rating by the student
-                .whereEqualTo("status", "completed")
-                .get()
-                .addOnSuccessListener(qs -> {
+//        db.collection("accounts")
+//                .document(tutor.getEmail())
+//                .collection("timeSlots") //each completed session will have a given rating by the student
+//                .whereEqualTo("status", "completed")
+//                .get()
+//                .addOnSuccessListener(qs -> {
 
 
-                    double sum = 0;
-                    int count = 0;
-                    for (DocumentSnapshot doc : qs.getDocuments()) {
-                        Number rating = doc.getDouble("rating");
-                        if (rating != null){
-                            sum += rating .doubleValue();
-                            count ++;
-                        }
+//                    double sum = 0;
+//                    int count = 0;
+//                    for (DocumentSnapshot doc : qs.getDocuments()) {
+//                        Number rating = doc.getDouble("rating");
+//                        if (rating != null){
+//                            sum += rating .doubleValue();
+//                            count ++;
+//                        }
 
-                    }
-                    double avg = 0;
-                    if (count != 0 ){
-                        avg = sum / count;
-                        avg = Math.round(avg * 10.0) / 10.0; //round to one decimal place
+//                    }
+//                    double avg = 0;
+//                    if (count != 0 ){
+//                        avg = sum / count;
+//                        avg = Math.round(avg * 10.0) / 10.0; //round to one decimal place
 
-                    }
+//                    }
 
 
                     //update in database
 
-                    double finalAvg = avg;
+//                    double finalAvg = avg;
 
-                    db.collection("accounts").document(tutor.getEmail())
-                            .update("averageRating", avg)
-                            .addOnSuccessListener(v -> callback.onSuccess(finalAvg))
-                            .addOnFailureListener(e ->
-                                    callback.onFailure("Failed to update avg: " + e.getMessage())
-                            );
-
-
-                })
-                .addOnFailureListener(e ->
-                        callback.onFailure("Error fetching ratings: " + e.getMessage())
-                );
+//                    db.collection("accounts").document(tutor.getEmail())
+//                            .update("averageRating", avg)
+//                            .addOnSuccessListener(v -> callback.onSuccess(finalAvg))
+//                            .addOnFailureListener(e ->
+//                                    callback.onFailure("Failed to update avg: " + e.getMessage())
+//                            );
 
 
-    }
+//                })
+//                .addOnFailureListener(e ->
+//                        callback.onFailure("Error fetching ratings: " + e.getMessage())
+//                );
+
+
+//    }
 
 }

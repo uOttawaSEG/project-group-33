@@ -31,7 +31,7 @@ public class RegisterAs extends AppCompatActivity {
         //FINDING THE ID OF BUTTONS
         Button Student = findViewById(R.id.screen3_student);
         Button Tutor = findViewById(R.id.screen3_tutor);
-        Button Back = findViewById(R.id.screen3_back);
+        Button Back = findViewById(id.button_back);
 
         // Different Buttons
         //SWITCH TO REGISTER AS STUDENT SCREEN

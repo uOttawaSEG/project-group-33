@@ -36,14 +36,14 @@
             android:backgroundTint="@color/gg"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Previous" />
+            android:text="@string/screen10_btnPrevWeek" />
 
         <TextView
             android:id="@+id/tvWeekLabel11"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="16dp"
-            android:text="Week"
+            android:text="@string/screen10_tvWeekLabel"
             android:textSize="18sp" />
 
         <Button
@@ -51,7 +51,7 @@
             android:backgroundTint="@color/gg"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Next" />
+            android:text="@string/screen10_btnNextWeek" />
     </LinearLayout>
 
     <LinearLayout
@@ -76,14 +76,14 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="Sun" />
+            android:text="@string/screen10_sun" />
 
-        <TextView android:text="Mon" android:layout_weight="1" android:gravity="center" android:layout_height="wrap_content" android:layout_width="wrap_content"/>
-        <TextView android:text="Tue" android:layout_weight="1" android:gravity="center" android:layout_height="wrap_content" android:layout_width="wrap_content"/>
-        <TextView android:text="Wed" android:layout_weight="1" android:gravity="center" android:layout_height="wrap_content" android:layout_width="wrap_content"/>
-        <TextView android:text="Thu" android:layout_weight="1" android:gravity="center" android:layout_height="wrap_content" android:layout_width="wrap_content"/>
-        <TextView android:text="Fri" android:layout_weight="1" android:gravity="center" android:layout_height="wrap_content" android:layout_width="wrap_content"/>
-        <TextView android:text="Sat" android:layout_weight="1" android:gravity="center" android:layout_height="wrap_content" android:layout_width="wrap_content"/>
+        <TextView android:text="@string/screen10_mon" android:layout_weight="1" android:gravity="center" android:layout_height="wrap_content" android:layout_width="wrap_content"/>
+        <TextView android:text="@string/screen10_tue" android:layout_weight="1" android:gravity="center" android:layout_height="wrap_content" android:layout_width="wrap_content"/>
+        <TextView android:text="@string/screen10_wed" android:layout_weight="1" android:gravity="center" android:layout_height="wrap_content" android:layout_width="wrap_content"/>
+        <TextView android:text="@string/screen10_thu" android:layout_weight="1" android:gravity="center" android:layout_height="wrap_content" android:layout_width="wrap_content"/>
+        <TextView android:text="@string/screen10_fri" android:layout_weight="1" android:gravity="center" android:layout_height="wrap_content" android:layout_width="wrap_content"/>
+        <TextView android:text="@string/screen10_sat" android:layout_weight="1" android:gravity="center" android:layout_height="wrap_content" android:layout_width="wrap_content"/>
     </LinearLayout>
 
     <!-- RecyclerView for the time slots grid -->
@@ -114,79 +114,79 @@
             android:id="@+id/textView112"
             android:layout_width="match_parent"
             android:layout_height="55dp"
-            android:text="9AM" />
+            android:text="@string/screen10_textView2" />
 
         <TextView
             android:id="@+id/textView113"
             android:layout_width="match_parent"
             android:layout_height="55dp"
-            android:text="10AM" />
+            android:text="@string/screen10_textView3" />
 
         <TextView
             android:id="@+id/textView114"
             android:layout_width="match_parent"
             android:layout_height="55dp"
-            android:text="11AM" />
+            android:text="@string/screen10_textView4" />
 
         <TextView
             android:id="@+id/textView115"
             android:layout_width="match_parent"
             android:layout_height="55dp"
-            android:text="12PM" />
+            android:text="@string/screen10_textView5" />
 
         <TextView
             android:id="@+id/textView116"
             android:layout_width="match_parent"
             android:layout_height="55dp"
-            android:text="1PM" />
+            android:text="@string/screen10_textView6" />
 
         <TextView
             android:id="@+id/textView117"
             android:layout_width="match_parent"
             android:layout_height="55dp"
-            android:text="2PM" />
+            android:text="@string/screen10_textView7" />
 
         <TextView
             android:id="@+id/textView118"
             android:layout_width="match_parent"
             android:layout_height="55dp"
-            android:text="3PM" />
+            android:text="@string/screen10_textView8" />
 
         <TextView
             android:id="@+id/textView119"
             android:layout_width="match_parent"
             android:layout_height="55dp"
-            android:text="4PM" />
+            android:text="@string/screen10_textView9" />
 
         <TextView
             android:id="@+id/textView1110"
             android:layout_width="match_parent"
             android:layout_height="55dp"
-            android:text="5PM" />
+            android:text="@string/screen10_textView10" />
 
         <TextView
             android:id="@+id/textView1111"
             android:layout_width="match_parent"
             android:layout_height="55dp"
-            android:text="6PM" />
+            android:text="@string/screen10_textView11" />
 
         <TextView
             android:id="@+id/textView1112"
             android:layout_width="match_parent"
             android:layout_height="55dp"
-            android:text="7PM" />
+            android:text="@string/screen10_textView12" />
 
         <TextView
             android:id="@+id/textView1113"
             android:layout_width="match_parent"
             android:layout_height="55dp"
-            android:text="8PM" />
+            android:text="@string/screen10_textView13" />
 
         <TextView
             android:id="@+id/textView1114"
             android:layout_width="match_parent"
             android:layout_height="51dp"
-            android:text="9PM" />
+            android:text="@string/screen10_textView14" />
     </LinearLayout>
 
     <com.google.android.material.button.MaterialButton
