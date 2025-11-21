@@ -29,25 +29,32 @@ public class StudentIn extends BaseActivity{
         Button Asessions = findViewById(R.id.screen15_searchavailsessions);
         Button Bsessions = findViewById(R.id.screen15_bsessions);
         Button Rsessions = findViewById(R.id.screen15_rsessions);
+        Button Csessions = findViewById(R.id.screen15_csessions);
 
         // Different Buttons
-        //SWITCH TO TUTOR AVAILABILITY SCREEN
+        //SWITCH TO SEARCH AVAILABILITY SCREEN
         Asessions.setOnClickListener(v -> {
             Intent intent = new Intent(StudentIn.this, StudentSearchAvailable.class);
             startActivity(intent);
 
         });
 
-        //SWITCH TO UPCOMING SESSIONS SCREEN
+        //SWITCH TO BOOKED SESSIONS SCREEN
         Bsessions.setOnClickListener(v -> {
             Intent intent = new Intent(StudentIn.this, StudentBookedSession.class);
             startActivity(intent);
 
         });
 
-        //SWITCH TO PAST SESSIONS SCREEN
+        //SWITCH TO REQUESTED SESSIONS SCREEN
         Rsessions.setOnClickListener(v -> {
             Intent intent = new Intent(StudentIn.this, StudentRequestedSession.class);
+            startActivity(intent);
+        });
+
+        //SWITCH TO CANCEL SESSIONS SCREEN
+        Csessions.setOnClickListener(v -> {
+            Intent intent = new Intent(StudentIn.this, StudentCancelSession.class);
             startActivity(intent);
         });
     }

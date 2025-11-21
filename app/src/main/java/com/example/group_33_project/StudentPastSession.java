@@ -10,14 +10,14 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-public class StudentBookedSession extends AppCompatActivity {
+public class StudentPastSession extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.screen17_bookedstud);
+        setContentView(R.layout.screen19_pastsessionstud);
         EdgeToEdge.enable(this);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.studentbookdsession), (v, insets) -> {
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.studentpastsession), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
@@ -25,18 +25,18 @@ public class StudentBookedSession extends AppCompatActivity {
 
         //FINDING THE ID OF BUTTONS
         Button back = findViewById(R.id.button_back);
-        Button Psessions = findViewById(R.id.screen17_psessions);
+        Button ratetutor = findViewById(R.id.screen19_rtutor);
 
-        // back button → return to studentIn
+        // back button → return to studentBookedSession
         back.setOnClickListener(v -> {
-            Intent intent = new Intent(StudentBookedSession.this, StudentIn.class);
+            Intent intent = new Intent(StudentPastSession.this, StudentBookedSession.class);
             startActivity(intent);
             finish();
         });
 
-        //SWITCH TO PAST SESSIONS SCREEN
-        Psessions.setOnClickListener(v -> {
-            Intent intent = new Intent(StudentBookedSession.this, StudentPastSession.class);
+        //SWITCH TO RATE TUTOR SCREEN
+        ratetutor.setOnClickListener(v -> {
+            Intent intent = new Intent(StudentPastSession.this, StudentRate.class);
             startActivity(intent);
         });
     }

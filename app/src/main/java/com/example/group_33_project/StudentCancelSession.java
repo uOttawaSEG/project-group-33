@@ -10,14 +10,14 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-public class StudentBookedSession extends AppCompatActivity {
+public class StudentCancelSession extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.screen17_bookedstud);
+        setContentView(R.layout.screen20_cancelsessionstud);
         EdgeToEdge.enable(this);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.studentbookdsession), (v, insets) -> {
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.studentcancelsession), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
@@ -25,19 +25,12 @@ public class StudentBookedSession extends AppCompatActivity {
 
         //FINDING THE ID OF BUTTONS
         Button back = findViewById(R.id.button_back);
-        Button Psessions = findViewById(R.id.screen17_psessions);
 
         // back button → return to studentIn
         back.setOnClickListener(v -> {
-            Intent intent = new Intent(StudentBookedSession.this, StudentIn.class);
+            Intent intent = new Intent(StudentCancelSession.this, StudentIn.class);
             startActivity(intent);
             finish();
-        });
-
-        //SWITCH TO PAST SESSIONS SCREEN
-        Psessions.setOnClickListener(v -> {
-            Intent intent = new Intent(StudentBookedSession.this, StudentPastSession.class);
-            startActivity(intent);
         });
     }
 }

@@ -97,6 +97,21 @@
             android:theme="@style/Theme.Group_33_Project" />
 
         <activity
+            android:name=".StudentCancelSession"
+            android:exported="false"
+            android:theme="@style/Theme.Group_33_Project" />
+
+        <activity
+            android:name=".StudentPastSession"
+            android:exported="false"
+            android:theme="@style/Theme.Group_33_Project" />
+
+        <activity
+            android:name=".StudentRate"
+            android:exported="false"
+            android:theme="@style/Theme.Group_33_Project" />
+
+        <activity
             android:name=".MainActivity"
             android:exported="true" >
             <intent-filter>

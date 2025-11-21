@@ -54,6 +54,9 @@
     <string name="screen15_searchavailsessions">Search Available Sessions</string>
     <string name="screen15_bsessions">Booked Sessions</string>
     <string name="screen15_rsessions">Requested Sessions</string>
+    <string name="screen17_psessions">View Past Sessions</string>
+    <string name="screen18_csessions">Cancel Sessions</string>
+    <string name="screen19_rtutor">Rate Past Tutors</string>
     <!-- Strings used for fragments for navigation -->
     <string name="first_fragment_label">First Fragment</string>
     <string name="second_fragment_label">Second Fragment</string>
