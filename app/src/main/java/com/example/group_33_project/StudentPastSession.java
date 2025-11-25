@@ -29,8 +29,6 @@ public class StudentPastSession extends AppCompatActivity {
 
         // back button → return to studentBookedSession
         back.setOnClickListener(v -> {
-            Intent intent = new Intent(StudentPastSession.this, StudentBookedSession.class);
-            startActivity(intent);
             finish();
         });
 

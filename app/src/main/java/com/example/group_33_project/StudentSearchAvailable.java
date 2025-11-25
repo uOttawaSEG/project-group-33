@@ -20,6 +20,8 @@ import java.util.ArrayList;
 
 public class StudentSearchAvailable extends AppCompatActivity {
 
+    private Student currentStudent;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,8 +63,7 @@ public class StudentSearchAvailable extends AppCompatActivity {
 
         // back button → return to studentIn
         back.setOnClickListener(v -> {
-            Intent intent = new Intent(StudentSearchAvailable.this, StudentIn.class);
-            startActivity(intent);
+
             finish();
         });
     }
