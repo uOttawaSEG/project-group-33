@@ -51,10 +51,13 @@ dependencies {
 
     implementation(libs.navigation.fragment)
     implementation(libs.navigation.ui)
+    implementation(libs.recyclerview)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
+
+    implementation("com.github.prolificinteractive:material-calendarview:1.6.0")
 
     // REMOVE this manual pin to avoid conflicting versions (BOM handles it)
     // implementation("com.google.firebase:firebase-firestore:26.0.1")

@@ -28,8 +28,8 @@ public class StudentIn extends BaseActivity{
         //FINDING THE ID OF BUTTONS
         Button Asessions = findViewById(R.id.screen15_searchavailsessions);
         Button Bsessions = findViewById(R.id.screen15_bsessions);
-        Button Rsessions = findViewById(R.id.screen15_rsessions);
-        Button Csessions = findViewById(R.id.screen15_csessions);
+        // Button Rsessions = findViewById(R.id.screen15_rsessions);
+        //Button Csessions = findViewById(R.id.screen15_csessions);
 
         // Different Buttons
         //SWITCH TO SEARCH AVAILABILITY SCREEN
@@ -47,6 +47,7 @@ public class StudentIn extends BaseActivity{
         });
 
         //SWITCH TO REQUESTED SESSIONS SCREEN
+        /*
         Rsessions.setOnClickListener(v -> {
             Intent intent = new Intent(StudentIn.this, StudentRequestedSession.class);
             startActivity(intent);
@@ -56,6 +57,6 @@ public class StudentIn extends BaseActivity{
         Csessions.setOnClickListener(v -> {
             Intent intent = new Intent(StudentIn.this, StudentCancelSession.class);
             startActivity(intent);
-        });
+        });*/
     }
 }

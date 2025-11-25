@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/bkg"
-    android:id="@+id/studentbookdsession">
+    android:id="@+id/studentpastsession">
 
     <include layout="@layout/reusable_back"
         android:id="@+id/included_back_container"
@@ -14,14 +15,14 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/screen17_psessions"
+        android:id="@+id/screen19_rtutor"
         android:layout_width="375dp"
         android:layout_height="75dp"
         android:layout_weight="1"
         android:background="@drawable/button_background"
         android:backgroundTint="@color/gg"
         android:fontFamily="sans-serif-medium"
-        android:text="@string/screen17_psessions"
+        android:text="@string/screen19_rtutor"
         android:textAllCaps="false"
         android:textColor="@color/white"
         app:backgroundTint="@null"
@@ -34,5 +35,15 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.932" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_studentpast"
+        android:layout_width="391dp"
+        android:layout_height="532dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.402" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
