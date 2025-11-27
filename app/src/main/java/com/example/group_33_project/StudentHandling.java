@@ -72,6 +72,7 @@ public class StudentHandling {
                         Query slotQuery = db.collectionGroup("timeSlots")
                                 .whereEqualTo("status", "open") // must be open slots
                                 .whereIn("tutorEmail", chunk) // must be a tutor that offers the course
+                                .whereGreaterThan("startInstant", Timestamp.now()) // must be in the FUTURE
                                 .orderBy("startInstant"); // sort by most recent first
 
                         slotTasks.add(slotQuery.get());
