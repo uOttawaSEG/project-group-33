@@ -36,7 +36,9 @@ public class StudentSearchAvailable extends AppCompatActivity {
     private TextView displayCourse;
 
     private StudentHandling studHandle;
-    StudentLookupSessionAdapter adapter;
+    private StudentLookupSessionAdapter adapter;
+
+    private String status = "f";
 
     //HELPER VARIABLES
     private HashMap<CalendarDay, List<TimeSlot>> sessionsByDay;
@@ -109,6 +111,7 @@ public class StudentSearchAvailable extends AppCompatActivity {
                 return;
             }
 
+            displayCourse.setText(currentCourse);
             //get the hashmap of <date, list of sessions of available tutors per date>
             sessionsByDay = new HashMap<>();
             highlightDates = new ArrayList<>();
@@ -116,6 +119,15 @@ public class StudentSearchAvailable extends AppCompatActivity {
             studHandle.searchSlotsByCourse(currentCourse, new SlotListCallback() {
                 @Override
                 public void onSuccess(List<TimeSlot> slots) {
+
+                    if (slots.isEmpty()){
+                        status = "n";
+                        Toast.makeText(StudentSearchAvailable.this, "did not find courses", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
+                    status = "f";
+
                     for(TimeSlot slot: slots){
                         ZonedDateTime zdt = slot.getStartDate();
                         CalendarDay key = CalendarDay.from(
@@ -177,7 +189,11 @@ public class StudentSearchAvailable extends AppCompatActivity {
                     return;
                 }
 
-                displayCourse.setText("Looking for tutoring sessions for: " + currentCourse);
+                if("n".equals(status)){
+                    Toast.makeText(StudentSearchAvailable.this, "no sessions today", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
                 loadDay(sessionsByDay, date);
 
             }
@@ -194,6 +210,11 @@ public class StudentSearchAvailable extends AppCompatActivity {
 
     public void loadDay( HashMap<CalendarDay, List<TimeSlot>> map, CalendarDay day) {
         List<TimeSlot> list = map.get(day);
+
+        if(list == null){
+            Toast.makeText(StudentSearchAvailable.this, "no sessions during this day", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
         adapter = new StudentLookupSessionAdapter(list, (slot, pos) -> {
             bookSession(slot, day, map);
