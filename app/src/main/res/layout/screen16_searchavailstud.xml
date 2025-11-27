@@ -16,14 +16,14 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_potentialsessions"
-        android:layout_width="342dp"
-        android:layout_height="210dp"
+        android:layout_width="340dp"
+        android:layout_height="193dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.492"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.95" />
+        app:layout_constraintVertical_bias="0.97" />
 
     <com.prolificinteractive.materialcalendarview.MaterialCalendarView
         android:id="@+id/calendarView"
@@ -34,7 +34,7 @@
         app:layout_constraintHorizontal_bias="0.47"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.321"
+        app:layout_constraintVertical_bias="0.395"
         app:mcv_showOtherDates="all" />
 
     <TextView
@@ -47,7 +47,31 @@
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.656" />
+        app:layout_constraintVertical_bias="0.704" />
+
+    <TextView
+        android:id="@+id/textView16"
+        android:layout_width="168dp"
+        android:layout_height="23dp"
+        android:text="SHOWING SESSIONS FOR "
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.069"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.169" />
+
+    <TextView
+        android:id="@+id/tvDisplayCourse"
+        android:layout_width="138dp"
+        android:layout_height="23dp"
+        android:text="↻"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.677"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.169" />
 
     <Button
         android:id="@+id/bSearch"
@@ -63,7 +87,7 @@
         app:layout_constraintVertical_bias="0.101" />
 
     <EditText
-        android:id="@+id/screen4_program"
+        android:id="@+id/courseGetter"
         android:layout_width="231dp"
         android:layout_height="51dp"
         android:backgroundTint="@color/gg"

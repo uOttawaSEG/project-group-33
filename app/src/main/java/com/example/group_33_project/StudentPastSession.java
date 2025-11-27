@@ -25,7 +25,7 @@ public class StudentPastSession extends AppCompatActivity {
 
         //FINDING THE ID OF BUTTONS
         Button back = findViewById(R.id.button_back);
-        Button ratetutor = findViewById(R.id.screen19_rtutor);
+        //Button ratetutor = findViewById(R.id.screen19_rtutor);
 
         // back button → return to studentBookedSession
         back.setOnClickListener(v -> {
@@ -33,9 +33,11 @@ public class StudentPastSession extends AppCompatActivity {
         });
 
         //SWITCH TO RATE TUTOR SCREEN
+
+        /*
         ratetutor.setOnClickListener(v -> {
             Intent intent = new Intent(StudentPastSession.this, StudentRate.class);
             startActivity(intent);
-        });
+        });*/
     }
 }
