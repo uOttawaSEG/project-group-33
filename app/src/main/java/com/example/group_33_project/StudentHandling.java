@@ -33,7 +33,7 @@ public class StudentHandling {
     // method to obtain a list of open slots QUERIED BY COURSE
     public static void searchSlotsByCourse(String course, SlotListCallback callback){
         // format course:
-        course = String.join(course.trim().toLowerCase(), " ");
+        course = course.trim().toLowerCase(); // remove whitespace and make lowercase (like how tutors have it stored)
         // FIRST, get a list of all the tutors which offer tutoring for the desired course:
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("accounts")
