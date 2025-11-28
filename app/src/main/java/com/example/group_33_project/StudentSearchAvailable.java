@@ -98,16 +98,16 @@ public class StudentSearchAvailable extends AppCompatActivity {
             //verify the course
             if (currentCourse.isEmpty() ) {
                 currentCourse = "";
-                Toast.makeText(StudentSearchAvailable.this, "please specify a course", Toast.LENGTH_SHORT).show();
+                Toast.makeText(StudentSearchAvailable.this, "please specify a subject", Toast.LENGTH_SHORT).show();
                 return;
             }
 
             currentCourse = currentCourse.trim().toUpperCase();
             currentCourse = currentCourse.replace(" ", "");
 
-            if(currentCourse.length() != 7){
+            if(currentCourse.length() != 3){
                 currentCourse = "";
-                Toast.makeText(StudentSearchAvailable.this, "invalid course code", Toast.LENGTH_SHORT).show();
+                Toast.makeText(StudentSearchAvailable.this, "invalid subject code", Toast.LENGTH_SHORT).show();
                 return;
             }
 
@@ -122,7 +122,7 @@ public class StudentSearchAvailable extends AppCompatActivity {
 
                     if (slots.isEmpty()){
                         status = "n";
-                        Toast.makeText(StudentSearchAvailable.this, "did not find courses", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(StudentSearchAvailable.this, "did not find sessions", Toast.LENGTH_SHORT).show();
                         return;
                     }
 
@@ -185,7 +185,7 @@ public class StudentSearchAvailable extends AppCompatActivity {
                 //update the recyclerview with new list of daily sessions
 
                 if("".equals(currentCourse)){
-                    Toast.makeText(StudentSearchAvailable.this, "no course chosen", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(StudentSearchAvailable.this, "no subject chosen", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
@@ -210,11 +210,6 @@ public class StudentSearchAvailable extends AppCompatActivity {
 
     public void loadDay( HashMap<CalendarDay, List<TimeSlot>> map, CalendarDay day) {
         List<TimeSlot> list = map.get(day);
-
-        if(list == null){
-            Toast.makeText(StudentSearchAvailable.this, "no sessions during this day", Toast.LENGTH_SHORT).show();
-            return;
-        }
 
         adapter = new StudentLookupSessionAdapter(list, (slot, pos) -> {
             bookSession(slot, day, map);

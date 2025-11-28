@@ -10,7 +10,7 @@ public class TimeSlot {
     private String status; // status = "booked", "open", "pending" (if requires approval), or "cancelled"
     private final Boolean requireApproval; // whether or not the booking must be approved by an admin
     private String ID; // stores the FIRESTORE ID from the database
-
+    private boolean rated = false;
 
     // constructor for NEW TIMESLOTS
     TimeSlot(Tutor tutor, Boolean requireApproval, ZonedDateTime start, ZonedDateTime end){
@@ -77,6 +77,8 @@ public class TimeSlot {
     }
     public String getID() { return ID; }
 
+    public boolean isRated(){ return rated;}
+
     // Setters
 
 
@@ -102,4 +104,5 @@ public class TimeSlot {
     public void setTutor(Tutor tutor){
         this.tutor = tutor;
     }
+    public void wasRated(){ this.rated = true;}
 }

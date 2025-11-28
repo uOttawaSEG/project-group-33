@@ -52,7 +52,7 @@
         android:layout_height="66dp"
         android:backgroundTint="@color/gg"
         android:fontFamily="sans-serif-medium"
-        android:hint="@string/screen5_courses"
+        android:hint="CODES OF TUTORED SUBJECTS"
         android:inputType="text"
         android:textColor="@android:color/black"
         android:textColorHint="@android:color/darker_gray"

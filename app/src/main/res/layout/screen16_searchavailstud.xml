@@ -92,7 +92,7 @@
         android:layout_height="51dp"
         android:backgroundTint="@color/gg"
         android:fontFamily="sans-serif-medium"
-        android:hint="Course Code"
+        android:hint="Subject Code"
         android:inputType="text"
         android:textColor="@android:color/black"
         android:textColorHint="@android:color/darker_gray"
