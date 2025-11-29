@@ -21,8 +21,11 @@ import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 import com.prolificinteractive.materialcalendarview.OnDateSelectedListener;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -111,7 +114,7 @@ public class StudentSearchAvailable extends AppCompatActivity {
                 return;
             }
 
-            displayCourse.setText(currentCourse);
+
             //get the hashmap of <date, list of sessions of available tutors per date>
             sessionsByDay = new HashMap<>();
             highlightDates = new ArrayList<>();
@@ -122,19 +125,23 @@ public class StudentSearchAvailable extends AppCompatActivity {
 
                     if (slots.isEmpty()){
                         status = "n";
+                        displayCourse.setText("");
                         Toast.makeText(StudentSearchAvailable.this, "did not find sessions", Toast.LENGTH_SHORT).show();
                         return;
                     }
 
                     status = "f";
+                    Toast.makeText(StudentSearchAvailable.this, "found " + slots.size(), Toast.LENGTH_SHORT).show();
 
                     for(TimeSlot slot: slots){
+
                         ZonedDateTime zdt = slot.getStartDate();
-                        CalendarDay key = CalendarDay.from(
-                                zdt.getYear(),
-                                zdt.getMonthValue(),
-                                zdt.getDayOfMonth()
-                        );
+                        LocalDate local = zdt.withZoneSameInstant(ZoneId.systemDefault()).toLocalDate();
+
+                        // CalendarDay expects year, month, day as integers
+                        CalendarDay key = CalendarDay.from(local.getYear(), local.getMonthValue(), local.getDayOfMonth());
+                        Toast.makeText(StudentSearchAvailable.this, key.toString(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(StudentSearchAvailable.this, zdt.toString(), Toast.LENGTH_SHORT).show();
 
                         if(!sessionsByDay.containsKey(key)){
                             List<TimeSlot> newList = new ArrayList<>();
@@ -148,10 +155,15 @@ public class StudentSearchAvailable extends AppCompatActivity {
                         }
                     }
 
+                    displayCourse.setText(currentCourse);
+
                     runOnUiThread(() -> {
 
                         // Add decorator once
+                        calendar.removeDecorators();       // remove old highlights
                         calendar.addDecorator(new HighlightStudent(highlightDates));
+                        calendar.invalidateDecorators();   // force redraw
+
                         CalendarDay selectedDay = calendar.getSelectedDate();
                         if (selectedDay == null) {
                             selectedDay = CalendarDay.today();
@@ -162,6 +174,7 @@ public class StudentSearchAvailable extends AppCompatActivity {
 
                 @Override
                 public void onFailure(String error) {
+                    Toast.makeText(StudentSearchAvailable.this, "failed", Toast.LENGTH_SHORT).show();
 
                 }
             });
@@ -210,6 +223,11 @@ public class StudentSearchAvailable extends AppCompatActivity {
 
     public void loadDay( HashMap<CalendarDay, List<TimeSlot>> map, CalendarDay day) {
         List<TimeSlot> list = map.get(day);
+
+        if(list == null){
+            Toast.makeText(StudentSearchAvailable.this, "no sessions today", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
         adapter = new StudentLookupSessionAdapter(list, (slot, pos) -> {
             bookSession(slot, day, map);
