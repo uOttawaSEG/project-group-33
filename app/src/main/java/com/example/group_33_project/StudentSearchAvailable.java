@@ -71,6 +71,14 @@ public class StudentSearchAvailable extends AppCompatActivity {
             finish();
             return;
         }
+// 🔹 TEMP: clear any stale tokens on this in-memory object
+        if (currentStudent.getSessionTokens() != null) {
+            currentStudent.getSessionTokens().clear();
+        }
+        if (currentStudent.getRejectedSessionTokens() != null) {
+            currentStudent.getRejectedSessionTokens().clear();
+        }
+
 
         studHandle = new StudentHandling();
 
@@ -295,7 +303,7 @@ public class StudentSearchAvailable extends AppCompatActivity {
 
             @Override
             public void onFailure(String msg) {
-                runOnUiThread(() -> Toast.makeText(StudentSearchAvailable.this, "Failed to book", Toast.LENGTH_SHORT).show());
+                runOnUiThread(() -> Toast.makeText(StudentSearchAvailable.this, msg, Toast.LENGTH_LONG).show());
             }
         });
     }
