@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 public class StudentLookupSessionAdapter extends RecyclerView.Adapter<StudentLookupSessionAdapter.TimeSlotViewHolder> {
@@ -24,7 +25,8 @@ public class StudentLookupSessionAdapter extends RecyclerView.Adapter<StudentLoo
 
     public StudentLookupSessionAdapter(List<TimeSlot> list,
                                        OnRequestClickListener listener) {
-        this.timeSlotList = list;
+        this.timeSlotList = (list != null) ? list : new ArrayList<>();
+
         this.requestClickListener = listener;
     }
 
@@ -58,20 +60,21 @@ public class StudentLookupSessionAdapter extends RecyclerView.Adapter<StudentLoo
         holder.tvTime.setText(startStr + " - " + endStr);
 
         // Button click
-        holder.bAccept.setOnClickListener(v ->
-                requestClickListener.onRequestClick(slot, position)
-        );
+        holder.bAccept.setOnClickListener(v -> {
+            if (requestClickListener != null) {
+                requestClickListener.onRequestClick(slot, position);
+            }
+        });
     }
 
 
     @Override
     public int getItemCount() {
-        return timeSlotList.size();
+        return (timeSlotList != null) ? timeSlotList.size() : 0;
     }
 
     // View Holder
     public static class TimeSlotViewHolder extends RecyclerView.ViewHolder {
-
         TextView tvTutor, tvRating, tvTime;
         Button bAccept;
 
@@ -87,7 +90,9 @@ public class StudentLookupSessionAdapter extends RecyclerView.Adapter<StudentLoo
 
     public void updateData(List<TimeSlot> newList) {
         this.timeSlotList.clear();
-        this.timeSlotList.addAll(newList);
+        if (newList != null) {
+            this.timeSlotList.addAll(newList);
+        }
         notifyDataSetChanged();
     }
 

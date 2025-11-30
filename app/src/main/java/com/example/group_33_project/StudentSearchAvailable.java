@@ -126,6 +126,20 @@ public class StudentSearchAvailable extends AppCompatActivity {
                     if (slots.isEmpty()){
                         status = "n";
                         displayCourse.setText("");
+                        calendar.removeDecorators();
+                        CalendarDay selected = calendar.getSelectedDate();
+                        if (selected == null) selected = CalendarDay.today();
+
+                        int month = selected.getMonth();
+                        //if (month < 1) month += 1;  // handles older versions
+
+                        LocalDate l = LocalDate.of(
+                                selected.getYear(),
+                                month,
+                                selected.getDay()
+                        );
+
+                        loadDay(l);
                         Toast.makeText(StudentSearchAvailable.this, "did not find sessions", Toast.LENGTH_SHORT).show();
                         return;
                     }
@@ -159,7 +173,7 @@ public class StudentSearchAvailable extends AppCompatActivity {
                         CalendarDay selected = calendar.getSelectedDate();
                         if (selected == null) selected = CalendarDay.today();
 
-                        int month = selected.getMonth();
+                        int month = selected.getMonth() + 1;
                         //if (month < 1) month += 1;  // handles older versions
 
                         LocalDate l = LocalDate.of(
@@ -168,7 +182,7 @@ public class StudentSearchAvailable extends AppCompatActivity {
                                 selected.getDay()
                         );
 
-                        loadDay(sessionsByDay, l);
+                        loadDay(l);
 
 
                     });
@@ -219,7 +233,7 @@ public class StudentSearchAvailable extends AppCompatActivity {
                         date.getDay()
                 );
 
-                loadDay(sessionsByDay, l);
+                loadDay(l);
 
             }
         });
@@ -233,14 +247,17 @@ public class StudentSearchAvailable extends AppCompatActivity {
         });
     }
 
-    public void loadDay(HashMap<LocalDate, List<TimeSlot>> map, LocalDate day) {
-        List<TimeSlot> list = map.get(day);
+    public void loadDay( LocalDate day) {
+        List<TimeSlot> list = sessionsByDay.get(day);
+
         if (adapter == null) {
             adapter = new StudentLookupSessionAdapter(list != null ? list : new ArrayList<>(),
-                    (slot, pos) -> bookSession(slot, day, map));
+                    (slot, pos) -> bookSession(pos, slot, day));
             daySessions.setAdapter(adapter);
         } else {
-            adapter.updateData(list != null ? list : new ArrayList<>());
+            adapter = new StudentLookupSessionAdapter(list != null ? list : new ArrayList<>(),
+                    (slot, pos) -> bookSession(pos, slot, day));
+            daySessions.setAdapter(adapter);
         }
 
         if (list == null || list.isEmpty()) {
@@ -248,33 +265,31 @@ public class StudentSearchAvailable extends AppCompatActivity {
         }
     }
 
-    public void bookSession(TimeSlot s, LocalDate d, HashMap<LocalDate, List<TimeSlot>> m) {
+    public void bookSession(int pos,TimeSlot s, LocalDate d) {
         studHandle.bookSession(s, currentStudent, new AccountCallback() {
             @Override
             public void onSuccess(String msg) {
                 runOnUiThread(() -> {
                     Toast.makeText(StudentSearchAvailable.this, "Applied for session", Toast.LENGTH_SHORT).show();
 
-                    if (m == null || adapter == null) return;
+                    List<TimeSlot> list = sessionsByDay.get(d);
+                    if (list != null){
+                        list.remove(pos);
+                        if(list.isEmpty()){
+                            sessionsByDay.remove(d);
 
-                    /*
-                    List<TimeSlot> list = m.get(d);
-                    if (list != null) {
-                        // Create a new list without the booked session
-                        List<TimeSlot> updated = new ArrayList<>();
-                        for (TimeSlot ts : list) {
-                            if (!ts.equals(s)) { // requires TimeSlot.equals() properly implemented
-                                updated.add(ts);
-                            }
+                            // Remove the highlight day properly
+                            CalendarDay toRemove = CalendarDay.from(d.getYear(), d.getMonthValue()-1, d.getDayOfMonth());
+                            highlightDates.removeIf(cd -> cd.equals(toRemove));
+
+                            calendar.removeDecorators();
+                            calendar.addDecorator(new HighlightStudent(highlightDates));
+                            calendar.invalidateDecorators();
                         }
-                        // Update the map
-                        m.put(d, updated);
-                        // Update adapter safely
-                        adapter.updateData(updated);
                     }
-                    */
 
-                    //adapter.notifyDataSetChanged();
+                    loadDay(d);
+
                 });
             }
 
