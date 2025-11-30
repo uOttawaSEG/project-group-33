@@ -33,10 +33,12 @@ public class Student extends Account {
     public void setStatus(String s){
         status = s;
     }
-    public void addSessionToken(String token){
-        this.sessionTokens.add(token);
+    public void addSessionToken(String token) {
+        if (sessionTokens == null) {
+            sessionTokens = new ArrayList<>();
+        }
+        sessionTokens.add(token);
     }
-
     public void addRejectedSessionToken(String token){
         this.rejectedSessionTokens.add(token);
     }
@@ -50,7 +52,10 @@ public class Student extends Account {
     public String getStatus(){
         return status;
     }
-    public ArrayList<String> getSessionTokens(){
+    public ArrayList<String> getSessionTokens() {
+        if (sessionTokens == null) {
+            sessionTokens = new ArrayList<>();
+        }
         return sessionTokens;
     }
     public ArrayList<String> getRejectedSessionTokens(){
