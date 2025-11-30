@@ -352,7 +352,7 @@ public class StudentHandling {
                                                     .addOnSuccessListener(v ->{
                                                         callback.onSuccess("Slot booked");
                                                         // add the session ID to the student's object to make querying easy
-                                                        updateBookedSession(student, slotRef.getId());})
+                                                        updateBookedSession(student, slotRef.getPath());})
                                                     .addOnFailureListener(e -> callback.onFailure("Booking failed: " + e.getMessage()));
                                         });
                             });
@@ -366,17 +366,18 @@ public class StudentHandling {
 
 
     }
-    public void updateBookedSession(Student student, String docRef){
+    public void updateBookedSession(Student student, String slotPath){
         if (student == null) return;
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-        student.addSessionToken(docRef);
+        // Store the FULL path, i.e. "accounts/tutor1/timeSlots/abc123"
+        student.addSessionToken(slotPath);
+
 
         DocumentReference studentRef = db.collection("accounts").document(student.getEmail());
-        studentRef.update("sessionTokens", FieldValue.arrayUnion(docRef));
+        studentRef.update("sessionTokens", FieldValue.arrayUnion(slotPath));
     }
-
     public void rateTutor(TimeSlot slot, int rating){ // where slot = the reference to the completed slot, rating belongs to [1, 2, 3, 4, 5]
         Tutor tutor = slot.getTutor();
         tutor.rate(rating); // .rate already updates the tutor object's instance vars rating & numRatings
