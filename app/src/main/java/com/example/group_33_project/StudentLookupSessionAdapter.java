@@ -40,34 +40,29 @@ public class StudentLookupSessionAdapter extends RecyclerView.Adapter<StudentLoo
     public void onBindViewHolder(@NonNull TimeSlotViewHolder holder, int position) {
         TimeSlot slot = timeSlotList.get(position);
 
-        // Tutor name
-        String tn = slot.getTutor().getFirstName() + " " + slot.getTutor().getLastName();
+        // Safe Tutor handling
         if (slot.getTutor() != null) {
+            String tn = slot.getTutor().getFirstName() + " " + slot.getTutor().getLastName();
             holder.tvTutor.setText(tn);
-        } else {
-            holder.tvTutor.setText("Unknown Tutor");
-        }
-
-        // Rating
-        if (slot.getTutor() != null ) {
             holder.tvRating.setText("Rating: " + slot.getTutor().getRating());
         } else {
+            holder.tvTutor.setText("Unknown Tutor");
             holder.tvRating.setText("Rating: N/A");
         }
 
-        // Time range (formatted)
+        // Safe Time handling
         ZonedDateTime start = slot.getStartDate();
         ZonedDateTime end   = slot.getEndDate();
-
-        String startStr = start.toLocalTime().toString();
-        String endStr   = end.toLocalTime().toString();
-
+        String startStr = (start != null) ? start.toLocalTime().toString() : "N/A";
+        String endStr   = (end != null) ? end.toLocalTime().toString() : "N/A";
         holder.tvTime.setText(startStr + " - " + endStr);
 
         // Button click
         holder.bAccept.setOnClickListener(v ->
-                requestClickListener.onRequestClick(slot, position));
+                requestClickListener.onRequestClick(slot, position)
+        );
     }
+
 
     @Override
     public int getItemCount() {
@@ -88,6 +83,17 @@ public class StudentLookupSessionAdapter extends RecyclerView.Adapter<StudentLoo
             tvTime = itemView.findViewById(R.id.tvTime);
             bAccept = itemView.findViewById(R.id.bAccept);
         }
+    }
+
+    public void updateData(List<TimeSlot> newList) {
+        this.timeSlotList.clear();
+        this.timeSlotList.addAll(newList);
+        notifyDataSetChanged();
+    }
+
+    public void clear() {
+        this.timeSlotList.clear();
+        notifyDataSetChanged();
     }
 }
 
