@@ -111,6 +111,7 @@ public class StudentHandling {
                                     String docStatus = doc.getString("status");
                                     String tutorEmail = doc.getString("tutorEmail");
                                     String studentEmail = doc.getString("studentEmail");
+                                    Boolean rated = doc.getBoolean("rated");
 
                                     if (sTs == null || eTs == null || zoneId == null) {
                                         if (--remaining[0] == 0) {
@@ -134,7 +135,7 @@ public class StudentHandling {
                                                 s = (Student) accounts.get(1);
                                             }
 
-                                            slotList.add(new TimeSlot(t, requireApproval, start, end, s, docStatus, doc.getId()));
+                                            slotList.add(new TimeSlot(t, requireApproval, start, end, s, docStatus, doc.getId(), Boolean.TRUE.equals(rated)));
 
                                             if (--remaining[0] == 0) {
                                                 slotList.sort(Comparator.comparing(TimeSlot::getStartDate)); // sort for UI
@@ -226,7 +227,7 @@ public class StudentHandling {
                         Timestamp eTs = doc.getTimestamp("endInstant");
                         String zoneId = doc.getString("zoneId");
                         Boolean requireApproval = doc.getBoolean("requireApproval");
-
+                        Boolean rated = doc.getBoolean("rated");
                         String docStatus = doc.getString("status");
                         String effectiveStatus;
 
@@ -264,7 +265,7 @@ public class StudentHandling {
                                     s = (Student) accounts.get(1);
                                 }
 
-                                slotList.add(new TimeSlot(t, requireApproval, start, end, s, effectiveStatus, doc.getId()));
+                                slotList.add(new TimeSlot(t, requireApproval, start, end, s, effectiveStatus, doc.getId(), Boolean.TRUE.equals(rated)));
 
                                 if (--remaining[0] == 0) {
                                     slotList.sort(Comparator.comparing(TimeSlot::getStartDate));
