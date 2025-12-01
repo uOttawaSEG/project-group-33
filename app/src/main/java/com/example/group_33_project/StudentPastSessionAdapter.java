@@ -48,7 +48,7 @@ public class StudentPastSessionAdapter extends RecyclerView.Adapter<StudentPastS
         Context ctx = holder.itemView.getContext();
 
         if (slot.isRated()) {
-            String r = "Rated: " + slot.getTutor().getRating();
+            String r = "Rated";
             holder.tvRating.setText(r); // assuming getRating() exists
             holder.rateButton.setVisibility(View.GONE);
             holder.rateInput.setVisibility(View.GONE);

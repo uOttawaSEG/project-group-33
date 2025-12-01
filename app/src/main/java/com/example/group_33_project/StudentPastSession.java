@@ -2,6 +2,7 @@ package com.example.group_33_project;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -66,9 +67,14 @@ public class StudentPastSession extends AppCompatActivity {
 
         // INITIALIZE EMPTY ADAPTER FIRST
         adapter = new StudentPastSessionAdapter(slots, (slot, rating, pos) -> {
-            Tutor t = slot.getTutor();
+            /*Tutor t = slot.getTutor();
             t.rate(rating);
-            slot.isRated();
+            slot.isRated();*/
+
+            studHandle.rateTutor(slot,rating);
+            slot.wasRated();
+            adapter.notifyItemChanged(pos);
+
         });
         pastSessions.setAdapter(adapter);
 
@@ -88,11 +94,10 @@ public class StudentPastSession extends AppCompatActivity {
             public void onSuccess(List<TimeSlot> allSlots) {
 
                 ZonedDateTime now = ZonedDateTime.now();
-
                 List<TimeSlot> past = new ArrayList<>();
 
                 for (TimeSlot slot : allSlots) {
-                    if (slot.getEndDate().isBefore(now)) {
+                    if (slot.getStartDate().isBefore(ZonedDateTime.now(slot.getStartDate().getZone()))) {
                         past.add(slot);
                     }
                 }
