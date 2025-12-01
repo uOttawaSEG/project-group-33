@@ -11,6 +11,15 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import java.util.HashMap;
 import java.util.Map;
+import android.util.Base64;
+
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentReference;
+
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class AccountHandling {
     private FirebaseFirestore db;
@@ -211,6 +220,55 @@ public class AccountHandling {
         mailDoc.put("message", message);
 
         db.collection("mail").add(mailDoc);
+    }
+
+    // Send an email with an .ics attachment via Firestore "mail" collection (Trigger Email extension)
+    public Task<DocumentReference> sendCalendarEmail(String toEmail,
+                                                     String subject,
+                                                     String bodyText,
+                                                     String icsContent) {
+        if (toEmail == null || toEmail.isBlank()) {
+            return null;
+        }
+        if (icsContent == null || icsContent.isBlank()) {
+            return null;
+        }
+
+        String text = (bodyText != null && !bodyText.isBlank())
+                ? bodyText
+                : "Attached is your tutoring schedule (.ics) you can import into your calendar.";
+        String html = "<p>" + text + "</p>";
+
+        // Base64 encode ICS for the extension
+        String base64Ics = Base64.encodeToString(
+                icsContent.getBytes(StandardCharsets.UTF_8),
+                Base64.NO_WRAP
+        );
+
+        // Standard message fields
+        Map<String, Object> message = new HashMap<>();
+        message.put("subject", subject);
+        message.put("text", text);
+        message.put("html", html);
+        message.put("replyTo", "seg33project@gmail.com");
+
+        // Attachments array
+        List<Map<String, Object>> attachments = new ArrayList<>();
+        Map<String, Object> attachment = new HashMap<>();
+        attachment.put("filename", "tutoring_sessions.ics");
+        attachment.put("content", base64Ics);
+        attachment.put("encoding", "base64");
+        attachments.add(attachment);
+
+        message.put("attachments", attachments);
+
+        Map<String, Object> mailDoc = new HashMap<>();
+        mailDoc.put("to", toEmail);
+        mailDoc.put("from", "seg33project@gmail.com");
+        mailDoc.put("message", message);
+
+        // Return Task so caller can show success/failure Toasts
+        return db.collection("mail").add(mailDoc);
     }
 
 }
