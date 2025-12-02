@@ -338,10 +338,21 @@ public class TutorHandling {
 
         Query query = db.collectionGroup("timeSlots"); // firebase helper class to query by a collection group
 
-        // if we want to get the slots by a specific status, set the query filter!!
+
         if (status != null && !status.isBlank()) {
-            String[] statuses = status.split(" "); // SPLIT so we can use MULTIPLE query filters!
-            query = query.whereIn("status", Arrays.asList(statuses));
+            String trimmed = status.trim().toLowerCase();
+
+            if ("completed".equals(trimmed)) {
+                // completed = booked slots that have already started (in the past)
+                Timestamp nowTs = Timestamp.now(); // current instant (UTC on Firestore side)
+
+                query = query
+                        .whereEqualTo("status", "booked")
+                        .whereLessThan("startInstant", nowTs);
+            } else {
+                String[] statuses = status.split(" "); // e.g. "open booked"
+                query = query.whereIn("status", Arrays.asList(statuses));
+            }
         }
 
          // otherwise, we will just get ALL of the slots, regardless of status (query is just filtering through timeslots)
