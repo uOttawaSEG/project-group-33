@@ -1,6 +1,6 @@
 # Project Group 33
 
-CircleCI Build Status[![CircleCI](https://dl.circleci.com/status-badge/img/gh/uOttawaSEG/project-group-33/tree/main.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/gh/uOttawaSEG/project-group-33/tree/main)
+CircleCI Build Status [![CircleCI](https://dl.circleci.com/status-badge/img/gh/uOttawaSEG/project-group-33/tree/main.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/gh/uOttawaSEG/project-group-33/tree/main)
 
 A full-stack course-tutoring management platform built for the SEG project at the University of Ottawa.  
 This system handles tutor scheduling, student interactions, time-slot management, and administrator oversight.
