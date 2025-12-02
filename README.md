@@ -57,12 +57,7 @@ project-group-33/
 │   │   │   └── resources/         # Firebase config files
 │   │   └── test/                  # Local JUnit tests
 │   └── build.gradle
-│
-├── documentation/
-│   ├── diagrams/
-│   └── reports/
-│
+|
 ├── README.md
 └── build.gradle / settings.gradle
 ```
-
