@@ -47,6 +47,7 @@ All core unit tests pass and validate the expected behavior of the system compon
 ---
 
 ## 📁 Project Structure
+```
 project-group-33/
 ├── app/
 │   ├── src/
@@ -63,4 +64,5 @@ project-group-33/
 │
 ├── README.md
 └── build.gradle / settings.gradle
+```
 
