@@ -132,7 +132,7 @@ public class TutorHandling {
                             data.put("requireApproval", requiresApproval);
                             data.put("studentEmail", null); // not yet booked
                             data.put("status", "open");
-                            data.put("rated", "false"); // not rated upon creation
+                            data.put("rated", false); // not rated upon creation
 
                             slotsRef.add(data)
 
@@ -487,7 +487,7 @@ public class TutorHandling {
                                     String status = doc.getString("status");
                                     String studentEmail = doc.getString("studentEmail");
                                     String slotId = doc.getId();
-                                    boolean rated = Boolean.TRUE.equals(doc.getBoolean("rated"));
+                                    boolean rated = doc.getBoolean("rated");
 
                                     // handle bad data safely
                                     if (sTs == null || eTs == null || zoneId == null) {
