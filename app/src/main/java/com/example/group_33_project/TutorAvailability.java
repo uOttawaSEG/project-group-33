@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,12 +30,16 @@ import java.util.stream.Collectors;
 
 public class TutorAvailability extends AppCompatActivity {
 
+    private static final String SCREEN_SETTINGS = "ScreenSettings";
+    private static final String BUTTON_VISIBILITY = "ButtonVisibility";
+
     private RecyclerView rvSlots;
     private TextView tvWeekLabel;
     private ZonedDateTime currentWeekStart;
     private SlotCreateTutorAdapter adapter;
 
     private Button btnNextWeek, btnPrevWeek, btnCreateAvailability, btnBack;
+    private CheckBox autoApproveCheckbox;
 
     private final List<SimpleTutorSlot> allSlots = new ArrayList<>();
     private List<SimpleTutorSlot> selectedSlots = new ArrayList<>();
@@ -50,41 +55,56 @@ public class TutorAvailability extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.screen10_availabilitytut);
 
-        //FIND BUTTONS AND SET INSTANCE VARIABLES
+        // FIND VIEWS
         rvSlots = findViewById(R.id.rvSlots);
         tvWeekLabel = findViewById(R.id.tvWeekLabel);
         btnNextWeek = findViewById(R.id.btnNextWeek);
         btnPrevWeek = findViewById(R.id.btnPrevWeek);
         btnCreateAvailability = findViewById(R.id.btnCreateAvailability);
-        btnCreateAvailability.setVisibility(View.GONE);
         btnBack = findViewById(R.id.screen10_back);
+        autoApproveCheckbox = findViewById(R.id.auto_approve_checkbox);
+
         tutorH = new TutorHandling();
-        //FIND THIS SPECIFIC TUTOR FOR FUTURE FILTERING
+        btnCreateAvailability.setVisibility(View.GONE);
+
+        // GET CURRENT TUTOR
         currentTutor = (Tutor) getIntent().getSerializableExtra("tutor");
-
-
         if (currentTutor == null) {
             Toast.makeText(this, "Error: Tutor not found!", Toast.LENGTH_LONG).show();
             finish();
             return;
         }
 
-        SharedPreferences prefs = getSharedPreferences("ScreenSettings", Context.MODE_PRIVATE);
-        needsApproval = !prefs.getBoolean("ButtonVisibility", false); // logic was mistakenly created backwards, so just take !
+        // LOAD AND SETUP CHECKBOX (AUTO-APPROVE)
+        SharedPreferences prefs = getSharedPreferences(SCREEN_SETTINGS, Context.MODE_PRIVATE);
+        boolean isAutoApproveOn = prefs.getBoolean(BUTTON_VISIBILITY, false);
+        autoApproveCheckbox.setChecked(isAutoApproveOn);
 
-        //SETUP CURRENT WEEKS SLOTS
+        // If checkbox means "auto approve", then needsApproval is the opposite
+        needsApproval = !isAutoApproveOn;
+
+        autoApproveCheckbox.setOnCheckedChangeListener((buttonView, isCheckedNew) -> {
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putBoolean(BUTTON_VISIBILITY, isCheckedNew);
+            editor.apply();
+
+            // Update flag used when creating availability
+            needsApproval = !isCheckedNew;
+        });
+
+        // SETUP CURRENT WEEK START
         currentWeekStart = ZonedDateTime.now(ZoneId.of("America/Toronto"))
-                .with(TemporalAdjusters.previousOrSame(DayOfWeek.SUNDAY)) // fix to ensure we start on the correct week
+                .with(TemporalAdjusters.previousOrSame(DayOfWeek.SUNDAY))
                 .truncatedTo(ChronoUnit.DAYS);
 
         setupWeekNavigation();
         setupAdapter();
         generateSlotsForWeek(currentWeekStart);
 
-        //BUTTON TO CREATE NEW CLASSES
+        // BUTTON TO CREATE NEW CLASSES
         btnCreateAvailability.setOnClickListener(v -> handleCreateAvailability());
 
-        //BUTTON TO GO BACK TO THE LOGGED IN SCREEN
+        // BUTTON TO GO BACK TO THE LOGGED IN SCREEN
         btnBack.setOnClickListener(v -> {
             Intent intent = new Intent(TutorAvailability.this, TutorIn.class);
             intent.putExtra("tutor", currentTutor);
@@ -93,7 +113,7 @@ public class TutorAvailability extends AppCompatActivity {
         });
     }
 
-    //BUTTONS TO GO BACK/FORWARD IN WEEKS
+    // BUTTONS TO GO BACK/FORWARD IN WEEKS
     private void setupWeekNavigation() {
         btnNextWeek.setOnClickListener(v -> {
             currentWeekStart = currentWeekStart.plusWeeks(1);
@@ -108,20 +128,20 @@ public class TutorAvailability extends AppCompatActivity {
         updateWeekLabel();
     }
 
-    //UPDATE THE WEEK EVERY TIME THE BUTTONS TO GO TO/FROM DIFFERENT WEEKS ARE CLICKED
+    // UPDATE THE WEEK EVERY TIME THE BUTTONS TO GO TO/FROM DIFFERENT WEEKS ARE CLICKED
     private void updateWeekLabel() {
         DateTimeFormatter fmt = DateTimeFormatter.ofPattern("MMM d");
         ZonedDateTime weekEnd = currentWeekStart.plusDays(6);
         tvWeekLabel.setText(fmt.format(currentWeekStart) + " - " + fmt.format(weekEnd));
     }
 
-    //GENEREATE AND THEN PERSONALIZE SLOTS FOR THIS WEEK
+    // GENERATE AND THEN PERSONALIZE SLOTS FOR THIS WEEK
     private void generateSlotsForWeek(ZonedDateTime weekStart) {
         allSlots.clear();
         count = 1;
         ZonedDateTime weekEndExclusive = weekStart.plusDays(7); // next Sunday 00:00
 
-        //dummy slots
+        // dummy slots
         for (int hour = 9; hour < 21; hour++) {
             for (int min = 0; min < 60; min += 30) {
                 for (int dayOffset = 0; dayOffset < 7; dayOffset++) {
@@ -137,14 +157,13 @@ public class TutorAvailability extends AppCompatActivity {
 
         updateWeekLabel();
 
-        ZonedDateTime weekEnd = weekStart.plusDays(6);
-
-        //personalize slots
-        tutorH.queryTutorSlots(currentTutor,  new SlotListCallback() {
+        // personalize slots
+        tutorH.queryTutorSlots(currentTutor, new SlotListCallback() {
             @Override
             public void onSuccess(List<TimeSlot> allTimeSlots) {
                 updateSlotsWithTimeSlots(allTimeSlots, weekStart, weekEndExclusive);
             }
+
             @Override
             public void onFailure(String error) {
                 Log.e("TutorAvailability", "Failed to load slots: " + error);
@@ -153,8 +172,10 @@ public class TutorAvailability extends AppCompatActivity {
 
     }
 
-    //HELPER METHOD TO PERSONALIZE THE SLOTS
-    private void updateSlotsWithTimeSlots(List<TimeSlot> allTimeSlots, ZonedDateTime weekStart, ZonedDateTime weekEndExclusive) {
+    // HELPER METHOD TO PERSONALIZE THE SLOTS
+    private void updateSlotsWithTimeSlots(List<TimeSlot> allTimeSlots,
+                                          ZonedDateTime weekStart,
+                                          ZonedDateTime weekEndExclusive) {
         int sessionCounter = 1; // start numbering from 1
 
         for (TimeSlot ts : allTimeSlots) {
@@ -162,7 +183,7 @@ public class TutorAvailability extends AppCompatActivity {
             if (!ts.getTutor().getEmail().equals(currentTutor.getEmail())) continue;
 
             ZonedDateTime tStart = ts.getStartDate().truncatedTo(ChronoUnit.MINUTES);
-            ZonedDateTime tEnd   = ts.getEndDate().truncatedTo(ChronoUnit.MINUTES);
+            ZonedDateTime tEnd = ts.getEndDate().truncatedTo(ChronoUnit.MINUTES);
 
             // EXCLUDE if the interval [tStart, tEnd) lies completely outside [weekStart, weekEndExclusive)
             if (tEnd.isBefore(weekStart) || !tStart.isBefore(weekEndExclusive)) continue;
@@ -175,16 +196,14 @@ public class TutorAvailability extends AppCompatActivity {
                         s.name = "cancelled";
                     }
                 }
-            }
-            else if("pending".equals(ts.getStatus())){
+            } else if ("pending".equals(ts.getStatus())) {
                 for (SimpleTutorSlot s : allSlots) {
                     if (s.start.isBefore(tEnd) && s.end.isAfter(tStart)) {
                         s.status = "pending";
                         s.name = "pending";
                     }
                 }
-            }
-            else if ("booked".equals(ts.getStatus())) {
+            } else if ("booked".equals(ts.getStatus())) {
                 for (SimpleTutorSlot s : allSlots) {
                     if (s.start.isBefore(tEnd) && s.end.isAfter(tStart)) {
                         s.status = "booked";
@@ -192,7 +211,7 @@ public class TutorAvailability extends AppCompatActivity {
                         Student st = ts.getStudent();
                         if (st != null) {
                             String first = st.getFirstName() == null ? "" : st.getFirstName().trim();
-                            String last  = st.getLastName()  == null ? "" : st.getLastName().trim();
+                            String last = st.getLastName() == null ? "" : st.getLastName().trim();
                             String lastInitial = last.isEmpty() ? "" : (" " + last.charAt(0));
                             String candidate = (first + lastInitial).trim();
                             if (!candidate.isEmpty()) label = candidate;
@@ -200,7 +219,7 @@ public class TutorAvailability extends AppCompatActivity {
                         s.name = label;
                     }
                 }
-            }else{
+            } else {
                 for (SimpleTutorSlot s : allSlots) {
                     if (s.start.isBefore(tEnd) && s.end.isAfter(tStart)) {
                         s.status = ts.getStatus();
@@ -214,19 +233,19 @@ public class TutorAvailability extends AppCompatActivity {
         runOnUiThread(() -> adapter.notifyDataSetChanged());
     }
 
-    //INITIALIZE ADANTER
+    // INITIALIZE ADAPTER
     private void setupAdapter() {
         adapter = new SlotCreateTutorAdapter(allSlots, selected -> {
             selectedSlots = new ArrayList<>(selected);
             btnCreateAvailability.setVisibility(selectedSlots.isEmpty() ? View.GONE : View.VISIBLE);
         });
 
-        //VERTICAL LAYOUT LIKE CALENDAR
+        // VERTICAL LAYOUT LIKE CALENDAR
         rvSlots.setLayoutManager(new GridLayoutManager(this, 7, RecyclerView.VERTICAL, false));
         rvSlots.setAdapter(adapter);
     }
 
-    //METHOD TO CREATE NEW SESSIONS
+    // METHOD TO CREATE NEW SESSIONS
     private void handleCreateAvailability() {
         if (selectedSlots.isEmpty()) return;
 
@@ -234,22 +253,24 @@ public class TutorAvailability extends AppCompatActivity {
         selectedSlots.clear();
         btnCreateAvailability.setVisibility(View.GONE);
 
-        //filter already taken slots
+        // filter already taken slots
         slotsToCreate = slotsToCreate.stream()
                 .filter(s -> "empty".equals(s.status))
                 .collect(Collectors.toList());
 
         if (slotsToCreate.isEmpty()) return;
 
-        //group by day
+        // group by day
         Map<DayOfWeek, List<SimpleTutorSlot>> slotsByDay = new HashMap<>();
         for (SimpleTutorSlot s : slotsToCreate) {
             slotsByDay.computeIfAbsent(s.start.getDayOfWeek(), k -> new ArrayList<>()).add(s);
         }
 
-        DayOfWeek[] daysOrder = {DayOfWeek.SUNDAY, DayOfWeek.MONDAY, DayOfWeek.TUESDAY,
+        DayOfWeek[] daysOrder = {
+                DayOfWeek.SUNDAY, DayOfWeek.MONDAY, DayOfWeek.TUESDAY,
                 DayOfWeek.WEDNESDAY, DayOfWeek.THURSDAY, DayOfWeek.FRIDAY,
-                DayOfWeek.SATURDAY};
+                DayOfWeek.SATURDAY
+        };
 
         List<ZonedDateTime[]> sessionsToCreate = new ArrayList<>();
 
@@ -276,7 +297,7 @@ public class TutorAvailability extends AppCompatActivity {
         createAllAvailabilitySequential(sessionsToCreate);
     }
 
-    //HELPER METHOD THAT CREATES SESSIONS
+    // HELPER METHOD THAT CREATES SESSIONS
     private void createAllAvailabilitySequential(List<ZonedDateTime[]> sessions) {
         if (sessions.isEmpty()) {
             runOnUiThread(() -> generateSlotsForWeek(currentWeekStart));
@@ -299,7 +320,7 @@ public class TutorAvailability extends AppCompatActivity {
         });
     }
 
-    //HELPER METHOD TO CREATE SESSIONS
+    // HELPER METHOD TO UPDATE LOCAL SLOTS AFTER CREATE
     private void updateLocalSlots(ZonedDateTime start, ZonedDateTime end) {
         for (SimpleTutorSlot s : allSlots) {
             if ("empty".equals(s.status) && !s.start.isBefore(start) && !s.end.isAfter(end)) {
@@ -309,4 +330,3 @@ public class TutorAvailability extends AppCompatActivity {
         runOnUiThread(() -> adapter.notifyDataSetChanged());
     }
 }
-

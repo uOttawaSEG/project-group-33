@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/itemLayout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="12dp"
+    android:background="@color/bkg"
+    android:gravity="center_vertical">
+
+    <!-- Vertical layout for text fields -->
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tvTutor"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Tutor Name"
+            android:textSize="16sp"
+            android:textColor="#000000"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tvTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Time"
+            android:textSize="18sp"
+            android:textColor="#000000" />
+
+        <TextView
+            android:id="@+id/tvRating"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Rated/Not rated"
+            android:textSize="16sp"
+            android:textColor="#000000" />
+
+        <EditText
+            android:id="@+id/rateTutor"
+            android:layout_width="150dp"
+            android:layout_height="50dp"
+            android:backgroundTint="@color/gg"
+            android:fontFamily="sans-serif-medium"
+            android:hint="1 or 5 ✮"
+            android:inputType="text"
+            android:textColor="@android:color/black"
+            android:textColorHint="@android:color/darker_gray" />
+
+    </LinearLayout>
+
+    <!-- Horizontal layout for buttons -->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginStart="8dp">
+
+        <Button
+            android:id="@+id/bRATE"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/gg"
+            android:text="RATE"
+            android:textColor="#FFFFFF" />
+
+    </LinearLayout>
+
+</LinearLayout>

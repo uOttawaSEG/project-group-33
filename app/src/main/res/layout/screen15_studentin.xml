@@ -1,13 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/studentinscreen"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/bkg"
-    android:id="@+id/studentinscreen">
+    tools:layout_editor_absoluteX="0dp"
+    tools:layout_editor_absoluteY="217dp">
 
-    <include layout="@layout/reusable_logout"
+    <include
         android:id="@+id/included_logout_container"
+        layout="@layout/reusable_logout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
@@ -33,29 +37,7 @@
         app:layout_constraintHorizontal_bias="0.555"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.463" />
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/screen15_csessions"
-        android:layout_width="375dp"
-        android:layout_height="75dp"
-        android:layout_weight="1"
-        android:background="@drawable/button_background"
-        android:backgroundTint="@color/gg"
-        android:fontFamily="sans-serif-medium"
-        android:text="@string/screen18_csessions"
-        android:textAllCaps="false"
-        android:textColor="@color/white"
-        app:backgroundTint="@null"
-        app:icon="@drawable/circle_x"
-        app:iconSize="38dp"
-        app:iconTint="@color/white"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.555"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.621" />
+        app:layout_constraintVertical_bias="0.748" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/screen15_bsessions"
@@ -65,7 +47,7 @@
         android:background="@drawable/button_background"
         android:backgroundTint="@color/gg"
         android:fontFamily="sans-serif-medium"
-        android:text="@string/screen15_bsessions"
+        android:text="Upcoming Sessions"
         android:textAllCaps="false"
         android:textColor="@color/white"
         app:backgroundTint="@null"
@@ -77,28 +59,6 @@
         app:layout_constraintHorizontal_bias="0.555"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.777" />
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/screen15_rsessions"
-        android:layout_width="375dp"
-        android:layout_height="75dp"
-        android:layout_weight="1"
-        android:background="@drawable/button_background"
-        android:backgroundTint="@color/gg"
-        android:fontFamily="sans-serif-medium"
-        android:text="@string/screen15_rsessions"
-        android:textAllCaps="false"
-        android:textColor="@color/white"
-        app:backgroundTint="@null"
-        app:icon="@drawable/request_inbox"
-        app:iconSize="38dp"
-        app:iconTint="@color/white"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.555"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.932" />
+        app:layout_constraintVertical_bias="0.919" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

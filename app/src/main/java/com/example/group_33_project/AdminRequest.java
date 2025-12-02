@@ -1,4 +1,4 @@
-// ADMIN UTILITY: USED TO APPROVE OR DENY PENDING ACCOUNTGS
+// ADMIN UTILITY: USED TO APPROVE OR DENY PENDING ACCOUNTS
 package com.example.group_33_project;
 
 import android.content.Intent;

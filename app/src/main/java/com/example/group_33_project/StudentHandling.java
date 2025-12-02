@@ -2,6 +2,8 @@ package com.example.group_33_project;
 
 import static com.example.group_33_project.TutorHandling.getAccounts;
 
+import android.util.Log;
+
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.Timestamp;
@@ -33,7 +35,7 @@ public class StudentHandling {
     // method to obtain a list of open slots QUERIED BY COURSE
     public static void searchSlotsByCourse(String course, SlotListCallback callback){
         // format course:
-        course = String.join(course.trim().toLowerCase(), " ");
+        course = course.trim().toUpperCase(); // remove whitespace and make lowercase (like how tutors have it stored)
         // FIRST, get a list of all the tutors which offer tutoring for the desired course:
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("accounts")
@@ -72,6 +74,7 @@ public class StudentHandling {
                         Query slotQuery = db.collectionGroup("timeSlots")
                                 .whereEqualTo("status", "open") // must be open slots
                                 .whereIn("tutorEmail", chunk) // must be a tutor that offers the course
+                                .whereGreaterThan("startInstant", Timestamp.now()) // must be in the FUTURE
                                 .orderBy("startInstant"); // sort by most recent first
 
                         slotTasks.add(slotQuery.get());
@@ -108,6 +111,7 @@ public class StudentHandling {
                                     String docStatus = doc.getString("status");
                                     String tutorEmail = doc.getString("tutorEmail");
                                     String studentEmail = doc.getString("studentEmail");
+                                    Boolean rated = doc.getBoolean("rated");
 
                                     if (sTs == null || eTs == null || zoneId == null) {
                                         if (--remaining[0] == 0) {
@@ -131,7 +135,7 @@ public class StudentHandling {
                                                 s = (Student) accounts.get(1);
                                             }
 
-                                            slotList.add(new TimeSlot(t, requireApproval, start, end, s, docStatus, doc.getId()));
+                                            slotList.add(new TimeSlot(t, requireApproval, start, end, s, docStatus, doc.getId(), Boolean.TRUE.equals(rated)));
 
                                             if (--remaining[0] == 0) {
                                                 slotList.sort(Comparator.comparing(TimeSlot::getStartDate)); // sort for UI
@@ -178,6 +182,8 @@ public class StudentHandling {
             callback.onFailure("Unknown status: " + status);
             return;
         }
+        // FOR TESTING
+        Log.d("getStudentSlots", "Raw sessionTokens from student: " + ids);
 
         if (ids == null || ids.isEmpty()) {
             callback.onSuccess(new ArrayList<>());
@@ -221,7 +227,7 @@ public class StudentHandling {
                         Timestamp eTs = doc.getTimestamp("endInstant");
                         String zoneId = doc.getString("zoneId");
                         Boolean requireApproval = doc.getBoolean("requireApproval");
-
+                        Boolean rated = doc.getBoolean("rated");
                         String docStatus = doc.getString("status");
                         String effectiveStatus;
 
@@ -259,7 +265,7 @@ public class StudentHandling {
                                     s = (Student) accounts.get(1);
                                 }
 
-                                slotList.add(new TimeSlot(t, requireApproval, start, end, s, effectiveStatus, doc.getId()));
+                                slotList.add(new TimeSlot(t, requireApproval, start, end, s, effectiveStatus, doc.getId(), Boolean.TRUE.equals(rated)));
 
                                 if (--remaining[0] == 0) {
                                     slotList.sort(Comparator.comparing(TimeSlot::getStartDate));
@@ -301,62 +307,65 @@ public class StudentHandling {
                 }
 
                 // success - no overlaps, proceed:
-                    FirebaseFirestore db = FirebaseFirestore.getInstance();
-                    // Find tutor's doc by email
-                    db.collection("accounts")
-                            .whereEqualTo("email", slot.getTutor().getEmail())
-                            .limit(1)
-                            .get()
-                            .addOnFailureListener(e -> callback.onFailure("Lookup failed: " + e.getMessage()))
-                            .addOnSuccessListener(q -> {
-                                if (q.isEmpty()) {
-                                    callback.onFailure("Tutor not found");
-                                    return;
-                                }
+                FirebaseFirestore db = FirebaseFirestore.getInstance();
+                // Find tutor's doc by email
+                db.collection("accounts")
+                        .whereEqualTo("email", slot.getTutor().getEmail())
+                        .limit(1)
+                        .get()
+                        .addOnFailureListener(e -> callback.onFailure("Lookup failed: " + e.getMessage()))
+                        .addOnSuccessListener(q -> {
+                            if (q.isEmpty()) {
+                                callback.onFailure("Tutor not found");
+                                return;
+                            }
 
-                                DocumentSnapshot tutorDoc = q.getDocuments().get(0); // get the tutor's doc
-                                DocumentReference slotRef = tutorDoc.getReference()
-                                        .collection("timeSlots")
-                                        .document(slot.getID()); // find the slot using the ID
+                            DocumentSnapshot tutorDoc = q.getDocuments().get(0); // get the tutor's doc
+                            DocumentReference slotRef = tutorDoc.getReference()
+                                    .collection("timeSlots")
+                                    .document(slot.getID()); // find the slot using the ID
 
-                                // Read current status, then update if open
-                                slotRef.get()
-                                        .addOnFailureListener(e -> callback.onFailure("Failed to find slot: " + e.getMessage()))
-                                        .addOnSuccessListener(foundSlot -> {
-                                            if (!foundSlot.exists()) {
-                                                callback.onFailure("Time slot not found");
-                                                return;
-                                            }
+                            // Read current status, then update if open
+                            slotRef.get()
+                                    .addOnFailureListener(e -> callback.onFailure("Failed to find slot: " + e.getMessage()))
+                                    .addOnSuccessListener(foundSlot -> {
+                                        if (!foundSlot.exists()) {
+                                            callback.onFailure("Time slot not found");
+                                            return;
+                                        }
 
-                                            String status = foundSlot.getString("status"); // get the status of the slot (open, booked, cancelled)
+                                        String status = foundSlot.getString("status"); // get the status of the slot (open, booked, cancelled)
 
-                                            if (!"open".equals(status)) {
-                                                callback.onFailure("Time slot is already booked, or pending."); // callback if the slot is already booked/pending
-                                                return;
-                                            }
+                                        if (!"open".equals(status)) {
+                                            callback.onFailure("Time slot is already booked, or pending."); // callback if the slot is already booked/pending
+                                            return;
+                                        }
 
 
+                                        Map<String, Object> updates = new HashMap<>(); // make a hashmap that has all the changes
 
-                                            Map<String, Object> updates = new HashMap<>(); // make a hashmap that has all the changes
+                                        Boolean requireApproval = foundSlot.getBoolean("requireApproval");
+                                        if (Boolean.TRUE.equals(requireApproval)) {
+                                            updates.put("status", "pending");
+                                        } else {
+                                            updates.put("status", "booked");
+                                        }
 
-                                            Boolean requireApproval = foundSlot.getBoolean("requireApproval");
-                                            if(Boolean.TRUE.equals(requireApproval)){
-                                                updates.put("status", "pending");
-                                            }
-                                            else{ updates.put("status", "booked");}
+                                        updates.put("studentEmail", student.getEmail());
 
-                                            updates.put("studentEmail", student.getEmail());
-
-                                            slotRef.update(updates) // update the info that we changed :)
-                                                    .addOnSuccessListener(v ->{
-                                                        callback.onSuccess("Slot booked");
-                                                        // add the session ID to the student's object to make querying easy
-                                                        updateBookedSession(student, slotRef.getId());})
-                                                    .addOnFailureListener(e -> callback.onFailure("Booking failed: " + e.getMessage()));
-                                        });
-                            });
-                }
-
+                                        slotRef.update(updates)
+                                                .addOnSuccessListener(v -> {
+                                                    Log.d("bookSession", "Slot update succeeded at path: " + slotRef.getPath());
+                                                    callback.onSuccess("Slot booked");
+                                                    updateBookedSession(student, slotRef.getPath());
+                                                })
+                                                .addOnFailureListener(e -> {
+                                                    Log.e("bookSession", "Booking failed on update", e);
+                                                    callback.onFailure("Booking failed: " + e.getMessage());
+                                                });
+                                    });
+                        });
+            }
             @Override
             public void onFailure(String error) {
                 callback.onFailure("An error occurred while querying your existing sessions.");
@@ -365,17 +374,18 @@ public class StudentHandling {
 
 
     }
-    public void updateBookedSession(Student student, String docRef){
+    public void updateBookedSession(Student student, String slotPath){
         if (student == null) return;
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-        student.addSessionToken(docRef);
+        // Store the FULL path, i.e. "accounts/tutor1/timeSlots/abc123"
+        student.addSessionToken(slotPath);
+
 
         DocumentReference studentRef = db.collection("accounts").document(student.getEmail());
-        studentRef.update("sessionTokens", FieldValue.arrayUnion(docRef));
+        studentRef.update("sessionTokens", FieldValue.arrayUnion(slotPath));
     }
-
     public void rateTutor(TimeSlot slot, int rating){ // where slot = the reference to the completed slot, rating belongs to [1, 2, 3, 4, 5]
         Tutor tutor = slot.getTutor();
         tutor.rate(rating); // .rate already updates the tutor object's instance vars rating & numRatings
@@ -414,7 +424,5 @@ public class StudentHandling {
         }
 
     }
-
-
 
 }

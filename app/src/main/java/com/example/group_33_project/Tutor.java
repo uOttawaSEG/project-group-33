@@ -3,9 +3,6 @@ import java.io.Serializable;
 import java.util.List;
 
 public class Tutor extends Account implements Serializable {
-
-
-
     // Attributes for TUTORS:
     private String education, status;
     private List<String> courses;

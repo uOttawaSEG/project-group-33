@@ -9,7 +9,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.group_33_project"
-        minSdk = 26
+        minSdk = 31
         targetSdk = 36
         versionCode = 1
         versionName = "1.0"
@@ -51,6 +51,7 @@ dependencies {
 
     implementation(libs.navigation.fragment)
     implementation(libs.navigation.ui)
+    implementation(libs.recyclerview)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)

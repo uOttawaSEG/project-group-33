@@ -145,20 +145,7 @@ public class TutorUpcoming extends AppCompatActivity {
         });
     }
 
-    //TEST METHOD
-    private void addTestSlots() {
-        ZoneId zone = ZoneId.of("America/New_York");
-        ZonedDateTime zdt1 = ZonedDateTime.of(2025, 11, 12, 11, 30, 0, 0, zone);
-        ZonedDateTime zdt2 = ZonedDateTime.of(2025, 11, 12, 15, 30, 0, 0, zone);
-        ZonedDateTime zdt3 = ZonedDateTime.of(2025, 11, 14, 11, 0, 0, 0, zone);
-        ZonedDateTime zdt4 = ZonedDateTime.of(2025, 11, 14, 18, 0, 0, 0, zone);
 
-        Student s1 = new Student("Ivanna", "Kravchenko", "i@gmail.com", "123", "1234", "math");
-        Student s2 = new Student("Vincent", "Black", "i@gmail.com", "123", "1234", "math");
-
-        mySlots.add(new TimeSlot(currentTutor, false, zdt1, zdt2, s1, "booked", "1234"));
-        mySlots.add(new TimeSlot(currentTutor, false, zdt3, zdt4, s2, "booked", "12345"));
-    }
 
     //SETUP WEEK
     private void setupWeekNavigation() {

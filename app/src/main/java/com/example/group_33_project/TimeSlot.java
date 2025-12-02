@@ -10,7 +10,7 @@ public class TimeSlot {
     private String status; // status = "booked", "open", "pending" (if requires approval), or "cancelled"
     private final Boolean requireApproval; // whether or not the booking must be approved by an admin
     private String ID; // stores the FIRESTORE ID from the database
-
+    private boolean rated = false; // false by default
 
     // constructor for NEW TIMESLOTS
     TimeSlot(Tutor tutor, Boolean requireApproval, ZonedDateTime start, ZonedDateTime end){
@@ -22,7 +22,7 @@ public class TimeSlot {
     }
 
     // Parametrized constructor (for firestore)
-    TimeSlot(Tutor tutor, Boolean requireApproval, ZonedDateTime start, ZonedDateTime end, Student student, String status, String ID){ // constructor for NEW TIMESLOTS
+    TimeSlot(Tutor tutor, Boolean requireApproval, ZonedDateTime start, ZonedDateTime end, Student student, String status, String ID, boolean rated){ // constructor for NEW TIMESLOTS
         this.tutor = tutor;
         this.requireApproval = requireApproval;
         this.startDate = start;
@@ -30,6 +30,7 @@ public class TimeSlot {
         this.student = student;
         this.status = status;
         this.ID = ID;
+        this.rated = rated;
     }
 
     // Method to determine if a new timeslot overlaps with an existing slot
@@ -77,6 +78,8 @@ public class TimeSlot {
     }
     public String getID() { return ID; }
 
+    public boolean isRated(){ return rated;}
+
     // Setters
 
 
@@ -102,4 +105,5 @@ public class TimeSlot {
     public void setTutor(Tutor tutor){
         this.tutor = tutor;
     }
+    public void wasRated(){ this.rated = true;}
 }

@@ -60,7 +60,7 @@ public class TutorHandling {
                                     ZonedDateTime s = ZonedDateTime.ofInstant(sTs.toDate().toInstant(), ZoneId.of(zoneId)); // use methods to convert back to a ZonedDateTime object
                                     ZonedDateTime e = ZonedDateTime.ofInstant(eTs.toDate().toInstant(), ZoneId.of(zoneId));
 
-                                    TimeSlot existing = new TimeSlot(null, null, s, e, null, null, null); // a dummy time slot with just the times
+                                    TimeSlot existing = new TimeSlot(null, null, s, e, null, null, null, false); // a dummy time slot with just the times
 
                                     if (TimeSlot.isOverlap(newTS, existing)) { // use the created method to see if its overlapping
                                         overlapFound = true;
@@ -132,6 +132,7 @@ public class TutorHandling {
                             data.put("requireApproval", requiresApproval);
                             data.put("studentEmail", null); // not yet booked
                             data.put("status", "open");
+                            data.put("rated", "false"); // not rated upon creation
 
                             slotsRef.add(data)
 
@@ -366,6 +367,7 @@ public class TutorHandling {
                                 String docStatus = doc.getString("status");
                                 String tutorEmail = doc.getString("tutorEmail");
                                 String studentEmail = doc.getString("studentEmail");
+                                boolean rated = Boolean.TRUE.equals(doc.getBoolean("rated"));
 
 
                                 assert sTs != null;
@@ -384,7 +386,7 @@ public class TutorHandling {
                                             s = (Student) accounts.get(1);
                                         }
 
-                                        slotList.add(new TimeSlot(t, requireApproval, start, end, s, docStatus, doc.getId())); // add the completed timeslot to the slot list :)
+                                        slotList.add(new TimeSlot(t, requireApproval, start, end, s, docStatus, doc.getId(), rated)); // add the completed timeslot to the slot list :)
 
 
                                         if (--remaining[0] == 0) {
@@ -485,6 +487,7 @@ public class TutorHandling {
                                     String status = doc.getString("status");
                                     String studentEmail = doc.getString("studentEmail");
                                     String slotId = doc.getId();
+                                    boolean rated = Boolean.TRUE.equals(doc.getBoolean("rated"));
 
                                     // handle bad data safely
                                     if (sTs == null || eTs == null || zoneId == null) {
@@ -500,7 +503,7 @@ public class TutorHandling {
 
                                     // if the student email is null, the slot isnt booked so we don't need to find a student!
                                     if (studentEmail == null) {
-                                        slots.add(new TimeSlot(tutor, requireApproval, start, end, null, status, slotId));
+                                        slots.add(new TimeSlot(tutor, requireApproval, start, end, null, status, slotId, rated));
 
                                         if (--remaining[0] == 0) {
                                             slots.sort(Comparator.comparing(TimeSlot::getStartDate));
@@ -516,7 +519,7 @@ public class TutorHandling {
                                                     student = (Student) account;
                                                 }
 
-                                                slots.add(new TimeSlot(tutor, requireApproval, start, end, student, status, slotId)); // then add it
+                                                slots.add(new TimeSlot(tutor, requireApproval, start, end, student, status, slotId, rated)); // then add it
 
                                                 if (--remaining[0] == 0) {
                                                     slots.sort(Comparator.comparing(TimeSlot::getStartDate));
@@ -527,7 +530,7 @@ public class TutorHandling {
                                             @Override
                                             public void onFailure(String errorMessage) {
                                                 // if student lookup fails, still add slot with null student
-                                                slots.add(new TimeSlot(tutor, requireApproval, start, end, null, status, slotId));
+                                                slots.add(new TimeSlot(tutor, requireApproval, start, end, null, status, slotId, rated));
 
                                                 if (--remaining[0] == 0) {
                                                     slots.sort(Comparator.comparing(TimeSlot::getStartDate));

@@ -68,7 +68,7 @@ public class LoggedIn extends BaseActivity {
             //PROCEEDS TO STUDENTIN SCREEN AFTER WAITING 2 SECONDS
             new Handler().postDelayed(() -> {
                 Intent intent = new Intent(LoggedIn.this, StudentIn.class);
-                intent.putExtra("student", account ); //send student as an object to tutorIn
+                intent.putExtra("student", account ); //send student as an object to StudentIn
                 startActivity(intent);
                 finish();
             },DELAY_MS);
