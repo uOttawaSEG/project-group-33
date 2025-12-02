@@ -59,6 +59,11 @@ dependencies {
 
     implementation("com.github.prolificinteractive:material-calendarview:1.6.0")
 
+    testImplementation("org.hamcrest:hamcrest-library:1.3")
+    // Add Mockito dependencies
+    testImplementation("org.mockito:mockito-core:5.12.0")
+    testImplementation("org.mockito:mockito-inline:5.2.0")
+
     // REMOVE this manual pin to avoid conflicting versions (BOM handles it)
     // implementation("com.google.firebase:firebase-firestore:26.0.1")
 }
